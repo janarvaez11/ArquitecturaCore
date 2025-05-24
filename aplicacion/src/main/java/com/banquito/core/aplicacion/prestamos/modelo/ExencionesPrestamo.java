@@ -20,7 +20,7 @@ public class ExencionesPrestamo {
 
     @ManyToOne
     @JoinColumn(name = "IdComisionPrestamo", referencedColumnName = "IdComisionPrestamo")
-    private ComisionesPrestamo idComisionPrestamo;
+    private ComisionPrestamo idComisionPrestamo;
 
     @Column(name = "TipoExencion", length = 30, nullable = false)
     private String tipoExencion;
@@ -46,11 +46,11 @@ public class ExencionesPrestamo {
         this.id = id;
     }
 
-    public ComisionesPrestamo getIdComisionPrestamo() {
+    public ComisionPrestamo getIdComisionPrestamo() {
         return idComisionPrestamo;
     }
 
-    public void setIdComisionPrestamo(ComisionesPrestamo idComisionPrestamo) {
+    public void setIdComisionPrestamo(ComisionPrestamo idComisionPrestamo) {
         this.idComisionPrestamo = idComisionPrestamo;
     }
 
