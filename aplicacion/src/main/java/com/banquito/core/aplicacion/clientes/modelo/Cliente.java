@@ -1,9 +1,8 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "clientes")
@@ -13,21 +12,48 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idCliente;
 
-    private String tipoEntidad;
-    private Integer idEntidad;
-    private String nacionalidad;
-    private Integer idSucursal;
+    @Column(nullable = false, length = 10)
+    private String tipoEntidad; // PERSONA o EMPRESA
+
+    @Column(nullable = false)
+    private Integer idEntidad; // No se puede mapear directamente (condicional entre Persona/Empresa)
+
+    @ManyToOne
+    @JoinColumn(name = "nacionalidad")
+    private Pais pais; // Relación con Paises (opcional)
+
+    @ManyToOne
+    @JoinColumn(name = "idSucursal", nullable = false)
+    private Sucursal sucursal; // Relación con Sucursales
+
+    @Column(length = 10)
     private String tipoIdentificacion;
+
+    @Column(length = 20)
     private String numeroIdentificacion;
+
+    @Column(length = 20)
     private String tipoCliente;
+
+    @Column(length = 20)
     private String segmento;
+
+    @Column(length = 50)
     private String canalAfilicacion;
+
+    @Column(length = 50)
     private String nombre;
+
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActivacion;
+
+    @Column(length = 15)
     private String estado;
+
     private LocalDateTime fechaCierre;
     private LocalDateTime fechaActualizacion;
+
+    @Column(length = 100)
     private String comentarios;
 
     public Cliente() {}
@@ -60,20 +86,20 @@ public class Cliente {
         this.idEntidad = idEntidad;
     }
 
-    public String getNacionalidad() {
-        return nacionalidad;
+    public Pais getPais() {
+        return pais;
     }
 
-    public void setNacionalidad(String nacionalidad) {
-        this.nacionalidad = nacionalidad;
+    public void setPais(Pais pais) {
+        this.pais = pais;
     }
 
-    public Integer getIdSucursal() {
-        return idSucursal;
+    public Sucursal getSucursal() {
+        return sucursal;
     }
 
-    public void setIdSucursal(Integer idSucursal) {
-        this.idSucursal = idSucursal;
+    public void setSucursal(Sucursal sucursal) {
+        this.sucursal = sucursal;
     }
 
     public String getTipoIdentificacion() {
@@ -180,17 +206,13 @@ public class Cliente {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!(obj instanceof Cliente)) return false;
         Cliente other = (Cliente) obj;
         return Objects.equals(idCliente, other.idCliente);
     }
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "idCliente=" + idCliente +
-                ", tipoEntidad='" + tipoEntidad + '\'' +
-                ", nombre='" + nombre + '\'' +
-                '}';
+        return "Cliente{idCliente=" + idCliente + ", tipoEntidad='" + tipoEntidad + "'}";
     }
 }
