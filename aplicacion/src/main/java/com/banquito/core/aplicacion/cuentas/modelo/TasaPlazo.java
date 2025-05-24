@@ -7,16 +7,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table (name="TasaPlazos")
+@Table(name = "TasaPlazos")
 
 public class TasaPlazo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdPlazo", nullable = false)
     private Integer IdPlazo;
+
+    @Column(name = "IdTasaInteres", nullable = false)
+    private Integer IdTasaInteres;
 
     @Column(name = "PlazoMinimo", nullable = false)
     private Integer PlazoMinimo;
@@ -27,32 +32,62 @@ public class TasaPlazo {
     @Column(name = "Tasa", precision = 5, scale = 2)
     private BigDecimal Tasa;
 
+    //Relacion a la tabla TasaInteres
+    @ManyToOne
+    @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
+    private TasaInteres tasaInteres;
+
     public TasaPlazo() {
     }
+
     public TasaPlazo(Integer idPlazo) {
         IdPlazo = idPlazo;
     }
+
     public Integer getIdPlazo() {
         return IdPlazo;
     }
+
     public void setIdPlazo(Integer idPlazo) {
         IdPlazo = idPlazo;
     }
+
     public Integer getPlazoMinimo() {
         return PlazoMinimo;
     }
+
     public void setPlazoMinimo(Integer plazoMinimo) {
         PlazoMinimo = plazoMinimo;
     }
+
     public Integer getPlazoMaximo() {
         return PlazoMaximo;
     }
+
     public void setPlazoMaximo(Integer plazoMaximo) {
         PlazoMaximo = plazoMaximo;
     }
+
+    public Integer getIdTasaInteres() {
+        return IdTasaInteres;
+    }
+
+    public void setIdTasaInteres(Integer idTasaInteres) {
+        IdTasaInteres = idTasaInteres;
+    }
+
+    public TasaInteres getTasaInteres() {
+        return tasaInteres;
+    }
+
+    public void setTasaInteres(TasaInteres tasaInteres) {
+        this.tasaInteres = tasaInteres;
+    }
+
     public BigDecimal getTasa() {
         return Tasa;
     }
+
     public void setTasa(BigDecimal tasa) {
         Tasa = tasa;
     }
@@ -64,6 +99,7 @@ public class TasaPlazo {
         result = prime * result + ((IdPlazo == null) ? 0 : IdPlazo.hashCode());
         return result;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -80,10 +116,13 @@ public class TasaPlazo {
             return false;
         return true;
     }
+
     @Override
     public String toString() {
-        return "TasaPlazo [IdPlazo=" + IdPlazo + ", PlazoMinimo=" + PlazoMinimo + ", PlazoMaximo=" + PlazoMaximo
-                + ", Tasa=" + Tasa + "]";
+        return "TasaPlazo [IdPlazo=" + IdPlazo + ", IdTasaInteres=" + IdTasaInteres + ", PlazoMinimo=" + PlazoMinimo
+                + ", PlazoMaximo=" + PlazoMaximo + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
     }
+
+    
 
 }

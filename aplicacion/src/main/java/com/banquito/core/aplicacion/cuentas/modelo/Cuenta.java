@@ -1,12 +1,16 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.time.Instant;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,8 +25,10 @@ public class Cuenta {
     @Column(name = "IdTipoCuenta", nullable = false)
     private Integer IdTipoCuenta;
 
-    @Column(name = "IdTasaInteres", nullable = false)
-    private Integer IdTasaInteres;
+    // Relación con la tabla TasasInteres
+    @ManyToOne
+    @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
+    private TasaInteres tasaInteres;
 
     @Column(name = "Nombre", length = 50, nullable = false)
     private String Nombre;
@@ -39,12 +45,19 @@ public class Cuenta {
     @Column(name = "FechaModificacion")
     private Instant FechaModificacion;
 
+    // Relación inversa con CuentasClientes
+    @OneToMany(mappedBy = "cuenta")
+    private List<CuentaCliente> cuentasClientes;
 
+    //Constructores
     public Cuenta() {
     }
     public Cuenta(Integer idCuenta) {
         IdCuenta = idCuenta;
     }
+
+
+    //Getters y Setters
     public Integer getIdCuenta() {
         return IdCuenta;
     }
