@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.banquito.core.aplicacion.general.modelo.Moneda;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -187,12 +189,12 @@ public class TipoPrestamo {
         this.Garantias = garantias;
     }
 
-    public List<Prestamo> getPrestamos() {
-        return Prestamos;
+    public List<TipoPrestamo> getTipoPrestamos() {
+        return TipoPrestamos;
     }
 
-    public void setPrestamos(List<Prestamo> prestamos) {
-        Prestamos = prestamos;
+    public void setTipoPrestamos(List<TipoPrestamo> tipoPrestamos) {
+        TipoPrestamos = tipoPrestamos;
     }
 
     @Override

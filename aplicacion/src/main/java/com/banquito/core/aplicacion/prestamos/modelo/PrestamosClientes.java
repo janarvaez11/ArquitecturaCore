@@ -18,7 +18,7 @@ public class PrestamosClientes {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "IdPrestamo")
-    private Prestamos idPrestamo;
+    private Prestamo idPrestamo;
 
     @Column(name = "Estado", nullable = false, length = 20)
     private String estado;
@@ -47,11 +47,11 @@ public class PrestamosClientes {
         this.id = id;
     }
 
-    public Prestamos getIdPrestamo() {
+    public Prestamo getIdPrestamo() {
         return idPrestamo;
     }
 
-    public void setIdPrestamo(Prestamos idPrestamo) {
+    public void setIdPrestamo(Prestamo idPrestamo) {
         this.idPrestamo = idPrestamo;
     }
 
