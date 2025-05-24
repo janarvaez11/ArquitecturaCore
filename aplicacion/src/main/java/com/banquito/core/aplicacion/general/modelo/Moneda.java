@@ -7,9 +7,8 @@ import jakarta.persistence.*;
 public class Moneda {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdMoneda", nullable = false)
-    private Integer id;
+    @Column(name = "IdMoneda", length = 3, nullable = false)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", nullable = false)
@@ -35,15 +34,15 @@ public class Moneda {
     public Moneda() {
     }
 
-    public Moneda(Integer id) {
+    public Moneda(String id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -94,6 +93,4 @@ public class Moneda {
     public void setVersion(Long version) {
         this.version = version;
     }
-
-
 }
