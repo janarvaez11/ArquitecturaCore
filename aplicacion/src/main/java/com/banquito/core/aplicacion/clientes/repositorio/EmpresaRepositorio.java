@@ -1,4 +1,7 @@
 package com.banquito.core.aplicacion.clientes.repositorio;
 
-public interface EmpresaRepositorio {
+import com.banquito.core.aplicacion.clientes.modelo.Empresa;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmpresaRepositorio extends JpaRepository<Empresa, Integer> {
 }
