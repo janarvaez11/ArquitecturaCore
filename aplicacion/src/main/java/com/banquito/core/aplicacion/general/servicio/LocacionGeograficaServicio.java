@@ -43,7 +43,7 @@ public class LocacionGeograficaServicio {
                 LocacionGeografica existente = optional.get();
                 existente.setNombre(locacion.getNombre());
                 existente.setEstructuraGeografica(locacion.getEstructuraGeografica());
-                existente.setEstado(locacion.getEstado());
+                //existente.setEstado(locacion.getEstado());
                 this.repositorio.save(existente);
             } else {
                 throw new LocacionGeograficaNoEncontradaExcepcion(
