@@ -16,11 +16,13 @@ public class Feriado {
     @Column(name = "FechaFeriado", nullable = false)
     private Date fechaFeriado;
 
-    @Column(name = "IdPais", length = 2, nullable = false)
-    private String idPais;
+    @ManyToOne
+    @JoinColumn(name = "IdPais", referencedColumnName = "IdPais",nullable = false)
+    private Pais pais;
 
-    @Column(name = "IdLocacion", nullable = false)
-    private Integer idLocacion;
+    @ManyToOne
+    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = false)
+    private LocacionGeografica locacion;
 
     @Column(name = "Nombre", length = 25, nullable = false)
     private String nombre;
@@ -29,5 +31,6 @@ public class Feriado {
     private String tipoFeriado;
 
     @Version
+    @Column(name = "Version", precision = 9, nullable = false)
     private Long version;
 }
