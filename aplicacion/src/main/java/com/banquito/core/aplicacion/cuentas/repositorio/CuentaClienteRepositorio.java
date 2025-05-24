@@ -2,8 +2,8 @@ package com.banquito.core.aplicacion.cuentas.repositorio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.banquito.core.aplicacion.cuentas.modelo.TipoCuenta;
+import com.banquito.core.aplicacion.cuentas.modelo.CuentaCliente;
 
-public interface CuentaClienteRepositorio extends JpaRepository<TipoCuenta, Integer> {
+public interface CuentaClienteRepositorio extends JpaRepository<CuentaCliente, Integer> {
 
 }

@@ -37,6 +37,7 @@ public class TasaPlazo {
     @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
     private TasaInteres tasaInteres;
 
+    //Constructores
     public TasaPlazo() {
     }
 
@@ -44,6 +45,7 @@ public class TasaPlazo {
         IdPlazo = idPlazo;
     }
 
+    //Getters y Setters
     public Integer getIdPlazo() {
         return IdPlazo;
     }
@@ -92,6 +94,7 @@ public class TasaPlazo {
         Tasa = tasa;
     }
 
+    //HashCode y Equals
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -117,12 +120,11 @@ public class TasaPlazo {
         return true;
     }
 
+    //toString
     @Override
     public String toString() {
         return "TasaPlazo [IdPlazo=" + IdPlazo + ", IdTasaInteres=" + IdTasaInteres + ", PlazoMinimo=" + PlazoMinimo
                 + ", PlazoMaximo=" + PlazoMaximo + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
     }
-
-    
 
 }
