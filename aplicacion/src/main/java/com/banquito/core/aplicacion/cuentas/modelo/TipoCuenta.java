@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,6 +20,9 @@ public class TipoCuenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdTipoCuenta", nullable = false)
     private Integer IdTipoCuenta;
+
+    @Column(name = "IdTasaInteresPorDefecto", nullable = false)
+    private Integer IdTasaInteresPorDefecto;
 
     @Column(name = "Nombre", length = 20, nullable = false)
     private String Nombre;
@@ -42,6 +47,14 @@ public class TipoCuenta {
 
     @Column(name = "FechaModificacion")
     private Instant FechaModificacion;
+
+
+    //relacion a la tabla TasaInteres
+    @ManyToOne
+    @JoinColumn(name = "IdTasaInteresPorDefecto", referencedColumnName = "IdTasaInteres")
+    private TasaInteres tasaInteres;
+
+
 
     // Constructores
     public TipoCuenta() {
@@ -126,6 +139,24 @@ public class TipoCuenta {
         FechaModificacion = fechaModificacion;
     }
 
+    
+
+    public Integer getIdTasaInteresPorDefecto() {
+        return IdTasaInteresPorDefecto;
+    }
+
+    public void setIdTasaInteresPorDefecto(Integer idTasaInteresPorDefecto) {
+        IdTasaInteresPorDefecto = idTasaInteresPorDefecto;
+    }
+
+    public TasaInteres getTasaInteres() {
+        return tasaInteres;
+    }
+
+    public void setTasaInteres(TasaInteres tasaInteres) {
+        this.tasaInteres = tasaInteres;
+    }
+
     // HashCode y Equals
     @Override
     public int hashCode() {
@@ -152,13 +183,16 @@ public class TipoCuenta {
         return true;
     }
 
+    
     // ToString
     @Override
     public String toString() {
-        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
-                + ", RequisitosApertura=" + RequisitosApertura + ", tipocliente=" + tipocliente
-                + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas + ", Estado=" + Estado + ", FechaCreacion="
-                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + "]";
+        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", IdTasaInteresPorDefecto=" + IdTasaInteresPorDefecto
+                + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", RequisitosApertura=" + RequisitosApertura
+                + ", tipocliente=" + tipocliente + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas
+                + ", Estado=" + Estado + ", FechaCreacion=" + FechaCreacion + ", FechaModificacion=" + FechaModificacion
+                + ", tasaInteres=" + tasaInteres + "]";
     }
+
 
 }
