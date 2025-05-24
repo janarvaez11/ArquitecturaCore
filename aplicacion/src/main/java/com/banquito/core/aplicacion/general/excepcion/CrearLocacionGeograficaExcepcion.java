@@ -17,7 +17,8 @@ public class CrearLocacionGeograficaExcepcion extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Código de error: " + this.codigoError + ", Entidad: Locación Geográfica" + ", Mensaje: " + super.getMessage();
+        return "Código de error: " + this.codigoError + ", Entidad: Locación Geográfica" + ", Mensaje: "
+                + super.getMessage();
     }
 
     public Integer getCodigoError() {

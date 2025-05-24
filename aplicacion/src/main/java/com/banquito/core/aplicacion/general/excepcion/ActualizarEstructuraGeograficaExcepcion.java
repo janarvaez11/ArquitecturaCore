@@ -1,6 +1,5 @@
 package com.banquito.core.aplicacion.general.excepcion;
 
-
 public class ActualizarEstructuraGeograficaExcepcion extends RuntimeException {
 
     private final Integer codigoError;
@@ -18,7 +17,8 @@ public class ActualizarEstructuraGeograficaExcepcion extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Código de error: " + this.codigoError + ", Entidad: EstructuraGeografica" + ", Mensaje: " + super.getMessage();
+        return "Código de error: " + this.codigoError + ", Entidad: EstructuraGeografica" + ", Mensaje: "
+                + super.getMessage();
     }
 
     public Integer getCodigoError() {
