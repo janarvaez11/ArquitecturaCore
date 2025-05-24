@@ -33,4 +33,67 @@ public class Feriado {
     @Version
     @Column(name = "Version", precision = 9, nullable = false)
     private Long version;
+
+    public Feriado() {
+    }
+
+    public Feriado(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getFechaFeriado() {
+        return fechaFeriado;
+    }
+
+    public void setFechaFeriado(Date fechaFeriado) {
+        this.fechaFeriado = fechaFeriado;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
+    }
+
+    public LocacionGeografica getLocacion() {
+        return locacion;
+    }
+
+    public void setLocacion(LocacionGeografica locacion) {
+        this.locacion = locacion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTipoFeriado() {
+        return tipoFeriado;
+    }
+
+    public void setTipoFeriado(String tipoFeriado) {
+        this.tipoFeriado = tipoFeriado;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }
