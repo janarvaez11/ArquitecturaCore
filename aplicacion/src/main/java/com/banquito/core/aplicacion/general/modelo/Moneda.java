@@ -11,11 +11,13 @@ public class Moneda {
     @Column(name = "IdMoneda", nullable = false)
     private Integer id;
 
-    @Column(name = "IdPais", length = 2, nullable = false)
-    private String idPais;
+    @ManyToOne
+    @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", nullable = false)
+    private Pais pais;
 
-    @Column(name = "IdEntidadBancaria", nullable = false)
-    private Integer idEntidadBancaria;
+    @ManyToOne
+    @JoinColumn(name = "IdEntidadBancaria", referencedColumnName = "IdEntidadBancaria", nullable = true)
+    private EntidadBancaria entidadBancaria;
 
     @Column(name = "Nombre", length = 50, nullable = false)
     private String nombre;
@@ -27,9 +29,71 @@ public class Moneda {
     private String codigo;
 
     @Version
+    @Column(name = "version", precision = 9, nullable = false)
     private Long version;
 
-    @ManyToOne
-    @JoinColumn(name = "IdPais", referencedColumnName = "IdPais")
-    private Pais pais;
+    public Moneda() {
+    }
+
+    public Moneda(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
+    }
+
+    public EntidadBancaria getEntidadBancaria() {
+        return entidadBancaria;
+    }
+
+    public void setEntidadBancaria(EntidadBancaria entidadBancaria) {
+        this.entidadBancaria = entidadBancaria;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getSimbolo() {
+        return simbolo;
+    }
+
+    public void setSimbolo(String simbolo) {
+        this.simbolo = simbolo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+
 }
