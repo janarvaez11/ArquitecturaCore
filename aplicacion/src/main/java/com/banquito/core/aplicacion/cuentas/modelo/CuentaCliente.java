@@ -39,8 +39,8 @@ public class CuentaCliente {
     @Column(name = "SaldoContable", precision = 100, scale = 2)
     private BigDecimal SaldoContable;
 
-    @Column(name = "FechaCApertura")
-    private Instant FechaCreacion;
+    @Column(name = "FechaApertura")
+    private Instant FechaCreacion; //CORREGIR ES TIMESTAMP
 
 
 //Relacion a la tabla Cuentas
