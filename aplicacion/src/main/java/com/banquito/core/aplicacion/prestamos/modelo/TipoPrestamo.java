@@ -65,7 +65,7 @@ public class TipoPrestamo {
     private List<Garantia> Garantias;
 
     @OneToMany(mappedBy = "tipoPrestamo")
-    private List<Prestamo> Prestamos;
+    private List<TipoPrestamo> TipoPrestamos;
 
     // Constructor
     public TipoPrestamo() {
