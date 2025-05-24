@@ -45,11 +45,6 @@ public class LocacionGeografica {
     public LocacionGeografica() {
     }
 
-    public LocacionGeografica(Integer id, LocacionGeografica locacionPadre) {
-        this.id = id;
-        this.locacionPadre = locacionPadre;
-    }
-
     public Integer getId() {
         return id;
     }
