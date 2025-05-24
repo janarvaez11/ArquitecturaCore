@@ -1,6 +1,6 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
-import java.time.Instant;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "TipoCuentas")
@@ -42,12 +44,14 @@ public class TipoCuenta {
     @Column(name = "Estado", length = 20, nullable = false)
     private String Estado;
 
-    @Column(name = "FechaCreacion")
-    private Instant FechaCreacion;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaCreacion", nullable = false)
+    private Date FechaCreacion;
 
+
+    @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion")
-    private Instant FechaModificacion;
-
+     private Date FechaModificacion;
 
     //relacion a la tabla TasaInteres
     @ManyToOne
@@ -123,23 +127,23 @@ public class TipoCuenta {
         Estado = estado;
     }
 
-    public Instant getFechaCreacion() {
+
+
+    public Date getFechaCreacion() {
         return FechaCreacion;
     }
 
-    public void setFechaCreacion(Instant fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         FechaCreacion = fechaCreacion;
     }
 
-    public Instant getFechaModificacion() {
+    public Date getFechaModificacion() {
         return FechaModificacion;
     }
 
-    public void setFechaModificacion(Instant fechaModificacion) {
+    public void setFechaModificacion(Date fechaModificacion) {
         FechaModificacion = fechaModificacion;
     }
-
-    
 
     public Integer getIdTasaInteresPorDefecto() {
         return IdTasaInteresPorDefecto;

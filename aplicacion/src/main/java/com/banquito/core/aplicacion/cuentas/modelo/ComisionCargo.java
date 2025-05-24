@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 public class ComisionCargo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdComisionCargo", nullable = false)
     private Integer IdComisionCargo;
 
@@ -37,6 +37,7 @@ public class ComisionCargo {
 
     @Column(name = "Frecuencia", length = 30, nullable = false)
     private String Frecuencia;
+
 
     //Relacion a la tabla ExencionCuentas y ComisionesCargos
     @OneToMany(mappedBy = "comision")
