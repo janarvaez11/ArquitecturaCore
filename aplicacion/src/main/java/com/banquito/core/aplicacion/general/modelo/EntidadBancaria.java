@@ -1,15 +1,13 @@
 package com.banquito.core.aplicacion.general.modelo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "EntidadesBancarias")
 public class EntidadBancaria {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdEntidadBancaria", nullable = false)
     private Integer id;
 
