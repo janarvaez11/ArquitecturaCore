@@ -2,6 +2,7 @@ package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
@@ -59,9 +61,12 @@ public class TipoPrestamo {
     @JoinColumn(name = "IdTipoPrestamo", referencedColumnName = "IdTipoPrestamo")
     private Moneda moneda;
 
+    @OneToMany(mappedBy = "tipoPrestamo")
+    private List<Garantia> garantias;
+
     // Constructor
-    //public TipoPrestamo() {
-    //}
+    public TipoPrestamo() {
+    }
 
     public TipoPrestamo(Integer idTipoPrestamo) {
         IdTipoPrestamo = idTipoPrestamo;
@@ -171,6 +176,14 @@ public class TipoPrestamo {
         this.moneda = moneda;
     }
 
+    public List<Garantia> getGarantias() {
+        return garantias;
+    }
+
+    public void setGarantias(List<Garantia> garantias) {
+        this.garantias = garantias;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -204,6 +217,5 @@ public class TipoPrestamo {
                 + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModifica=" + fechaModifica
                 + ", moneda=" + moneda + "]";
     }
-
 
 }
