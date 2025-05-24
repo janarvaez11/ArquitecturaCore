@@ -22,7 +22,7 @@ public class CuentaComisionCargo {
     private Integer IdComisionCargo;
 
     @Column(name = "FechaAsignacion", nullable = false)
-    private String FechaAsignacion; //ES TIMESTAMP
+    private String FechaAsignacion;
 
     //Relacion a la tabla Cuentas y ComisionesCargos
     @ManyToOne
@@ -67,6 +67,7 @@ public class CuentaComisionCargo {
     public void setFechaAsignacion(String fechaAsignacion) {
         FechaAsignacion = fechaAsignacion;
     }
+    
 
     public Cuenta getCuenta() {
         return cuenta;

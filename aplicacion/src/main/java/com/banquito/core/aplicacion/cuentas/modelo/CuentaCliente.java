@@ -40,7 +40,7 @@ public class CuentaCliente {
     private BigDecimal SaldoContable;
 
     @Column(name = "FechaApertura")
-    private Instant FechaCreacion; //CORREGIR ES TIMESTAMP
+    private Instant FechaApertura;
 
 
 //Relacion a la tabla Cuentas
@@ -58,6 +58,7 @@ public CuentaCliente(Integer idCuentaCliente) {
 }
 
 //Getters y Setters
+
 public Integer getIdCuentaCliente() {
     return IdCuentaCliente;
 }
@@ -114,12 +115,12 @@ public void setSaldoContable(BigDecimal saldoContable) {
     SaldoContable = saldoContable;
 }
 
-public Instant getFechaCreacion() {
-    return FechaCreacion;
+public Instant getFechaApertura() {
+    return FechaApertura;
 }
 
-public void setFechaCreacion(Instant fechaCreacion) {
-    FechaCreacion = fechaCreacion;
+public void setFechaApertura(Instant fechaApertura) {
+    FechaApertura = fechaApertura;
 }
 
 public Cuenta getCuenta() {
@@ -129,7 +130,6 @@ public Cuenta getCuenta() {
 public void setCuenta(Cuenta cuenta) {
     this.cuenta = cuenta;
 }
-
 
 //HashCode y Equals
 @Override
@@ -157,11 +157,11 @@ public boolean equals(Object obj) {
     return true;
 }
 
+//ToString
 @Override
 public String toString() {
     return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", IdCliente=" + IdCliente + ", IdCuenta=" + IdCuenta
             + ", NumeroCuenta=" + NumeroCuenta + ", Estado=" + Estado + ", SaldoDisponible=" + SaldoDisponible
-            + ", SaldoContable=" + SaldoContable + ", FechaCreacion=" + FechaCreacion + ", cuenta=" + cuenta + "]";
+            + ", SaldoContable=" + SaldoContable + ", FechaApertura=" + FechaApertura + ", cuenta=" + cuenta + "]";
 }
-
 }
