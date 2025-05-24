@@ -62,7 +62,10 @@ public class TipoPrestamo {
     private Moneda moneda;
 
     @OneToMany(mappedBy = "tipoPrestamo")
-    private List<Garantia> garantias;
+    private List<Garantia> Garantias;
+
+    @OneToMany(mappedBy = "tipoPrestamo")
+    private List<Prestamo> Prestamos;
 
     // Constructor
     public TipoPrestamo() {
@@ -177,11 +180,19 @@ public class TipoPrestamo {
     }
 
     public List<Garantia> getGarantias() {
-        return garantias;
+        return Garantias;
     }
 
     public void setGarantias(List<Garantia> garantias) {
-        this.garantias = garantias;
+        this.Garantias = garantias;
+    }
+
+    public List<Prestamo> getPrestamos() {
+        return Prestamos;
+    }
+
+    public void setPrestamos(List<Prestamo> prestamos) {
+        Prestamos = prestamos;
     }
 
     @Override

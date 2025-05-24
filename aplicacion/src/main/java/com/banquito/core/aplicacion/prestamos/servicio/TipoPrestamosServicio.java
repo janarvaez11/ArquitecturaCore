@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.TipoProductoNoEncontradoExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.TipoPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.TipoPrestamoRepositorio;
 
@@ -27,7 +27,7 @@ public class TipoPrestamosServicio {
         if (tipoOptional.isPresent()) {
             return tipoOptional.get();
         } else {
-            throw new TipoProductoNoEncontradoExcepcion("Tipos Prestamos","Tipo de préstamo no encontrado con ID: " + id);
+            throw new TipoPrestamoNoEncontradoExcepcion("Tipos Prestamos","Tipo de préstamo no encontrado con ID: " + id);
         }
     }
 
@@ -60,7 +60,7 @@ public class TipoPrestamosServicio {
 
                 this.repositorio.save(tipoPrestamoDb);
             } else {
-                throw new TipoProductoNoEncontradoExcepcion("Tipo prestamo", "Error al actualizar el Tipo de prestamo. No se encontró el tipo de prestamo con ID: " + tipoPrestamo.getIdTipoPrestamo());
+                throw new TipoPrestamoNoEncontradoExcepcion("Tipo prestamo", "Error al actualizar el Tipo de prestamo. No se encontró el tipo de prestamo con ID: " + tipoPrestamo.getIdTipoPrestamo());
             }
         } catch (Exception rte) {
             throw new ActualizarEntidadExcepcion("Tipo Prestamos", "Error al actualizar el Tipo de prestamo. Texto del error: "+rte.getMessage());
@@ -74,7 +74,7 @@ public class TipoPrestamosServicio {
             if (tipoOptional.isPresent()) {
                 this.repositorio.delete(tipoOptional.get());
             } else {
-                throw new TipoProductoNoEncontradoExcepcion("Tipo prestamo", "Error al eliminar el Tipo de prestamo. No se encontró el tipo de prestamo con ID: " + id);
+                throw new TipoPrestamoNoEncontradoExcepcion("Tipo prestamo", "Error al eliminar el Tipo de prestamo. No se encontró el tipo de prestamo con ID: " + id);
             }
         } catch (Exception rte) {
             throw new EliminarEntidadExcepcion("Tipo Prestamos", "Error al eliminar el Tipo de prestamo. Texto del error: "+rte.getMessage());
