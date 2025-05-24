@@ -1,6 +1,5 @@
 package com.banquito.core.aplicacion.general.excepcion;
 
-
 public class ActualizarSucursalExcepcion extends RuntimeException {
 
     private final Integer codigoError;

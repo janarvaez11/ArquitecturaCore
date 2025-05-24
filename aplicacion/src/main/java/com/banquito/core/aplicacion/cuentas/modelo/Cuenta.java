@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.time.Instant;
-import java.util.List;
+//import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+//import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,10 +25,8 @@ public class Cuenta {
     @Column(name = "IdTipoCuenta", nullable = false)
     private Integer IdTipoCuenta;
 
-    // Relación con la tabla TasasInteres
-    @ManyToOne
-    @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
-    private TasaInteres tasaInteres;
+    @Column(name = "IdTasaInteres", nullable = false)
+    private Integer IdTasaInteres;
 
     @Column(name = "Nombre", length = 50, nullable = false)
     private String Nombre;
@@ -45,68 +43,111 @@ public class Cuenta {
     @Column(name = "FechaModificacion")
     private Instant FechaModificacion;
 
-    // Relación inversa con CuentasClientes
-    @OneToMany(mappedBy = "cuenta")
-    private List<CuentaCliente> cuentasClientes;
+    // Relación con la tabla TasasInteres
+    @ManyToOne
+    @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
+    private TasaInteres tasaInteres;
 
-    //Constructores
+    // Relación con la tabla TipoCuenta
+    @ManyToOne
+    @JoinColumn(name = "IdTipoCuenta", referencedColumnName = "IdTipoCuenta", nullable = false)
+    private TipoCuenta tipoCuenta;
+
+    // Relación inversa con CuentasClientes
+    // @OneToMany(mappedBy = "cuenta")
+    // private List<CuentaCliente> cuentasClientes;
+
+    // Constructores
     public Cuenta() {
     }
+
     public Cuenta(Integer idCuenta) {
         IdCuenta = idCuenta;
     }
 
-
-    //Getters y Setters
+    // Getters y Setters
     public Integer getIdCuenta() {
         return IdCuenta;
     }
+
     public void setIdCuenta(Integer idCuenta) {
         IdCuenta = idCuenta;
     }
+
     public Integer getIdTipoCuenta() {
         return IdTipoCuenta;
     }
+
     public void setIdTipoCuenta(Integer idTipoCuenta) {
         IdTipoCuenta = idTipoCuenta;
     }
+
     public Integer getIdTasaInteres() {
         return IdTasaInteres;
     }
+
     public void setIdTasaInteres(Integer idTasaInteres) {
         IdTasaInteres = idTasaInteres;
     }
+
     public String getNombre() {
         return Nombre;
     }
+
     public void setNombre(String nombre) {
         Nombre = nombre;
     }
+
     public String getDescripcion() {
         return Descripcion;
     }
+
     public void setDescripcion(String descripcion) {
         Descripcion = descripcion;
     }
+
     public String getEstado() {
         return Estado;
     }
+
     public void setEstado(String estado) {
         Estado = estado;
     }
+
     public Instant getFechaCreacion() {
         return FechaCreacion;
     }
+
     public void setFechaCreacion(Instant fechaCreacion) {
         FechaCreacion = fechaCreacion;
     }
+
     public Instant getFechaModificacion() {
         return FechaModificacion;
     }
+
     public void setFechaModificacion(Instant fechaModificacion) {
         FechaModificacion = fechaModificacion;
     }
 
+    public TasaInteres getTasaInteres() {
+        return tasaInteres;
+    }
+
+    public void setTasaInteres(TasaInteres tasaInteres) {
+        this.tasaInteres = tasaInteres;
+    }
+
+    public TipoCuenta getTipoCuenta() {
+        return tipoCuenta;
+    }
+
+    public void setTipoCuenta(TipoCuenta tipoCuenta) {
+        this.tipoCuenta = tipoCuenta;
+    }
+
+
+    //Metodo hashCode y equals
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -114,6 +155,7 @@ public class Cuenta {
         result = prime * result + ((IdCuenta == null) ? 0 : IdCuenta.hashCode());
         return result;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -130,10 +172,14 @@ public class Cuenta {
             return false;
         return true;
     }
+
+    // Método toString
     @Override
     public String toString() {
         return "Cuenta [IdCuenta=" + IdCuenta + ", IdTipoCuenta=" + IdTipoCuenta + ", IdTasaInteres=" + IdTasaInteres
                 + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", Estado=" + Estado + ", FechaCreacion="
-                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + "]";
+                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres
+                + ", tipoCuenta=" + tipoCuenta + "]";
     }
+
 }

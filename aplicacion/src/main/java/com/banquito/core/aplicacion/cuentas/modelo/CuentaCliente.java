@@ -48,6 +48,11 @@ public class CuentaCliente {
 @JoinColumn(name = "IdCuenta", referencedColumnName = "IdCuenta", nullable = false)
 private Cuenta cuenta;
 
+//Relacion a la tabla Clientes
+@ManyToOne
+@JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente", nullable = false)
+private Cliente cliente;
+
 //Constructores
 
 public CuentaCliente() {
@@ -131,6 +136,15 @@ public void setCuenta(Cuenta cuenta) {
     this.cuenta = cuenta;
 }
 
+
+public Cliente getCliente() {
+    return cliente;
+}
+
+public void setCliente(Cliente cliente) {
+    this.cliente = cliente;
+}
+
 //HashCode y Equals
 @Override
 public int hashCode() {
@@ -162,6 +176,10 @@ public boolean equals(Object obj) {
 public String toString() {
     return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", IdCliente=" + IdCliente + ", IdCuenta=" + IdCuenta
             + ", NumeroCuenta=" + NumeroCuenta + ", Estado=" + Estado + ", SaldoDisponible=" + SaldoDisponible
-            + ", SaldoContable=" + SaldoContable + ", FechaApertura=" + FechaApertura + ", cuenta=" + cuenta + "]";
+            + ", SaldoContable=" + SaldoContable + ", FechaCreacion=" + FechaCreacion + ", cuenta=" + cuenta
+            + ", cliente=" + cliente + "]";
 }
+
+
+
 }

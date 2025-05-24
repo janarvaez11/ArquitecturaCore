@@ -21,9 +21,6 @@ public class SucursalServicio {
         this.sucursalRepositorio = sucursalRepositorio;
     }
 
-    /**
-     * Crea una nueva sucursal.
-     */
     @Transactional
     public void crearSucursal(Sucursal sucursal) {
         try {
@@ -36,9 +33,6 @@ public class SucursalServicio {
         }
     }
 
-    /**
-     * Actualiza los datos de una sucursal existente.
-     */
     @Transactional
     public void actualizarSucursal(Sucursal sucursal) {
         try {
@@ -59,17 +53,11 @@ public class SucursalServicio {
         }
     }
 
-    /**
-     * Obtiene una sucursal por su código.
-     */
     public Sucursal obtenerPorCodigo(String codigo) {
         return this.sucursalRepositorio.findById(codigo)
                 .orElseThrow(() -> new SucursalNoEncontradaExcepcion("Sucursal no encontrada con código: " + codigo));
     }
 
-    /**
-     * Lista todas las sucursales.
-     */
     public List<Sucursal> listarTodas() {
         List<Sucursal> sucursales = this.sucursalRepositorio.findAll();
         if (sucursales.isEmpty()) {
@@ -78,9 +66,6 @@ public class SucursalServicio {
         return sucursales;
     }
 
-    /**
-     * Lista solo las sucursales activas (estado = 'ACT').
-     */
     public List<Sucursal> listarActivas() {
         List<Sucursal> sucursales = this.sucursalRepositorio.findByEstado("ACT");
         if (sucursales.isEmpty()) {
@@ -89,16 +74,10 @@ public class SucursalServicio {
         return sucursales;
     }
 
-    /**
-     * Verifica si una sucursal existe por su código.
-     */
     public boolean existeSucursal(String codigo) {
         return this.sucursalRepositorio.existsById(codigo);
     }
 
-    /**
-     * Busca sucursales por locación geográfica.
-     */
     public List<Sucursal> buscarPorLocacion(Integer idLocacion) {
         List<Sucursal> sucursales = this.sucursalRepositorio.findByLocacionId(idLocacion);
         if (sucursales.isEmpty()) {
