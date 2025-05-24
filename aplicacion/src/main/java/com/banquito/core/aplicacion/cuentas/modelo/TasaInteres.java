@@ -37,12 +37,6 @@ public class TasaInteres {
     private Instant FechaFinVigencia;
 
 
-
-    
-
-
-
-
     // Constructores
     public TasaInteres() {
     }

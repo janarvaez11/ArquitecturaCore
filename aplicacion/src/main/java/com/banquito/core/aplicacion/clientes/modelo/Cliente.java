@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import com.banquito.core.aplicacion.general.modelo.Pais;
+import com.banquito.core.aplicacion.general.modelo.Sucursal;
+
 @Entity
-@Table(name = "clientes")
+@Table(name = "Clientes")
 public class Cliente {
 
     @Id
@@ -18,12 +21,13 @@ public class Cliente {
     @Column(nullable = false)
     private Integer idEntidad; // No se puede mapear directamente (condicional entre Persona/Empresa)
 
-    @ManyToOne
-    @JoinColumn(name = "nacionalidad")
-    private Pais pais; // Relación con Paises (opcional)
 
     @ManyToOne
-    @JoinColumn(name = "idSucursal", nullable = false)
+    @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", nullable = false)
+    private Pais pais;
+
+    @ManyToOne
+    @JoinColumn(name = "IdSucursal", referencedColumnName = "IdSucursal", nullable = false)
     private Sucursal sucursal; // Relación con Sucursales
 
     @Column(length = 10)
