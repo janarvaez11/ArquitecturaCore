@@ -127,8 +127,6 @@ public class TipoCuenta {
         Estado = estado;
     }
 
-
-
     public Date getFechaCreacion() {
         return FechaCreacion;
     }
