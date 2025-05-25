@@ -3,6 +3,8 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Date;
+import java.util.List;
 
 import com.banquito.core.aplicacion.general.modelo.Pais;
 import com.banquito.core.aplicacion.general.modelo.Sucursal;
@@ -13,14 +15,14 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdCliente", nullable = false)
     private Integer idCliente;
 
-    @Column(nullable = false, length = 10)
-    private String tipoEntidad; // PERSONA o EMPRESA
+    @Column(name = "TipoEntidad", nullable = false, length = 10)
+    private String tipoEntidad;
 
-    @Column(nullable = false)
-    private Integer idEntidad; // No se puede mapear directamente (condicional entre Persona/Empresa)
-
+    @Column(name = "IdEntidad", nullable = false)
+    private Integer idEntidad;
 
     @ManyToOne
     @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", nullable = false)
@@ -30,35 +32,50 @@ public class Cliente {
     @JoinColumn(name = "IdSucursal", referencedColumnName = "IdSucursal", nullable = false)
     private Sucursal sucursal; // Relación con Sucursales
 
-    @Column(length = 10)
+    @Column(name = "TipoIdentificacion", length = 10)
     private String tipoIdentificacion;
 
-    @Column(length = 20)
+    @Column(name = "NumeroIdentificacion", length = 20)
     private String numeroIdentificacion;
 
-    @Column(length = 20)
+    @Column(name = "TipoCliente", length = 20)
     private String tipoCliente;
 
-    @Column(length = 20)
+    @Column(name = "Segmento", length = 20)
     private String segmento;
 
-    @Column(length = 50)
+    @Column(name = "CanalAfilicacion", length = 50)
     private String canalAfilicacion;
 
-    @Column(length = 50)
+    @Column(name = "Nombre", length = 50)
     private String nombre;
 
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActivacion;
+    @Column(name = "FechaCreacion")
+    private Date fechaCreacion;
 
-    @Column(length = 15)
+    @Column(name = "FechaActivacion")
+    private Date fechaActivacion;
+
+    @Column(name = "Estado", length = 15)
     private String estado;
 
-    private LocalDateTime fechaCierre;
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "FechaCierre")
+    private Date fechaCierre;
 
-    @Column(length = 100)
+    @Column(name = "FechaActualizacion")
+    private Date fechaActualizacion;
+
+    @Column(name = "Comentarios", length = 100)
     private String comentarios;
+
+    @OneToMany(mappedBy = "cliente")
+    private List<TelefonoCliente> telefonos;
+
+    @OneToMany(mappedBy = "cliente")
+    private List<DireccionCliente> direcciones;
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private ContactoTransaccionCliente contacto;
 
     public Cliente() {}
 
@@ -154,19 +171,19 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDateTime getFechaActivacion() {
+    public Date getFechaActivacion() {
         return fechaActivacion;
     }
 
-    public void setFechaActivacion(LocalDateTime fechaActivacion) {
+    public void setFechaActivacion(Date fechaActivacion) {
         this.fechaActivacion = fechaActivacion;
     }
 
@@ -178,19 +195,19 @@ public class Cliente {
         this.estado = estado;
     }
 
-    public LocalDateTime getFechaCierre() {
+    public Date getFechaCierre() {
         return fechaCierre;
     }
 
-    public void setFechaCierre(LocalDateTime fechaCierre) {
+    public void setFechaCierre(Date fechaCierre) {
         this.fechaCierre = fechaCierre;
     }
 
-    public LocalDateTime getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
