@@ -18,6 +18,14 @@ public class PagosPrestamos {
     @Column(name = "IdPrestamo", nullable = false)
     private Integer idPrestamo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdCuota")
+    private CronogramasPagos idCuota;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdPrestamoCliente")
+    private PrestamosClientes idPrestamoCliente;
+
     @Column(name = "Fecha", nullable = false)
     private LocalDate fecha;
 
@@ -165,6 +173,22 @@ public class PagosPrestamos {
         this.usuarioRegistro = usuarioRegistro;
     }
 
+    public CronogramasPagos getIdCuota() {
+        return idCuota;
+    }
+
+    public void setIdCuota(CronogramasPagos idCuota) {
+        this.idCuota = idCuota;
+    }
+
+    public PrestamosClientes getIdPrestamoCliente() {
+        return idPrestamoCliente;
+    }
+
+    public void setIdPrestamoCliente(PrestamosClientes idPrestamoCliente) {
+        this.idPrestamoCliente = idPrestamoCliente;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -180,20 +204,11 @@ public class PagosPrestamos {
 
     @Override
     public String toString() {
-        return "PagosPrestamo{" +
-                "id=" + id +
-                ", idPrestamo=" + idPrestamo +
-                ", fecha=" + fecha +
-                ", capital=" + capital +
-                ", interes=" + interes +
-                ", mora=" + mora +
-                ", comisiones=" + comisiones +
-                ", seguros=" + seguros +
-                ", total=" + total +
-                ", tipoPago='" + tipoPago + '\'' +
-                ", cuentaOrigen=" + cuentaOrigen +
-                ", referencia='" + referencia + '\'' +
-                ", usuarioRegistro='" + usuarioRegistro + '\'' +
-                '}';
+        return "PagosPrestamos [id=" + id + ", idPrestamo=" + idPrestamo + ", idCuota=" + idCuota
+                + ", idPrestamoCliente=" + idPrestamoCliente + ", fecha=" + fecha + ", capital=" + capital
+                + ", interes=" + interes + ", mora=" + mora + ", comisiones=" + comisiones + ", seguros=" + seguros
+                + ", total=" + total + ", tipoPago=" + tipoPago + ", cuentaOrigen=" + cuentaOrigen + ", referencia="
+                + referencia + ", usuarioRegistro=" + usuarioRegistro + "]";
     }
+
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
+
 import java.time.Instant;
 import java.util.Objects;
 
@@ -14,6 +16,11 @@ public class PrestamosClientes {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PrestamosClientes_id_gen")
     @Column(name = "IdPrestamoCliente", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @JoinColumn(name = "IdCliente")
+    private Cliente idCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
@@ -87,6 +94,14 @@ public class PrestamosClientes {
         this.fechaVencimiento = fechaVencimiento;
     }
 
+    public Cliente getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Cliente idCliente) {
+        this.idCliente = idCliente;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -102,13 +117,9 @@ public class PrestamosClientes {
 
     @Override
     public String toString() {
-        return "PrestamosClientes{" +
-                "id=" + id +
-                ", idPrestamo=" + idPrestamo +
-                ", estado='" + estado + '\'' +
-                ", fechaAprobacion=" + fechaAprobacion +
-                ", fechaDesembolso=" + fechaDesembolso +
-                ", fechaVencimiento=" + fechaVencimiento +
-                '}';
+        return "PrestamosClientes [id=" + id + ", idCliente=" + idCliente + ", idPrestamo=" + idPrestamo + ", estado="
+                + estado + ", fechaAprobacion=" + fechaAprobacion + ", fechaDesembolso=" + fechaDesembolso
+                + ", fechaVencimiento=" + fechaVencimiento + "]";
     }
+
 }
