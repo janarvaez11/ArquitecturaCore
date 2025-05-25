@@ -3,7 +3,6 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 @Table(name="Accionistas")

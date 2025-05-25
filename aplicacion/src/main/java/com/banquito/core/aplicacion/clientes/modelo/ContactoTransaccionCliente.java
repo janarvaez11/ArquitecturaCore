@@ -3,6 +3,7 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "contactotransaccioncliente")
@@ -13,14 +14,20 @@ public class ContactoTransaccionCliente {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "idCliente")
+    @JoinColumn(name = "IdCliente")
     private Cliente cliente;
 
+    @Column(name = "Telefono", length = 10)
     private String telefono;
-    private String correoElectronico;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
 
+    @Column(name = "CorreoElectronico", length = 40)
+    private String correoElectronico;
+
+    @Column(name = "FechaCreacion")
+    private Date fechaCreacion;
+
+    @Column(name = "FechaActualizacion")
+    private Date fechaActualizacion;
     public ContactoTransaccionCliente() {}
 
     public ContactoTransaccionCliente(Integer idCliente) {
@@ -59,19 +66,19 @@ public class ContactoTransaccionCliente {
         this.correoElectronico = correoElectronico;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDateTime getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
