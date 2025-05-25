@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "CondicionComisiones")
-public class CondicionComisiones {
+public class CondicionComision {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +30,10 @@ public class CondicionComisiones {
     @Column(name = "Valor", precision = 15, scale = 2)
     private BigDecimal valor;
 
-    public CondicionComisiones() {
+    public CondicionComision() {
     }
 
-    public CondicionComisiones(Integer id) {
+    public CondicionComision(Integer id) {
         this.id = id;
     }
 
@@ -85,7 +85,7 @@ public class CondicionComisiones {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        CondicionComisiones other = (CondicionComisiones) obj;
+        CondicionComision other = (CondicionComision) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
