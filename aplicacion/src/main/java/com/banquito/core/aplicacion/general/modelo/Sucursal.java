@@ -1,5 +1,8 @@
 package com.banquito.core.aplicacion.general.modelo;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -7,31 +10,65 @@ import jakarta.persistence.*;
 public class Sucursal {
 
     @Id
-    @Column(name = "CodigoSucursal", length = 3, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdSucursal", nullable = false)
+    private Integer IdSucursal;
+
+    @Column(name = "Codigo", length = 10, nullable = false)
     private String codigo;
 
-    @ManyToOne
-    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion")
-    private LocacionGeografica locacion;
+    @Column(name = "ClaveUnica", length = 36, nullable = false)
+    private String claveUnica;
 
     @Column(name = "Nombre", length = 50, nullable = false)
     private String nombre;
 
-    @Column(name = "Direccion", length = 200)
-    private String direccion;
-
-    @Column(name = "Telefono", length = 15)
-    private String telefono;
-
     @Column(name = "Estado", length = 3, nullable = false)
     private String estado;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "FechaCreacion", nullable = false)
+    private Date fechaCreacion;
+
+    @Column(name = "CorreoElecronico", length = 10, nullable = false)
+    private String correoElecronico;
+
+    @Column(name = "Telefono", length = 10, nullable = false)
+    private String telefono;
+
+    @Column(name = "Linea1", length = 100, nullable = false)
+    private String linea1;
+
+    @Column(name = "Linea2", length = 100, nullable = false)
+    private String linea2;
+
+    @Column(name = "Latitud", nullable = false)
+    private BigDecimal latitud;
+
+    @Column(name = "Longitud", nullable = false)
+    private BigDecimal longitud;
+
+    @ManyToOne
+    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = false)
+    private LocacionGeografica locacion;
+
+    @ManyToOne
+    @JoinColumn(name = "IdEntidadBancaria", referencedColumnName = "IdEntidadBancaria", nullable = false)
+    private EntidadBancaria entidadBancaria;
 
     public Sucursal() {
     }
 
-    public Sucursal(String codigo, LocacionGeografica locacion) {
-        this.codigo = codigo;
-        this.locacion = locacion;
+    public Sucursal(Integer idSucursal) {
+        IdSucursal = idSucursal;
+    }
+
+    public Integer getIdSucursal() {
+        return IdSucursal;
+    }
+
+    public void setIdSucursal(Integer idSucursal) {
+        IdSucursal = idSucursal;
     }
 
     public String getCodigo() {
@@ -42,12 +79,12 @@ public class Sucursal {
         this.codigo = codigo;
     }
 
-    public LocacionGeografica getLocacion() {
-        return locacion;
+    public String getClaveUnica() {
+        return claveUnica;
     }
 
-    public void setLocacion(LocacionGeografica locacion) {
-        this.locacion = locacion;
+    public void setClaveUnica(String claveUnica) {
+        this.claveUnica = claveUnica;
     }
 
     public String getNombre() {
@@ -58,12 +95,28 @@ public class Sucursal {
         this.nombre = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Date fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getCorreoElecronico() {
+        return correoElecronico;
+    }
+
+    public void setCorreoElecronico(String correoElecronico) {
+        this.correoElecronico = correoElecronico;
     }
 
     public String getTelefono() {
@@ -74,20 +127,59 @@ public class Sucursal {
         this.telefono = telefono;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getLinea1() {
+        return linea1;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setLinea1(String linea1) {
+        this.linea1 = linea1;
+    }
+
+    public String getLinea2() {
+        return linea2;
+    }
+
+    public void setLinea2(String linea2) {
+        this.linea2 = linea2;
+    }
+
+    public BigDecimal getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(BigDecimal latitud) {
+        this.latitud = latitud;
+    }
+
+    public BigDecimal getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(BigDecimal longitud) {
+        this.longitud = longitud;
+    }
+
+    public LocacionGeografica getLocacion() {
+        return locacion;
+    }
+
+    public void setLocacion(LocacionGeografica locacion) {
+        this.locacion = locacion;
+    }
+
+    public EntidadBancaria getEntidadBancaria() {
+        return entidadBancaria;
+    }
+
+    public void setEntidadBancaria(EntidadBancaria entidadBancaria) {
+        this.entidadBancaria = entidadBancaria;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-        result = prime * result + ((locacion == null) ? 0 : locacion.hashCode());
+        result = prime * result + ((IdSucursal == null) ? 0 : IdSucursal.hashCode());
         return result;
     }
 
@@ -100,22 +192,21 @@ public class Sucursal {
         if (getClass() != obj.getClass())
             return false;
         Sucursal other = (Sucursal) obj;
-        if (codigo == null) {
-            if (other.codigo != null)
+        if (IdSucursal == null) {
+            if (other.IdSucursal != null)
                 return false;
-        } else if (!codigo.equals(other.codigo))
-            return false;
-        if (locacion == null) {
-            if (other.locacion != null)
-                return false;
-        } else if (!locacion.equals(other.locacion))
+        } else if (!IdSucursal.equals(other.IdSucursal))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Sucursal [codigo=" + codigo + ", locacion=" + locacion + ", nombre=" + nombre + ", direccion="
-                + direccion + ", telefono=" + telefono + ", estado=" + estado + "]";
+        return "Sucursal [IdSucursal=" + IdSucursal + ", codigo=" + codigo + ", claveUnica=" + claveUnica + ", nombre="
+                + nombre + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", correoElecronico="
+                + correoElecronico + ", telefono=" + telefono + ", linea1=" + linea1 + ", linea2=" + linea2
+                + ", latitud=" + latitud + ", longitud=" + longitud + ", locacion=" + locacion + ", entidadBancaria="
+                + entidadBancaria + "]";
     }
+
 }

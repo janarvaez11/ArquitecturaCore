@@ -23,9 +23,6 @@ public class TipoCuenta {
     @Column(name = "IdTipoCuenta", nullable = false)
     private Integer IdTipoCuenta;
 
-    @Column(name = "IdTasaInteresPorDefecto", nullable = false)
-    private Integer IdTasaInteresPorDefecto;
-
     @Column(name = "Nombre", length = 20, nullable = false)
     private String Nombre;
 
@@ -143,13 +140,6 @@ public class TipoCuenta {
         FechaModificacion = fechaModificacion;
     }
 
-    public Integer getIdTasaInteresPorDefecto() {
-        return IdTasaInteresPorDefecto;
-    }
-
-    public void setIdTasaInteresPorDefecto(Integer idTasaInteresPorDefecto) {
-        IdTasaInteresPorDefecto = idTasaInteresPorDefecto;
-    }
 
     public TasaInteres getTasaInteres() {
         return tasaInteres;
@@ -185,16 +175,16 @@ public class TipoCuenta {
         return true;
     }
 
-    
-    // ToString
     @Override
     public String toString() {
-        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", IdTasaInteresPorDefecto=" + IdTasaInteresPorDefecto
-                + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", RequisitosApertura=" + RequisitosApertura
-                + ", tipocliente=" + tipocliente + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas
-                + ", Estado=" + Estado + ", FechaCreacion=" + FechaCreacion + ", FechaModificacion=" + FechaModificacion
-                + ", tasaInteres=" + tasaInteres + "]";
+        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
+                + ", RequisitosApertura=" + RequisitosApertura + ", tipocliente=" + tipocliente
+                + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas + ", Estado=" + Estado + ", FechaCreacion="
+                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres + "]";
     }
+
+    
+    // ToString
 
 
 }

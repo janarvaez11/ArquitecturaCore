@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Date;
 
@@ -21,7 +20,7 @@ public class DireccionCliente {
     @Column(name = "Tipo", length = 30)
     private String tipo;
 
-    @Column(name = "Estado", length = 20)
+    @Column(name = "Estado", length = 10)
     private String estado;
 
     @Column(name = "Linea1", length = 150)

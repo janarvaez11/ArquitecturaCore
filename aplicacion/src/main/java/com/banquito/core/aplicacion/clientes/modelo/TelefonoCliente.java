@@ -1,15 +1,14 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "telefonocliente")
+@Table(name = "TelefonoCliente")
 public class TelefonoCliente {
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdTelefonoCliente", nullable = false)
@@ -34,7 +33,8 @@ public class TelefonoCliente {
     @Column(name = "FechaActualizacion")
     private Date fechaActualizacion;
 
-    public TelefonoCliente() {}
+    public TelefonoCliente() {
+    }
 
     public TelefonoCliente(Integer idTelefonoCliente) {
         this.idTelefonoCliente = idTelefonoCliente;
@@ -98,8 +98,10 @@ public class TelefonoCliente {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TelefonoCliente)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof TelefonoCliente))
+            return false;
         TelefonoCliente that = (TelefonoCliente) o;
         return Objects.equals(idTelefonoCliente, that.idTelefonoCliente);
     }

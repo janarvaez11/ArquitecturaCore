@@ -1,2 +1,4 @@
-# Arquitectura_Core
-Repositorio Grupo 01
+# BanQuito-Core
+Repositorio Grupo Core 
+
+

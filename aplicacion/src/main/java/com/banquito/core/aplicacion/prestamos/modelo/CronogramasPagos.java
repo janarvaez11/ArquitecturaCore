@@ -15,6 +15,10 @@ public class CronogramasPagos {
     @Column(name = "IdCuota", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdPrestamoCliente")
+    private PrestamosClientes idPrestamoCliente;
+
     @Column(name = "IdPrestamo", nullable = false)
     private Integer idPrestamo;
 
@@ -154,6 +158,14 @@ public class CronogramasPagos {
         this.fechaPago = fechaPago;
     }
 
+    public PrestamosClientes getIdPrestamoCliente() {
+        return idPrestamoCliente;
+    }
+
+    public void setIdPrestamoCliente(PrestamosClientes idPrestamoCliente) {
+        this.idPrestamoCliente = idPrestamoCliente;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -169,19 +181,10 @@ public class CronogramasPagos {
 
     @Override
     public String toString() {
-        return "CronogramasPago{" +
-                "id=" + id +
-                ", idPrestamo=" + idPrestamo +
-                ", numeroCuota=" + numeroCuota +
-                ", vencimiento=" + vencimiento +
-                ", capital=" + capital +
-                ", interes=" + interes +
-                ", comisiones=" + comisiones +
-                ", seguros=" + seguros +
-                ", total=" + total +
-                ", saldo=" + saldo +
-                ", estado='" + estado + '\'' +
-                ", fechaPago=" + fechaPago +
-                '}';
+        return "CronogramasPagos [id=" + id + ", idPrestamoCliente=" + idPrestamoCliente + ", idPrestamo=" + idPrestamo
+                + ", numeroCuota=" + numeroCuota + ", vencimiento=" + vencimiento + ", capital=" + capital
+                + ", interes=" + interes + ", comisiones=" + comisiones + ", seguros=" + seguros + ", total=" + total
+                + ", saldo=" + saldo + ", estado=" + estado + ", fechaPago=" + fechaPago + "]";
     }
+
 }

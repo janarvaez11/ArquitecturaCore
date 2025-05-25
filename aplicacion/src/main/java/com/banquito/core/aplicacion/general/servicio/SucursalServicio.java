@@ -25,7 +25,8 @@ public class SucursalServicio {
     public void crearSucursal(Sucursal sucursal) {
         try {
             if (this.sucursalRepositorio.existsById(sucursal.getCodigo())) {
-                throw new CrearSucursalExcepcion("Sucursal", "La sucursal con código " + sucursal.getCodigo() + " ya existe.");
+                throw new CrearSucursalExcepcion("Sucursal",
+                        "La sucursal con código " + sucursal.getCodigo() + " ya existe.");
             }
             this.sucursalRepositorio.save(sucursal);
         } catch (RuntimeException e) {
@@ -40,13 +41,13 @@ public class SucursalServicio {
             if (optional.isPresent()) {
                 Sucursal sucursalDB = optional.get();
                 sucursalDB.setNombre(sucursal.getNombre());
-                sucursalDB.setDireccion(sucursal.getDireccion());
                 sucursalDB.setTelefono(sucursal.getTelefono());
                 sucursalDB.setEstado(sucursal.getEstado());
                 sucursalDB.setLocacion(sucursal.getLocacion());
                 this.sucursalRepositorio.save(sucursalDB);
             } else {
-                throw new SucursalNoEncontradaExcepcion("No se encontró la sucursal con código: " + sucursal.getCodigo());
+                throw new SucursalNoEncontradaExcepcion(
+                        "No se encontró la sucursal con código: " + sucursal.getCodigo());
             }
         } catch (RuntimeException e) {
             throw new ActualizarSucursalExcepcion("Sucursal", "Error al actualizar la sucursal: " + e.getMessage());
@@ -81,7 +82,8 @@ public class SucursalServicio {
     public List<Sucursal> buscarPorLocacion(Integer idLocacion) {
         List<Sucursal> sucursales = this.sucursalRepositorio.findByLocacionId(idLocacion);
         if (sucursales.isEmpty()) {
-            throw new SucursalNoEncontradaExcepcion("No hay sucursales asociadas a la locación geográfica con ID: " + idLocacion);
+            throw new SucursalNoEncontradaExcepcion(
+                    "No hay sucursales asociadas a la locación geográfica con ID: " + idLocacion);
         }
         return sucursales;
     }

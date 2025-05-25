@@ -1,18 +1,16 @@
 package com.banquito.core.aplicacion.clientes.excepcion;
 
-
-public class NoEncontradoExcepcion extends RuntimeException {
-
+public class ActualizarExcepcion extends RuntimeException {
     private final String dato;
     private final String entidad;
 
-    public NoEncontradoExcepcion(String dato, String entidad) {
+    public ActualizarExcepcion(String dato, String entidad) {
         this.dato = dato;
         this.entidad = entidad;
     }
 
     @Override
     public String getMessage() {
-        return "No se encontró ninguna coincidencia para: " + entidad + ", con el dato: " + dato;
+        return "Error al actualizar la entidad" + entidad+ "con el dato " + dato;
     }
 }

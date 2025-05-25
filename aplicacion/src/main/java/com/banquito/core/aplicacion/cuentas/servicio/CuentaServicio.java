@@ -54,8 +54,8 @@ public class CuentaServicio {
                 cuentaDB.setNombre(cuenta.getNombre());
                 cuentaDB.setDescripcion(cuenta.getDescripcion());
                 cuentaDB.setEstado(cuenta.getEstado());
-                cuentaDB.setIdTipoCuenta(cuenta.getIdTipoCuenta());
-                cuentaDB.setIdTasaInteres(cuenta.getIdTasaInteres());
+                cuentaDB.setTipoCuenta(cuenta.getTipoCuenta());
+                cuentaDB.setTasaInteres(cuenta.getTasaInteres());
                 cuentaDB.setFechaModificacion(cuenta.getFechaModificacion());
                 this.cuentaRepositorio.save(cuentaDB);
             } else {
