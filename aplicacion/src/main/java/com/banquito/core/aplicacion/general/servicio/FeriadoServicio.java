@@ -1,9 +1,11 @@
 package com.banquito.core.aplicacion.general.servicio;
 
+import com.banquito.core.aplicacion.general.excepcion.CrearEntidadException;
 import com.banquito.core.aplicacion.general.excepcion.FeriadoNoEncontradoException;
 import com.banquito.core.aplicacion.general.modelo.Feriado;
 import com.banquito.core.aplicacion.general.repositorio.FeriadoRepositorio;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,6 +24,15 @@ public class FeriadoServicio {
             return feriadoOptional.get();
         } else {
             throw new FeriadoNoEncontradoException("El id: " + id + " no corresponde a ningun Feriado");
+        }
+    }
+
+    @Transactional
+    public void create(Feriado feriado) {
+        try {
+            this.repositorio.save(feriado);
+        } catch (RuntimeException rte) {
+            throw new CrearEntidadException("Feriado", "Error al crear el feriado. Texto del error: " + rte.getMessage());
         }
     }
 
