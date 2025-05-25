@@ -9,42 +9,24 @@ import com.banquito.core.aplicacion.general.repositorio.MonedaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MonedaServicio {
 
-    private final MonedaRepositorio repositorio;
+    private final MonedaRepositorio monedarepositorio;
     private final EntidadBancariaServicio entidadBancariaServicio;
 
     public MonedaServicio(MonedaRepositorio repositorio, EntidadBancariaServicio entidadBancariaServicio) {
-        this.repositorio = repositorio;
+        this.monedarepositorio = repositorio;
         this.entidadBancariaServicio = entidadBancariaServicio;
     }
 
-    public Moneda findById(String id){
-        Optional<Moneda> monedaOptional = repositorio.findById(id);
-        if (monedaOptional.isPresent()){
-            return monedaOptional.get();
-        } else {
-            throw new MonedaNoEncontradaException("El id: " + id + " no corresponde a ninguna moneda");
-        }
-    }
-
-    public Moneda findDefault(){
-        List<Moneda> list = this.repositorio.findAll();
-        if (!list.isEmpty()){
-            return list.getFirst();
-        }else{
-            throw new MonedaNoEncontradaException("No existen monedas registradas");
-        }
-    }
 
     @Transactional
-    public void create(Moneda moneda) {
+    public void crearMoneda(Moneda moneda) {
         try {
-            this.repositorio.save(moneda);
+            this.monedarepositorio.save(moneda);
         } catch (RuntimeException rte) {
             throw new CrearEntidadException("Moneda", "Error al crear la moneda. Texto del error: " + rte.getMessage());
         }
@@ -54,7 +36,7 @@ public class MonedaServicio {
     public void crearMonedaPorPais(Moneda moneda, Pais pais) {
         try {
             moneda.setPais(pais);
-            this.repositorio.save(moneda);
+            this.monedarepositorio.save(moneda);
         } catch (RuntimeException rte) {
             throw new CrearEntidadException("Moneda", "Error al crear la moneda por pais. Texto del error: " + rte.getMessage());
         }
@@ -63,10 +45,10 @@ public class MonedaServicio {
     @Transactional
     public void asignarMonedaAEntidadBancaria(String idMoneda, Integer idEntidadBancaria) {
         try {
-            Optional<Moneda> monedaOptional = this.repositorio.findById(idMoneda);
+            Optional<Moneda> monedaOptional = this.monedarepositorio.findById(idMoneda);
             if (monedaOptional.isPresent()) {
                 Moneda moneda = monedaOptional.get();
-                EntidadBancaria entidadBancaria = entidadBancariaServicio.findById(idEntidadBancaria);
+                EntidadBancaria entidadBancaria = entidadBancariaServicio.EncotrarporId(idEntidadBancaria);
                 moneda.setEntidadBancaria(entidadBancaria);
             } else {
                 throw new MonedaNoEncontradaException("La moneda con ID: " + idMoneda + " no existe");

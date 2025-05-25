@@ -10,7 +10,6 @@ import java.util.Objects;
 public class Feriado {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdFeriado", nullable = false)
     private Integer id;
 

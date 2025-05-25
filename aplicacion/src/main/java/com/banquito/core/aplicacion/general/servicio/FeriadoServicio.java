@@ -12,28 +12,33 @@ import java.util.Optional;
 @Service
 public class FeriadoServicio {
 
-    private final FeriadoRepositorio repositorio;
+    private final FeriadoRepositorio feriadorepositorio;
+    private final PaisRepositorio paisrepositorio;
+    private final LocacionGeograficaRepositorio locaciongeograficarepositorio;
 
-    public FeriadoServicio(FeriadoRepositorio repositorio) {
-        this.repositorio = repositorio;
+    public FeriadoServicio(FeriadoRepositorio feriadorepositorio, PaisRepositorio paisrepositorio, LocacionGeograficaRepositorio locaciongeograficarepositorio) {
+        this.feriadorepositorio = feriadorepositorio;
+        this.paisrepositorio = paisrepositorio;
+        this.locaciongeograficarepositorio = locaciongeograficarepositorio;
     }
 
-    public Feriado findById(Integer id){
-        Optional<Feriado> feriadoOptional = this.repositorio.findById(id);
-        if (feriadoOptional.isPresent()) {
-            return feriadoOptional.get();
-        } else {
-            throw new FeriadoNoEncontradoException("El id: " + id + " no corresponde a ningun Feriado");
-        }
+
+    @Transactional
+    public void crearFeriadoPorPais(Feriado feriado, String paisId) {
+        Pais pais = paisrepositorio.findById(paisId)
+                .orElseThrow(() -> new IllegalArgumentException("País no encontrado"));
+        feriado.setPais(pais);
+        feriado.setLocacion(null);
+        feriadorepositorio.save(feriado);
     }
 
     @Transactional
-    public void create(Feriado feriado) {
-        try {
-            this.repositorio.save(feriado);
-        } catch (RuntimeException rte) {
-            throw new CrearEntidadException("Feriado", "Error al crear el feriado. Texto del error: " + rte.getMessage());
-        }
+    public void crearFeriadoPorLocacion(Feriado feriado, Integer locacionId) {
+        LocacionGeografica locacion = locaciongeograficarepositorio.findById(locacionId)
+                .orElseThrow(() -> new IllegalArgumentException("Locación no encontrada"));
+        feriado.setLocacion(locacion);
+        feriado.setPais(locacion.getPais());
+        feriadorepositorio.save(feriado);
     }
 
 
