@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
-import java.time.Instant;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 

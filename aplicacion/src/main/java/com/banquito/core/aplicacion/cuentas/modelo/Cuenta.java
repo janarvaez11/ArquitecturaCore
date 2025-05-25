@@ -1,6 +1,5 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
-import java.time.Instant;
 //import java.util.List;
 import java.util.Date;
 

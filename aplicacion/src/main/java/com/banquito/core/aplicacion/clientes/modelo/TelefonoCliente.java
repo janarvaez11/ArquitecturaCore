@@ -3,40 +3,43 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "telefonocliente")
 public class TelefonoCliente {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdTelefonoCliente", nullable = false)
     private Integer idTelefonoCliente;
 
     @ManyToOne
-    @JoinColumn(name = "idCliente", nullable = false)
+    @JoinColumn(name = "IdCliente", nullable = false)
     private Cliente cliente;
 
-    @Column(length = 10)
+    @Column(name = "TipoTelefono", length = 10)
     private String tipoTelefono;
 
-    @Column(length = 10)
+    @Column(name = "NumeroTelefono", length = 10)
     private String numeroTelefono;
 
-    @Column(length = 10)
+    @Column(name = "Estado", length = 10)
     private String estado;
 
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "FechaCreacion")
+    private Date fechaCreacion;
 
-    // Constructor vacío
+    @Column(name = "FechaActualizacion")
+    private Date fechaActualizacion;
+
     public TelefonoCliente() {}
 
-    // Constructor solo con la clave primaria
     public TelefonoCliente(Integer idTelefonoCliente) {
         this.idTelefonoCliente = idTelefonoCliente;
     }
 
-    // Getters y Setters
     public Integer getIdTelefonoCliente() {
         return idTelefonoCliente;
     }
@@ -77,23 +80,22 @@ public class TelefonoCliente {
         this.estado = estado;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDateTime getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    // equals y hashCode solo con ID
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

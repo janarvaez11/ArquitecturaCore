@@ -28,8 +28,8 @@ public class TasaInteres {
     @Column(name = "MetodoCalculo", length = 20, nullable = false)
     private String MetodoCalculo;
 
-    @Column(name = "FrencuenciaCapitalizacion", length = 30, nullable = false)
-    private String FrencuenciaCapitalizacion;
+    @Column(name = "FrecuenciaCapitalizacion", length = 30, nullable = false)
+    private String FrecuenciaCapitalizacion;
 
     @Column(name = "Estado", length = 15, nullable = false)
     private Instant Estado;
@@ -76,12 +76,12 @@ public class TasaInteres {
         MetodoCalculo = metodoCalculo;
     }
 
-    public String getFrencuenciaCapitalizacion() {
-        return FrencuenciaCapitalizacion;
+    public String getFrecuenciaCapitalizacion() {
+        return FrecuenciaCapitalizacion;
     }
 
-    public void setFrencuenciaCapitalizacion(String frencuenciaCapitalizacion) {
-        FrencuenciaCapitalizacion = frencuenciaCapitalizacion;
+    public void setFrecuenciaCapitalizacion(String frecuenciaCapitalizacion) {
+        FrecuenciaCapitalizacion = frecuenciaCapitalizacion;
     }
 
     public Instant getEstado() {
@@ -138,7 +138,7 @@ public class TasaInteres {
     @Override
     public String toString() {
         return "TasaInteres [IdTasaInteres=" + IdTasaInteres + ", BaseCalculo=" + BaseCalculo + ", MetodoCalculo="
-                + MetodoCalculo + ", FrencuenciaCapitalizacion=" + FrencuenciaCapitalizacion + ", Estado=" + Estado
+                + MetodoCalculo + ", FrecuenciaCapitalizacion=" + FrecuenciaCapitalizacion + ", Estado=" + Estado
                 + ", FechaInicioVigencia=" + FechaInicioVigencia + ", FechaFinVigencia=" + FechaFinVigencia + "]";
     }
 

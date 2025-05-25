@@ -20,6 +20,7 @@ public class EstructuraGeografica {
     @OneToMany(mappedBy = "estructuraGeografica")
     private List<LocacionGeografica> locacionesGeograficas;
 
+
     public EstructuraGeografica() {
     }
 

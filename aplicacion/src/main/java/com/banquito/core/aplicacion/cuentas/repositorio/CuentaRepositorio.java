@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.banquito.core.aplicacion.cuentas.modelo.Cuenta;
 
-public interface CuentaRepositorio extends JpaRepository<Cuenta, Integer> {
 
+public interface CuentaRepositorio extends JpaRepository<Cuenta, Integer> {
+    // Aquí puedes agregar métodos personalizados de búsqueda si los necesitas
 }
