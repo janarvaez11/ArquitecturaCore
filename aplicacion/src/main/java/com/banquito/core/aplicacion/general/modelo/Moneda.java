@@ -2,6 +2,8 @@ package com.banquito.core.aplicacion.general.modelo;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "Monedas")
 public class Moneda {
@@ -93,4 +95,30 @@ public class Moneda {
     public void setVersion(Long version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Moneda moneda = (Moneda) o;
+        return Objects.equals(id, moneda.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Moneda{" +
+                "id='" + id + '\'' +
+                ", pais=" + pais +
+                ", entidadBancaria=" + entidadBancaria +
+                ", nombre='" + nombre + '\'' +
+                ", simbolo='" + simbolo + '\'' +
+                ", codigo='" + codigo + '\'' +
+                ", version=" + version +
+                '}';
+    }
+
 }
