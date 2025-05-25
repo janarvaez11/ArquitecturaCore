@@ -3,7 +3,6 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 import java.util.Objects;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "TelefonoCliente")
