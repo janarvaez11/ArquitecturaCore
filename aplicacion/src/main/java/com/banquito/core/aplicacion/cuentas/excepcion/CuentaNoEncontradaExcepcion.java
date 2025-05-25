@@ -1,20 +1,20 @@
 package com.banquito.core.aplicacion.cuentas.excepcion;
 
-public class TipoCuentaNoEncontradaExcepcion extends RuntimeException {
+public class CuentaNoEncontradaExcepcion extends RuntimeException {
 
     private final Integer errorCode;
     private final String entidad;
 
-    public TipoCuentaNoEncontradaExcepcion(String entidad, String message) {
+    public CuentaNoEncontradaExcepcion(String entidad, String message) {
         super(message);
         this.errorCode = 1;
         this.entidad = entidad;
     }
 
-    public TipoCuentaNoEncontradaExcepcion(String message) {
+    public CuentaNoEncontradaExcepcion(String message) {
         super(message);
         this.errorCode = 1;
-        this.entidad = "TipoCuenta";
+        this.entidad = "Cuenta";
     }
 
     @Override
@@ -29,4 +29,4 @@ public class TipoCuentaNoEncontradaExcepcion extends RuntimeException {
     public String getEntidad() {
         return entidad;
     }
-}
+} 

@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Date;
 
 import com.banquito.core.aplicacion.clientes.modelo.Cliente;
