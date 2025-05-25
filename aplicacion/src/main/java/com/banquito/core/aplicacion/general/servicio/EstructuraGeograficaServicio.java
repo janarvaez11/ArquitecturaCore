@@ -79,7 +79,7 @@ public class EstructuraGeograficaServicio {
     }
 
     public List<EstructuraGeografica> buscarPorNivel(Integer codigoNivel) {
-        List<EstructuraGeografica> estructuras = this.repositorio.findByCodigoNivel(codigoNivel);
+        List<EstructuraGeografica> estructuras = this.repositorio.findByIdCodigoNivel(codigoNivel);
         if (estructuras.isEmpty()) {
             throw new EstructuraGeograficaNoEncontradaExcepcion(
                     "No hay estructuras geográficas del nivel " + codigoNivel);
