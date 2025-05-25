@@ -14,12 +14,6 @@ public class Sucursal {
     @Column(name = "IdSucursal", nullable = false)
     private Integer IdSucursal;
 
-    @Column(name = "IdEntidadBancaria", nullable = false)
-    private Integer IdEntidadBancaria;
-
-    @Column(name = "IdLocacion", nullable = false)
-    private Integer idLocacion;
-
     @Column(name = "Codigo", length = 10, nullable = false)
     private String codigo;
 
@@ -75,22 +69,6 @@ public class Sucursal {
 
     public void setIdSucursal(Integer idSucursal) {
         IdSucursal = idSucursal;
-    }
-
-    public Integer getIdEntidadBancaria() {
-        return IdEntidadBancaria;
-    }
-
-    public void setIdEntidadBancaria(Integer idEntidadBancaria) {
-        IdEntidadBancaria = idEntidadBancaria;
-    }
-
-    public Integer getIdLocacion() {
-        return idLocacion;
-    }
-
-    public void setIdLocacion(Integer idLocacion) {
-        this.idLocacion = idLocacion;
     }
 
     public String getCodigo() {
@@ -224,11 +202,11 @@ public class Sucursal {
 
     @Override
     public String toString() {
-        return "Sucursal [IdSucursal=" + IdSucursal + ", IdEntidadBancaria=" + IdEntidadBancaria + ", idLocacion="
-                + idLocacion + ", codigo=" + codigo + ", claveUnica=" + claveUnica + ", nombre=" + nombre + ", estado="
-                + estado + ", fechaCreacion=" + fechaCreacion + ", correoElecronico=" + correoElecronico + ", telefono="
-                + telefono + ", linea1=" + linea1 + ", linea2=" + linea2 + ", latitud=" + latitud + ", longitud="
-                + longitud + ", locacion=" + locacion + ", entidadBancaria=" + entidadBancaria + "]";
+        return "Sucursal [IdSucursal=" + IdSucursal + ", codigo=" + codigo + ", claveUnica=" + claveUnica + ", nombre="
+                + nombre + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", correoElecronico="
+                + correoElecronico + ", telefono=" + telefono + ", linea1=" + linea1 + ", linea2=" + linea2
+                + ", latitud=" + latitud + ", longitud=" + longitud + ", locacion=" + locacion + ", entidadBancaria="
+                + entidadBancaria + "]";
     }
 
 }

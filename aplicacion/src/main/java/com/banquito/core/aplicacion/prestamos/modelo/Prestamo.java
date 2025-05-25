@@ -2,7 +2,6 @@ package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -45,8 +43,7 @@ public class Prestamo {
     @Column(name = "TasaMoratoria", precision = 5, scale = 2, nullable = false)
     private BigDecimal tasaMonetaria;
 
-    @OneToMany(mappedBy = "prestamo")
-    private List<Prestamo> Prestamos;
+
 
     public Prestamo() {
     }
@@ -119,13 +116,7 @@ public class Prestamo {
         this.tasaMonetaria = tasaMonetaria;
     }
 
-    public List<Prestamo> getPrestamos() {
-        return Prestamos;
-    }
 
-    public void setPrestamos(List<Prestamo> prestamos) {
-        Prestamos = prestamos;
-    }
 
     @Override
     public int hashCode() {

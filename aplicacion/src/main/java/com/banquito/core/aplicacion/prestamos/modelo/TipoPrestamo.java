@@ -59,14 +59,11 @@ public class TipoPrestamo {
     private LocalDate fechaModifica;
 
     @ManyToOne
-    @JoinColumn(name = "IdTipoPrestamo", referencedColumnName = "IdTipoPrestamo")
+    @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda")
     private Moneda moneda;
 
     @OneToMany(mappedBy = "tipoPrestamo")
     private List<Garantia> Garantias;
-
-    @OneToMany(mappedBy = "tipoPrestamo")
-    private List<TipoPrestamo> TipoPrestamos;
 
     // Constructor
     public TipoPrestamo() {
@@ -188,13 +185,7 @@ public class TipoPrestamo {
         this.Garantias = garantias;
     }
 
-    public List<TipoPrestamo> getTipoPrestamos() {
-        return TipoPrestamos;
-    }
 
-    public void setTipoPrestamos(List<TipoPrestamo> tipoPrestamos) {
-        TipoPrestamos = tipoPrestamos;
-    }
 
     @Override
     public int hashCode() {

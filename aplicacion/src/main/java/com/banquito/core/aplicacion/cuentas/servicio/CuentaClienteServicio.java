@@ -51,8 +51,8 @@ public class CuentaClienteServicio {
             Optional<CuentaCliente> cuentaClienteOptional = this.cuentaClienteRepositorio.findById(cuentaCliente.getIdCuentaCliente());
             if (cuentaClienteOptional.isPresent()) {
                 CuentaCliente cuentaClienteDB = cuentaClienteOptional.get();
-                cuentaClienteDB.setIdCliente(cuentaCliente.getIdCliente());
-                cuentaClienteDB.setIdCuenta(cuentaCliente.getIdCuenta());
+                cuentaClienteDB.setCliente(cuentaCliente.getCliente());
+                cuentaClienteDB.setCuenta(cuentaCliente.getCuenta());
                 cuentaClienteDB.setEstado(cuentaCliente.getEstado());
                 cuentaClienteDB.setFechaApertura(cuentaCliente.getFechaApertura());
                 this.cuentaClienteRepositorio.save(cuentaClienteDB);
