@@ -5,6 +5,7 @@ import com.banquito.core.aplicacion.general.repositorio.EntidadBancariaRepositor
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,15 @@ public class EntidadBancariaServicio {
         }
     }
 
+    public EntidadBancaria findDefault(){
+        List<EntidadBancaria> list = this.repositorio.findAll();
+        if (!list.isEmpty()) {
+            return list.getFirst();
+        }else {
+            throw new EntidadBancariaNoEncontradaException("EntidadBancaria", "No existen entidades bancarias registradas");
+        }
+    }
+
     @Transactional
     public void create(EntidadBancaria entidadBancaria) {
         try {
@@ -32,4 +42,38 @@ public class EntidadBancariaServicio {
             throw new CrearEntidadBancariaException("EntidadBancaria", "Error al crear la entidad bancaria. Texto del error: " + rte.getMessage());
         }
     }
+
+    @Transactional
+    public void update(EntidadBancaria entidadBancaria) {
+        try {
+            Optional<EntidadBancaria> entidadBancariaOptional = this.repositorio.findById(entidadBancaria.getId());
+            if (entidadBancariaOptional.isPresent()) {
+                EntidadBancaria entidadBancariaDb = entidadBancariaOptional.get();
+                entidadBancariaDb.setCodigoLocal(entidadBancaria.getCodigoLocal());
+                entidadBancariaDb.setNombre(entidadBancaria.getNombre());
+                entidadBancariaDb.setCodigoInternacional(entidadBancaria.getCodigoInternacional());
+
+                this.repositorio.save(entidadBancariaDb);
+            } else {
+                throw new EntidadBancariaNoEncontradaException("EntidadBancaria", "Error al actualizar la entidad bancaria. No se encontró la entidad bancaria con ID: " + entidadBancaria.getId());
+            }
+        } catch (RuntimeException rte) {
+            throw new ActualizarEntidadBancariaException("EntidadBancaria", "Error al actualizar la entidad bancaria. Texto del error: " + rte.getMessage());
+        }
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        try {
+            Optional<EntidadBancaria> entidadBancariaOptional = this.repositorio.findById(id);
+            if (entidadBancariaOptional.isPresent()) {
+                this.repositorio.delete(entidadBancariaOptional.get());
+            } else {
+                throw new EntidadBancariaNoEncontradaException("EntidadBancaria", "Error al eliminar la entidad bancaria. No se encontró la entidad bancaria con ID: " + id);
+            }
+        } catch (RuntimeException rte) {
+            throw new EliminarEntidadException("EntidadBancaria", "Error al eliminar la entidad bancaria. Texto del error: " + rte.getMessage());
+        }
+    }
+
 }
