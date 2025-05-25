@@ -9,6 +9,9 @@ import com.banquito.core.aplicacion.general.repositorio.MonedaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,15 +25,6 @@ public class MonedaServicio {
         this.entidadBancariaServicio = entidadBancariaServicio;
     }
 
-
-    @Transactional
-    public void crearMoneda(Moneda moneda) {
-        try {
-            this.monedarepositorio.save(moneda);
-        } catch (RuntimeException rte) {
-            throw new CrearEntidadException("Moneda", "Error al crear la moneda. Texto del error: " + rte.getMessage());
-        }
-    }
 
     @Transactional
     public void crearMonedaPorPais(Moneda moneda, Pais pais) {
@@ -56,5 +50,53 @@ public class MonedaServicio {
         } catch (RuntimeException rte) {
             throw new ActualizarEntidadException("Moneda", "Error al asignar la moneda a la entidad bancaria. Texto del error: " + rte.getMessage());
         }
+    }
+
+    public Map<String, Object> findById(String id) {
+        Optional<Moneda> monedaOptional = monedarepositorio.findById(id);
+        if (monedaOptional.isPresent()) {
+            return mapMoneda(monedaOptional.get());
+        } else {
+            throw new MonedaNoEncontradaException("El id: " + id + " no corresponde a ninguna moneda");
+        }
+    }
+
+    public List<Map<String, Object>> findAll() {
+        List<Moneda> monedas = this.monedarepositorio.findAll();
+        if (!monedas.isEmpty()) {
+            return monedas.stream().map(this::mapMoneda).toList();
+        } else {
+            throw new MonedaNoEncontradaException("No existen monedas registrados");
+        }
+    }
+
+    public List<Map<String, Object>> findByPaisId(String idPais) {
+        List<Moneda> monedas = this.monedarepositorio.findByPaisId(idPais);
+        if (!monedas.isEmpty()) {
+            return monedas.stream().map(this::mapMoneda).toList();
+        } else {
+            throw new MonedaNoEncontradaException("No existen monedas para el país: " + idPais);
+        }
+    }
+
+    public List<Map<String, Object>> findByEntidadBancariaId(Integer idEntidadBancaria) {
+        List<Moneda> monedas = this.monedarepositorio.findByEntidadBancariaId(idEntidadBancaria);
+        if (!monedas.isEmpty()) {
+            return monedas.stream().map(this::mapMoneda).toList();
+        } else {
+            throw new MonedaNoEncontradaException("No existen monedas para la entidad bancaria: " + idEntidadBancaria);
+        }
+    }
+
+    private Map<String, Object> mapMoneda(Moneda moneda) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", moneda.getId());
+        map.put("nombre", moneda.getNombre());
+        map.put("simbolo", moneda.getSimbolo());
+        map.put("codigo", moneda.getCodigo());
+        map.put("version", moneda.getVersion());
+        map.put("paisId", moneda.getPais() != null ? moneda.getPais().getId() : null);
+        map.put("entidadBancariaId", moneda.getEntidadBancaria() != null ? moneda.getEntidadBancaria().getId() : null);
+        return map;
     }
 }
