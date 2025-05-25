@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.banquito.core.aplicacion.general.modelo.Pais;
-import com.banquito.core.aplicacion.general.servicio.EntidadBancariaServicio;
 
 
 import java.util.LinkedHashMap;

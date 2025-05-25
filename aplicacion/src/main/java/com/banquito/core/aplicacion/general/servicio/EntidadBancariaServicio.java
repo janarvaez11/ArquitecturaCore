@@ -20,7 +20,7 @@ public class EntidadBancariaServicio {
         this.repositorio = repositorio;
     }
 
-    public EntidadBancaria findById(Integer id){
+    public EntidadBancaria EncotrarporId(Integer id){
         Optional<EntidadBancaria> entidadBancariaOptional = this.repositorio.findById(id);
         if (entidadBancariaOptional.isPresent()) {
             return entidadBancariaOptional.get();
@@ -29,17 +29,18 @@ public class EntidadBancariaServicio {
         }
     }
 
-    public EntidadBancaria findDefault(){
-        List<EntidadBancaria> list = this.repositorio.findAll();
-        if (!list.isEmpty()) {
-            return list.getFirst();
+    public List<EntidadBancaria> ListarEntidadesBancarias(){
+        List<EntidadBancaria> entidadBancarias = this.repositorio.findAll();
+        if (!entidadBancarias.isEmpty()) {
+            return entidadBancarias;
         }else {
             throw new EntidadBancariaNoEncontradaException("EntidadBancaria", "No existen entidades bancarias registradas");
         }
+
     }
 
     @Transactional
-    public void create(EntidadBancaria entidadBancaria) {
+    public void crearEntidadBancaria(EntidadBancaria entidadBancaria) {
         try {
             this.repositorio.save(entidadBancaria);
         } catch (RuntimeException rte) {
@@ -48,7 +49,7 @@ public class EntidadBancariaServicio {
     }
 
     @Transactional
-    public void update(EntidadBancaria entidadBancaria) {
+    public void actualizarEntidadBancaria(EntidadBancaria entidadBancaria) {
         try {
             Optional<EntidadBancaria> entidadBancariaOptional = this.repositorio.findById(entidadBancaria.getId());
             if (entidadBancariaOptional.isPresent()) {
@@ -67,7 +68,7 @@ public class EntidadBancariaServicio {
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void eliminarEntidadBancaria(Integer id) {
         try {
             Optional<EntidadBancaria> entidadBancariaOptional = this.repositorio.findById(id);
             if (entidadBancariaOptional.isPresent()) {
