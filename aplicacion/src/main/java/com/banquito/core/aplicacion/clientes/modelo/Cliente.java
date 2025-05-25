@@ -29,7 +29,7 @@ public class Cliente {
 
     @ManyToOne
     @JoinColumn(name = "IdSucursal", referencedColumnName = "IdSucursal", nullable = false)
-    private Sucursal sucursal; // Relación con Sucursales
+    private Sucursal sucursal;
 
     @Column(name = "TipoIdentificacion", length = 10)
     private String tipoIdentificacion;
@@ -76,7 +76,8 @@ public class Cliente {
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private ContactoTransaccionCliente contacto;
 
-    public Cliente() {}
+    public Cliente() {
+    }
 
     public Cliente(Integer idCliente) {
         this.idCliente = idCliente;
@@ -218,6 +219,22 @@ public class Cliente {
         this.comentarios = comentarios;
     }
 
+    public List<DireccionCliente> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(List<DireccionCliente> direcciones) {
+        this.direcciones = direcciones;
+    }
+
+    public List<TelefonoCliente> getTelefonos() {
+        return telefonos;
+    }
+
+    public void setTelefonos(List<TelefonoCliente> telefonos) {
+        this.telefonos = telefonos;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idCliente);
@@ -225,8 +242,10 @@ public class Cliente {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Cliente)) return false;
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Cliente))
+            return false;
         Cliente other = (Cliente) obj;
         return Objects.equals(idCliente, other.idCliente);
     }
