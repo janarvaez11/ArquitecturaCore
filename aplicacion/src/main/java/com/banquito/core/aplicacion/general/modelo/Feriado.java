@@ -3,6 +3,7 @@ package com.banquito.core.aplicacion.general.modelo;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Feriados")
@@ -13,6 +14,7 @@ public class Feriado {
     @Column(name = "IdFeriado", nullable = false)
     private Integer id;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "FechaFeriado", nullable = false)
     private Date fechaFeriado;
 
@@ -95,5 +97,30 @@ public class Feriado {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Feriado feriado = (Feriado) o;
+        return Objects.equals(id, feriado.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Feriado{" +
+                "id=" + id +
+                ", fechaFeriado=" + fechaFeriado +
+                ", pais=" + pais +
+                ", locacion=" + locacion +
+                ", nombre='" + nombre + '\'' +
+                ", tipoFeriado='" + tipoFeriado + '\'' +
+                ", version=" + version +
+                '}';
     }
 }
