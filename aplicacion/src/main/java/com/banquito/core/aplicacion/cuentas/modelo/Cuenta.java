@@ -119,7 +119,6 @@ public class Cuenta {
         Estado = estado;
     }
 
-    
 
     public Date getFechaCreacion() {
         return FechaCreacion;
