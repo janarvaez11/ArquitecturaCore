@@ -2,6 +2,9 @@ package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
+
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "CuentasClientes")
@@ -39,8 +44,9 @@ public class CuentaCliente {
     @Column(name = "SaldoContable", precision = 100, scale = 2)
     private BigDecimal SaldoContable;
 
-    @Column(name = "FechaApertura")
-    private Instant FechaApertura;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaApertura", nullable = false)
+    private Date FechaApertura;
 
 
 //Relacion a la tabla Cuentas
@@ -120,11 +126,11 @@ public void setSaldoContable(BigDecimal saldoContable) {
     SaldoContable = saldoContable;
 }
 
-public Instant getFechaApertura() {
+public Date getFechaApertura() {
     return FechaApertura;
 }
 
-public void setFechaApertura(Instant fechaApertura) {
+public void setFechaApertura(Date fechaApertura) {
     FechaApertura = fechaApertura;
 }
 
@@ -171,15 +177,12 @@ public boolean equals(Object obj) {
     return true;
 }
 
-//ToString
 @Override
 public String toString() {
     return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", IdCliente=" + IdCliente + ", IdCuenta=" + IdCuenta
             + ", NumeroCuenta=" + NumeroCuenta + ", Estado=" + Estado + ", SaldoDisponible=" + SaldoDisponible
-            + ", SaldoContable=" + SaldoContable + ", FechaCreacion=" + FechaCreacion + ", cuenta=" + cuenta
+            + ", SaldoContable=" + SaldoContable + ", FechaApertura=" + FechaApertura + ", cuenta=" + cuenta
             + ", cliente=" + cliente + "]";
 }
-
-
 
 }

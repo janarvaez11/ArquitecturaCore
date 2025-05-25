@@ -1,5 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "CuentasComisionesCargos")
@@ -21,8 +25,9 @@ public class CuentaComisionCargo {
     @Column(name = "IdComisionCargo", nullable = false)
     private Integer IdComisionCargo;
 
+    @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaAsignacion", nullable = false)
-    private String FechaAsignacion;
+    private Date FechaAsignacion;
 
     //Relacion a la tabla Cuentas y ComisionesCargos
     @ManyToOne
@@ -59,15 +64,15 @@ public class CuentaComisionCargo {
     public void setIdComisionCargo(Integer idComisionCargo) {
         IdComisionCargo = idComisionCargo;
     }
-
-    public String getFechaAsignacion() {
+    
+    public Date getFechaAsignacion() {
         return FechaAsignacion;
     }
 
-    public void setFechaAsignacion(String fechaAsignacion) {
+    public void setFechaAsignacion(Date fechaAsignacion) {
         FechaAsignacion = fechaAsignacion;
     }
-    
+
 
     public Cuenta getCuenta() {
         return cuenta;

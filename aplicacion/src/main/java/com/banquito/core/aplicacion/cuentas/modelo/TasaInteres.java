@@ -1,5 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
+import java.util.Date;
+
 import java.time.Instant;
 
 import jakarta.persistence.Column;
@@ -8,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "TasasIntereses")
@@ -30,11 +34,13 @@ public class TasaInteres {
     @Column(name = "Estado", length = 15, nullable = false)
     private Instant Estado;
 
-    @Column(name = "FechaInicioVigencia")
-    private Instant FechaInicioVigencia;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaInicioVigencia", nullable = false)
+    private Date FechaInicioVigencia;
 
-    @Column(name = "FechaFinVigencia")
-    private Instant FechaFinVigencia;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaFinVigencia", nullable = false)
+    private Date FechaFinVigencia;
 
 
     // Constructores
@@ -86,19 +92,19 @@ public class TasaInteres {
         Estado = estado;
     }
 
-    public Instant getFechaInicioVigencia() {
+    public Date getFechaInicioVigencia() {
         return FechaInicioVigencia;
     }
 
-    public void setFechaInicioVigencia(Instant fechaInicioVigencia) {
+    public void setFechaInicioVigencia(Date fechaInicioVigencia) {
         FechaInicioVigencia = fechaInicioVigencia;
     }
 
-    public Instant getFechaFinVigencia() {
+    public Date getFechaFinVigencia() {
         return FechaFinVigencia;
     }
 
-    public void setFechaFinVigencia(Instant fechaFinVigencia) {
+    public void setFechaFinVigencia(Date fechaFinVigencia) {
         FechaFinVigencia = fechaFinVigencia;
     }
 
