@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,21 +53,37 @@ public class PersonaServicio {
             if (personaOptional.isPresent()) {
                 Persona personaDB = personaOptional.get();
 
-                personaDB.setTipoIdentificación(persona.getTipoIdentificación());
-                personaDB.setEstadoCivil(persona.getEstadoCivil());
-                personaDB.setNivelEstudio(persona.getNivelEstudio());
-                personaDB.setCorreoElectronico(persona.getCorreoElectronico());
-                personaDB.setEstado(persona.getEstado());
-                personaDB.setFechaActualizacion(Instant.now());
+                if (persona.getTipoIdentificación() != null) {
+                    personaDB.setTipoIdentificación(persona.getTipoIdentificación());
+                }
+
+                if (persona.getEstadoCivil() != null) {
+                    personaDB.setEstadoCivil(persona.getEstadoCivil());
+                }
+
+                if (persona.getNivelEstudio() != null) {
+                    personaDB.setNivelEstudio(persona.getNivelEstudio());
+                }
+
+                if (persona.getCorreoElectronico() != null) {
+                    personaDB.setCorreoElectronico(persona.getCorreoElectronico());
+                }
+
+                if (persona.getEstado() != null) {
+                    personaDB.setEstado(persona.getEstado());
+                }
+
+                personaDB.setFechaActualizacion(Date.from(Instant.now()));
 
                 personaRepositorio.save(personaDB);
-            }else {
+            } else {
                 throw new ActualizarExcepcion(String.valueOf(persona.getIdPersona()), "Persona");
             }
-        }catch (RuntimeException rte) {
-            throw new ActualizarExcepcion("Error al actualizar la persona:"+ rte.getMessage(),"Persona");
+        } catch (RuntimeException rte) {
+            throw new ActualizarExcepcion("Error al actualizar la persona: " + rte.getMessage(), "Persona");
         }
     }
+
 
     @Transactional
     public void eliminar(Integer id) {
@@ -83,6 +100,4 @@ public class PersonaServicio {
 
         }
     }
-
-
 }

@@ -3,6 +3,7 @@ package com.banquito.core.aplicacion.clientes.modelo;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -22,8 +23,9 @@ public class Representante {
     @JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente")
     private Cliente IdCliente;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaAsignacion")
-    private Instant FechaAsignacion;
+    private Date FechaAsignacion;
 
     @Column(name = "Estado", length = 15, nullable = false)
     private String Estado;
@@ -58,11 +60,11 @@ public class Representante {
         IdCliente = idCliente;
     }
 
-    public Instant getFechaAsignacion() {
+    public Date getFechaAsignacion() {
         return FechaAsignacion;
     }
 
-    public void setFechaAsignacion(Instant fechaAsignacion) {
+    public void setFechaAsignacion(Date fechaAsignacion) {
         FechaAsignacion = fechaAsignacion;
     }
 

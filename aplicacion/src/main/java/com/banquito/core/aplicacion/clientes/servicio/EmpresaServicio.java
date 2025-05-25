@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,12 +51,25 @@ public class EmpresaServicio {
             if (empresaOptional.isPresent()) {
                 Empresa empresaDB = empresaOptional.get();
 
-                empresaDB.setNombreEmpresa(empresa.getNombreEmpresa());
-                empresaDB.setCorreoElectronico(empresa.getCorreoElectronico());
-                empresaDB.setTipoCompania(empresa.getTipoCompania());
-                empresaDB.setEstado(empresa.getEstado());
-                empresaDB.setSectorEconomico(empresa.getSectorEconomico());
-                empresaDB.setFechaActualizacion(Instant.now());
+                if (empresa.getNombreEmpresa() != null) {
+                    empresaDB.setNombreEmpresa(empresa.getNombreEmpresa());
+                }
+
+                if (empresa.getCorreoElectronico() != null) {
+                    empresaDB.setCorreoElectronico(empresa.getCorreoElectronico());
+                }
+
+                if (empresa.getTipoCompania() != null) {
+                    empresaDB.setTipoCompania(empresa.getTipoCompania());
+                }
+
+                if (empresa.getEstado() != null) {
+                    empresaDB.setEstado(empresa.getEstado());
+                }
+
+                if (empresa.getSectorEconomico() != null) {
+                    empresaDB.setSectorEconomico(empresa.getSectorEconomico());
+                }
 
                 empresaRepositorio.save(empresaDB);
             }else {
