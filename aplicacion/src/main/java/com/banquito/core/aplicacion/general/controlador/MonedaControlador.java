@@ -5,6 +5,8 @@ import com.banquito.core.aplicacion.general.modelo.Moneda;
 import com.banquito.core.aplicacion.general.servicio.MonedaServicio;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.banquito.core.aplicacion.general.modelo.Pais;
+
 
 import java.util.List;
 import java.util.Map;
