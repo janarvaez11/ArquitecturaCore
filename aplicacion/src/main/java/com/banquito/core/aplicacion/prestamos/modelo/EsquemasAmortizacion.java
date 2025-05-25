@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
