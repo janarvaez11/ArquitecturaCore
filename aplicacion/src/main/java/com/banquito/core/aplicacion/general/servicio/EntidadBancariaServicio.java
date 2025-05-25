@@ -1,5 +1,9 @@
 package com.banquito.core.aplicacion.general.servicio;
 
+import com.banquito.core.aplicacion.general.excepcion.ActualizarEntidadException;
+import com.banquito.core.aplicacion.general.excepcion.CrearEntidadException;
+import com.banquito.core.aplicacion.general.excepcion.EliminarEntidadException;
+import com.banquito.core.aplicacion.general.excepcion.EntidadBancariaNoEncontradaException;
 import com.banquito.core.aplicacion.general.modelo.EntidadBancaria;
 import com.banquito.core.aplicacion.general.repositorio.EntidadBancariaRepositorio;
 import org.springframework.stereotype.Service;
@@ -39,7 +43,7 @@ public class EntidadBancariaServicio {
         try {
             this.repositorio.save(entidadBancaria);
         } catch (RuntimeException rte) {
-            throw new CrearEntidadBancariaException("EntidadBancaria", "Error al crear la entidad bancaria. Texto del error: " + rte.getMessage());
+            throw new CrearEntidadException("EntidadBancaria", "Error al crear la entidad bancaria. Texto del error: " + rte.getMessage());
         }
     }
 
@@ -58,7 +62,7 @@ public class EntidadBancariaServicio {
                 throw new EntidadBancariaNoEncontradaException("EntidadBancaria", "Error al actualizar la entidad bancaria. No se encontró la entidad bancaria con ID: " + entidadBancaria.getId());
             }
         } catch (RuntimeException rte) {
-            throw new ActualizarEntidadBancariaException("EntidadBancaria", "Error al actualizar la entidad bancaria. Texto del error: " + rte.getMessage());
+            throw new ActualizarEntidadException("EntidadBancaria", "Error al actualizar la entidad bancaria. Texto del error: " + rte.getMessage());
         }
     }
 
