@@ -9,7 +9,7 @@ public class EstructuraGeograficaId implements Serializable {
     @Column(name = "IdPais", length = 2, nullable = false)
     private String paisId;
 
-    @Column(name = "CodigoNivel", nullable = false)
+    @Column(name = "codigoNivel", length = 1, nullable = false)
     private Integer codigoNivel;
 
     public EstructuraGeograficaId() {

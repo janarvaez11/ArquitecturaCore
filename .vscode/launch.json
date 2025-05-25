@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AplicacionApplication<aplicacion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.banquito.core.aplicacion.AplicacionApplication",
+            "projectName": "aplicacion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
