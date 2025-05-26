@@ -21,7 +21,7 @@ public class CondicionComision {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "IdComisionPrestamo")
+    @JoinColumn(name = "IdComisionPrestamo", nullable = false)
     private ComisionPrestamo comisionPrestamo;
 
     @Column(name = "TipoCondicion", length = 30)
@@ -29,6 +29,9 @@ public class CondicionComision {
 
     @Column(name = "Valor", precision = 15, scale = 2)
     private BigDecimal valor;
+
+    @Column(name = "ValorTexto", length = 30)
+    private String valorTexto;
 
     public CondicionComision() {
     }
@@ -69,6 +72,14 @@ public class CondicionComision {
         this.valor = valor;
     }
 
+    public String getValorTexto() {
+        return valorTexto;
+    }
+
+    public void setValorTexto(String valorTexto) {
+        this.valorTexto = valorTexto;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -98,4 +109,5 @@ public class CondicionComision {
     public String toString() {
         return "CondicionComisiones [id=" + id + ", tipoCondicion=" + tipoCondicion + ", valor=" + valor + "]";
     }
+
 } 
