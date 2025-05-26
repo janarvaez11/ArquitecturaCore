@@ -25,12 +25,6 @@ public class CuentaCliente {
     @Column(name = "IdCuentaCliente", nullable = false)
     private Integer IdCuentaCliente;
 
-    @Column(name = "IdCliente", nullable = false)
-    private Integer IdCliente;
-
-    @Column(name = "IdCuenta", nullable = false)
-    private Integer IdCuenta;
-
     @Column(name = "NumeroCuenta", length = 10, nullable = false)
     private String NumeroCuenta;
 
@@ -43,145 +37,127 @@ public class CuentaCliente {
     @Column(name = "SaldoContable", precision = 100, scale = 2)
     private BigDecimal SaldoContable;
 
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaApertura", nullable = false)
     private Date FechaApertura;
 
+    // Relacion a la tabla Cuentas
+    @ManyToOne
+    @JoinColumn(name = "IdCuenta", referencedColumnName = "IdCuenta", nullable = false)
+    private Cuenta cuenta;
 
-//Relacion a la tabla Cuentas
-@ManyToOne
-@JoinColumn(name = "IdCuenta", referencedColumnName = "IdCuenta", nullable = false)
-private Cuenta cuenta;
+    // Relacion a la tabla Clientes
+    @ManyToOne
+    @JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente", nullable = false)
+    private Cliente cliente;
 
-//Relacion a la tabla Clientes
-@ManyToOne
-@JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente", nullable = false)
-private Cliente cliente;
+    // Constructores
 
-//Constructores
-
-public CuentaCliente() {
+    public CuentaCliente() {
     }
 
-public CuentaCliente(Integer idCuentaCliente) {
-    IdCuentaCliente = idCuentaCliente;
-}
+    public CuentaCliente(Integer idCuentaCliente) {
+        IdCuentaCliente = idCuentaCliente;
+    }
 
-//Getters y Setters
+    // Getters y Setters
 
-public Integer getIdCuentaCliente() {
-    return IdCuentaCliente;
-}
+    public Integer getIdCuentaCliente() {
+        return IdCuentaCliente;
+    }
 
-public void setIdCuentaCliente(Integer idCuentaCliente) {
-    IdCuentaCliente = idCuentaCliente;
-}
+    public void setIdCuentaCliente(Integer idCuentaCliente) {
+        IdCuentaCliente = idCuentaCliente;
+    }
 
-public Integer getIdCliente() {
-    return IdCliente;
-}
+    public String getNumeroCuenta() {
+        return NumeroCuenta;
+    }
 
-public void setIdCliente(Integer idCliente) {
-    IdCliente = idCliente;
-}
+    public void setNumeroCuenta(String numeroCuenta) {
+        NumeroCuenta = numeroCuenta;
+    }
 
-public Integer getIdCuenta() {
-    return IdCuenta;
-}
+    public String getEstado() {
+        return Estado;
+    }
 
-public void setIdCuenta(Integer idCuenta) {
-    IdCuenta = idCuenta;
-}
+    public void setEstado(String estado) {
+        Estado = estado;
+    }
 
-public String getNumeroCuenta() {
-    return NumeroCuenta;
-}
+    public BigDecimal getSaldoDisponible() {
+        return SaldoDisponible;
+    }
 
-public void setNumeroCuenta(String numeroCuenta) {
-    NumeroCuenta = numeroCuenta;
-}
+    public void setSaldoDisponible(BigDecimal saldoDisponible) {
+        SaldoDisponible = saldoDisponible;
+    }
 
-public String getEstado() {
-    return Estado;
-}
+    public BigDecimal getSaldoContable() {
+        return SaldoContable;
+    }
 
-public void setEstado(String estado) {
-    Estado = estado;
-}
+    public void setSaldoContable(BigDecimal saldoContable) {
+        SaldoContable = saldoContable;
+    }
 
-public BigDecimal getSaldoDisponible() {
-    return SaldoDisponible;
-}
+    public Date getFechaApertura() {
+        return FechaApertura;
+    }
 
-public void setSaldoDisponible(BigDecimal saldoDisponible) {
-    SaldoDisponible = saldoDisponible;
-}
+    public void setFechaApertura(Date fechaApertura) {
+        FechaApertura = fechaApertura;
+    }
 
-public BigDecimal getSaldoContable() {
-    return SaldoContable;
-}
+    public Cuenta getCuenta() {
+        return cuenta;
+    }
 
-public void setSaldoContable(BigDecimal saldoContable) {
-    SaldoContable = saldoContable;
-}
+    public void setCuenta(Cuenta cuenta) {
+        this.cuenta = cuenta;
+    }
 
-public Date getFechaApertura() {
-    return FechaApertura;
-}
+    public Cliente getCliente() {
+        return cliente;
+    }
 
-public void setFechaApertura(Date fechaApertura) {
-    FechaApertura = fechaApertura;
-}
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
-public Cuenta getCuenta() {
-    return cuenta;
-}
+    // HashCode y Equals
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((IdCuentaCliente == null) ? 0 : IdCuentaCliente.hashCode());
+        return result;
+    }
 
-public void setCuenta(Cuenta cuenta) {
-    this.cuenta = cuenta;
-}
-
-
-public Cliente getCliente() {
-    return cliente;
-}
-
-public void setCliente(Cliente cliente) {
-    this.cliente = cliente;
-}
-
-//HashCode y Equals
-@Override
-public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((IdCuentaCliente == null) ? 0 : IdCuentaCliente.hashCode());
-    return result;
-}
-
-@Override
-public boolean equals(Object obj) {
-    if (this == obj)
-        return true;
-    if (obj == null)
-        return false;
-    if (getClass() != obj.getClass())
-        return false;
-    CuentaCliente other = (CuentaCliente) obj;
-    if (IdCuentaCliente == null) {
-        if (other.IdCuentaCliente != null)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
             return false;
-    } else if (!IdCuentaCliente.equals(other.IdCuentaCliente))
-        return false;
-    return true;
-}
+        if (getClass() != obj.getClass())
+            return false;
+        CuentaCliente other = (CuentaCliente) obj;
+        if (IdCuentaCliente == null) {
+            if (other.IdCuentaCliente != null)
+                return false;
+        } else if (!IdCuentaCliente.equals(other.IdCuentaCliente))
+            return false;
+        return true;
+    }
 
-@Override
-public String toString() {
-    return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", IdCliente=" + IdCliente + ", IdCuenta=" + IdCuenta
-            + ", NumeroCuenta=" + NumeroCuenta + ", Estado=" + Estado + ", SaldoDisponible=" + SaldoDisponible
-            + ", SaldoContable=" + SaldoContable + ", FechaApertura=" + FechaApertura + ", cuenta=" + cuenta
-            + ", cliente=" + cliente + "]";
-}
+    @Override
+    public String toString() {
+        return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", NumeroCuenta=" + NumeroCuenta + ", Estado="
+                + Estado
+                + ", SaldoDisponible=" + SaldoDisponible + ", SaldoContable=" + SaldoContable + ", FechaApertura="
+                + FechaApertura + ", cuenta=" + cuenta + ", cliente=" + cliente + "]";
+    }
 
 }

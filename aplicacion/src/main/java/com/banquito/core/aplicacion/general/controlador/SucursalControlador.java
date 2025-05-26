@@ -1,51 +1,66 @@
 package com.banquito.core.aplicacion.general.controlador;
 
-import com.banquito.core.aplicacion.general.modelo.Sucursal;
-import com.banquito.core.aplicacion.general.servicio.SucursalServicio;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.banquito.core.aplicacion.general.modelo.Sucursal;
+import com.banquito.core.aplicacion.general.servicio.SucursalServicio;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/sucursales")
 public class SucursalControlador {
 
-    private final SucursalServicio servicio;
+    private final SucursalServicio sucursalServicio;
 
-    public SucursalControlador(SucursalServicio servicio) {
-        this.servicio = servicio;
-    }
-
-    @GetMapping("/{codigo}")
-    public ResponseEntity<Sucursal> obtenerPorCodigo(@PathVariable String codigo) {
-        return ResponseEntity.ok(servicio.obtenerPorCodigo(codigo));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Sucursal>> listarTodas() {
-        return ResponseEntity.ok(servicio.listarTodas());
-    }
-
-    @GetMapping("/activas")
-    public ResponseEntity<List<Sucursal>> listarActivas() {
-        return ResponseEntity.ok(servicio.listarActivas());
-    }
-
-    @GetMapping("/locacion/{idLocacion}")
-    public ResponseEntity<List<Sucursal>> buscarPorLocacion(@PathVariable Integer idLocacion) {
-        return ResponseEntity.ok(servicio.buscarPorLocacion(idLocacion));
+    public SucursalControlador(SucursalServicio sucursalServicio) {
+        this.sucursalServicio = sucursalServicio;
     }
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Sucursal sucursal) {
-        servicio.crearSucursal(sucursal);
+        sucursalServicio.crearSucursal(sucursal);
         return ResponseEntity.status(201).build();
     }
 
-    @PutMapping
-    public ResponseEntity<Void> actualizar(@RequestBody Sucursal sucursal) {
-        servicio.actualizarSucursal(sucursal);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{codigo}")
+    public ResponseEntity<Void> actualizar(@PathVariable String codigo, @RequestBody Sucursal sucursal) {
+        sucursalServicio.actualizarSucursal(codigo, sucursal);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<Void> eliminar(@PathVariable String codigo) {
+        sucursalServicio.eliminarLogico(codigo);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{codigo}")
+    public ResponseEntity<Sucursal> obtenerPorCodigo(@PathVariable String codigo) {
+        return ResponseEntity.ok(sucursalServicio.obtenerPorCodigo(codigo));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Sucursal>> listarTodas() {
+        return ResponseEntity.ok(sucursalServicio.listarTodas());
+    }
+
+    @GetMapping("/activas")
+    public ResponseEntity<List<Sucursal>> listarActivas() {
+        return ResponseEntity.ok(sucursalServicio.listarActivas());
+    }
+
+    @GetMapping("/locacion/{idLocacion}")
+    public ResponseEntity<List<Sucursal>> buscarPorLocacion(@PathVariable Integer idLocacion) {
+        return ResponseEntity.ok(sucursalServicio.buscarPorLocacion(idLocacion));
+    }
+
+    @GetMapping("/entidad-bancaria/{idEntidadBancaria}/estado/{estado}")
+    public ResponseEntity<List<Sucursal>> buscarPorEntidadBancariaYEstado(
+            @PathVariable Integer idEntidadBancaria,
+            @PathVariable String estado) {
+        return ResponseEntity.ok(sucursalServicio.buscarPorEntidadBancariaYEstado(idEntidadBancaria, estado));
     }
 }

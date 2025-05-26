@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -24,12 +23,6 @@ public class EsquemasAmortizacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdTipoPrestamo")
     private TipoPrestamo tipoPrestamo;
-
-    @Column(name = "Estado", length = 3)
-    private String estado;
-
-    @Column(name = "FechaModificacion")
-    private LocalDateTime fechaModificacion;
 
     public EsquemasAmortizacion() {
     }
@@ -78,22 +71,6 @@ public class EsquemasAmortizacion {
         this.tipoPrestamo = tipoPrestamo;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public LocalDateTime getFechaModificacion() {
-        return fechaModificacion;
-    }
-
-    public void setFechaModificacion(LocalDateTime fechaModificacion) {
-        this.fechaModificacion = fechaModificacion;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -109,14 +86,8 @@ public class EsquemasAmortizacion {
 
     @Override
     public String toString() {
-        return "EsquemasAmortizacion{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", permiteGracia=" + permiteGracia +
-                ", tipoPrestamo=" + tipoPrestamo +
-                ", estado='" + estado + '\'' +
-                ", fechaModificacion=" + fechaModificacion +
-                '}';
+        return "EsquemasAmortizacion [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion
+                + ", permiteGracia=" + permiteGracia + ", tipoPrestamo=" + tipoPrestamo + "]";
     }
+
 }

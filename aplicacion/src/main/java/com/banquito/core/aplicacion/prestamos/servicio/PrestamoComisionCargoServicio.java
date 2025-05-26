@@ -8,9 +8,13 @@ import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepci
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoComisionCargoExepcion;
+import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
+import com.banquito.core.aplicacion.prestamos.modelo.ComisionPrestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargo;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargoId;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoComisionCargoRepositorio;
+import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
+import com.banquito.core.aplicacion.prestamos.repositorio.ComisionPrestamoRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -18,9 +22,16 @@ import jakarta.transaction.Transactional;
 public class PrestamoComisionCargoServicio {
     
     private final PrestamoComisionCargoRepositorio repositorio;
+    private final PrestamoRepositorio prestamoRepositorio;
+    private final ComisionPrestamoRepositorio comisionPrestamoRepositorio;
 
-    public PrestamoComisionCargoServicio(PrestamoComisionCargoRepositorio repositorio) {
+    public PrestamoComisionCargoServicio(
+            PrestamoComisionCargoRepositorio repositorio,
+            PrestamoRepositorio prestamoRepositorio,
+            ComisionPrestamoRepositorio comisionPrestamoRepositorio) {
         this.repositorio = repositorio;
+        this.prestamoRepositorio = prestamoRepositorio;
+        this.comisionPrestamoRepositorio = comisionPrestamoRepositorio;
     }
 
     public PrestamoComisionCargo findById(PrestamoComisionCargoId id) {
@@ -36,6 +47,26 @@ public class PrestamoComisionCargoServicio {
     @Transactional
     public void create(PrestamoComisionCargo prestamoComisionCargo) {
         try {
+            // Validar que el préstamo existe
+            Optional<Prestamo> prestamoOpcional = prestamoRepositorio.findById(prestamoComisionCargo.getId().getIdPrestamo());
+            if (!prestamoOpcional.isPresent()) {
+                throw new CrearEntidadExcepcion("PrestamoComisionCargo", 
+                    "El préstamo con ID " + prestamoComisionCargo.getId().getIdPrestamo() + " no existe");
+            }
+
+            // Validar que la comisión existe
+            Optional<ComisionPrestamo> comisionOpcional = comisionPrestamoRepositorio.findById(prestamoComisionCargo.getId().getIdComisionPrestamo());
+            if (!comisionOpcional.isPresent()) {
+                throw new CrearEntidadExcepcion("PrestamoComisionCargo", 
+                    "La comisión con ID " + prestamoComisionCargo.getId().getIdComisionPrestamo() + " no existe");
+            }
+
+            // Validar que no existe ya esta combinación
+            if (repositorio.existsById(prestamoComisionCargo.getId())) {
+                throw new CrearEntidadExcepcion("PrestamoComisionCargo", 
+                    "Ya existe una comisión asignada a este préstamo con estos IDs");
+            }
+
             this.repositorio.save(prestamoComisionCargo);
         } catch (Exception rte) {
             throw new CrearEntidadExcepcion("PrestamoComisionCargo", 
@@ -52,8 +83,6 @@ public class PrestamoComisionCargoServicio {
             if (prestamoComisionCargoOpcional.isPresent()) {
                 PrestamoComisionCargo prestamoComisionCargoDb = prestamoComisionCargoOpcional.get();
                 prestamoComisionCargoDb.setFechaAsignacion(prestamoComisionCargo.getFechaAsignacion());
-                prestamoComisionCargoDb.setPrestamo(prestamoComisionCargo.getPrestamo());
-
                 this.repositorio.save(prestamoComisionCargoDb);
             } else {
                 throw new PrestamoComisionCargoExepcion("PrestamoComisionCargo", 

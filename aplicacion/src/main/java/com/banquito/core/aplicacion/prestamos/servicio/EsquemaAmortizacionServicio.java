@@ -1,6 +1,5 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +32,6 @@ public class EsquemaAmortizacionServicio {
                             "El tipo de préstamo especificado no existe");
                 }
             }
-            esquemaAmortizacion.setEstado("ACT");
-            esquemaAmortizacion.setFechaModificacion(LocalDateTime.now());
             this.esquemaAmortizacionRepositorio.save(esquemaAmortizacion);
         } catch (Exception e) {
             throw new CrearEntidadExcepcion("EsquemaAmortizacion",
@@ -65,8 +62,6 @@ public class EsquemaAmortizacionServicio {
                 esquemaAmortizacionDb.setNombre(esquemaAmortizacion.getNombre());
                 esquemaAmortizacionDb.setDescripcion(esquemaAmortizacion.getDescripcion());
                 esquemaAmortizacionDb.setPermiteGracia(esquemaAmortizacion.getPermiteGracia());
-                esquemaAmortizacionDb.setEstado(esquemaAmortizacion.getEstado());
-                esquemaAmortizacionDb.setFechaModificacion(LocalDateTime.now());
 
                 this.esquemaAmortizacionRepositorio.save(esquemaAmortizacionDb);
             } else {
@@ -77,30 +72,6 @@ public class EsquemaAmortizacionServicio {
         } catch (Exception e) {
             throw new ActualizarEntidadExcepcion("Esquemas de Amortización",
                     "Error al actualizar el esquema de amortización: " + e.getMessage());
-        }
-    }
-
-    public void eliminarEsquemaAmortizacion(Integer id) {
-        try {
-            Optional<EsquemasAmortizacion> esquemaAmortizacionOpcional = this.esquemaAmortizacionRepositorio
-                    .findById(id);
-
-            if (esquemaAmortizacionOpcional.isPresent()) {
-                EsquemasAmortizacion esquema = esquemaAmortizacionOpcional.get();
-                if ("INA".equals(esquema.getEstado())) {
-                    this.esquemaAmortizacionRepositorio.delete(esquema);
-                } else {
-                    esquema.setEstado("INA");
-                    esquema.setFechaModificacion(LocalDateTime.now());
-                    this.esquemaAmortizacionRepositorio.save(esquema);
-                }
-            } else {
-                throw new EsquemaNoEncontradoExcepcion("Esquemas de Amortización",
-                        "Error al eliminar el esquema de amortización. No se encontró con ID: " + id);
-            }
-        } catch (Exception e) {
-            throw new EliminarEntidadExcepcion("Esquemas de Amortización",
-                    "Error al eliminar el esquema de amortización: " + e.getMessage());
         }
     }
 

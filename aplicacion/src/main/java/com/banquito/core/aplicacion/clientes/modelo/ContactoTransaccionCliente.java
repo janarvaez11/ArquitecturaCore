@@ -1,12 +1,11 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Date;
 
 @Entity
-@Table(name = "contactotransaccioncliente")
+@Table(name = "ContactoTransaccionCliente")
 public class ContactoTransaccionCliente {
 
     @Id

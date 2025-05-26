@@ -19,9 +19,6 @@ public class ExencionCuenta {
     @Column(name = "IdExencion", nullable = false)
     private Integer IdExencion;
 
-    @Column(name = "IdComision", nullable = false)
-    private Integer IdComision;
-
     @Column(name = "Nombre", length = 100, nullable = false)
     private String Nombre;
 
@@ -30,7 +27,7 @@ public class ExencionCuenta {
 
     //Relación con la tabla Comisiones
     @ManyToOne
-    @JoinColumn(name = "IdComision", referencedColumnName = "IdComision", nullable = false)
+    @JoinColumn(name = "IdComision", referencedColumnName = "IdComisionCargo", nullable = false)
     private ComisionCargo comision;
 
     //Constructores
@@ -47,12 +44,7 @@ public class ExencionCuenta {
     public void setIdExencion(Integer idExencion) {
         IdExencion = idExencion;
     }
-    public Integer getIdComision() {
-        return IdComision;
-    }
-    public void setIdComision(Integer idComision) {
-        IdComision = idComision;
-    }
+
     public String getNombre() {
         return Nombre;
     }
@@ -96,13 +88,14 @@ public class ExencionCuenta {
             return false;
         return true;
     }
-
-     //ToString
     @Override
     public String toString() {
-        return "ExencionCuenta [IdExencion=" + IdExencion + ", IdComision=" + IdComision + ", Nombre=" + Nombre
-                + ", Descripcion=" + Descripcion + ", comision=" + comision + "]";
+        return "ExencionCuenta [IdExencion=" + IdExencion + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
+                + ", comision=" + comision + "]";
     }
+
+     //ToString
+
 
 
 }

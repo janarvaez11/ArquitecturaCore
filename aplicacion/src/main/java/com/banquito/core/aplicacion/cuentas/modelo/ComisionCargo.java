@@ -25,9 +25,6 @@ public class ComisionCargo {
     @Column(name = "TipoComision", length = 30, nullable = false)
     private String TipoComision;
 
-    @Column(name = "IdServicio", nullable = false)
-    private Integer IdServicio;
-
     @Column(name = "Nombre", length = 30, nullable = false)
     private String Nombre;
 
@@ -75,12 +72,7 @@ public class ComisionCargo {
     public void setTipoComision(String tipoComision) {
         TipoComision = tipoComision;
     }
-    public Integer getIdServicio() {
-        return IdServicio;
-    }
-    public void setIdServicio(Integer idServicio) {
-        IdServicio = idServicio;
-    }
+
     public String getNombre() {
         return Nombre;
     }
@@ -142,17 +134,16 @@ public class ComisionCargo {
             return false;
         return true;
     }
-
-    //ToString
     @Override
     public String toString() {
-        return "ComisionCargo [IdComisionCargo=" + IdComisionCargo + ", TipoComision=" + TipoComision + ", IdServicio="
-                + IdServicio + ", Nombre=" + Nombre + ", BaseCalculo=" + BaseCalculo + ", Monto=" + Monto
-                + ", Frecuencia=" + Frecuencia + ", exenciones=" + exenciones + ", cuentaComisionCargos="
+        return "ComisionCargo [IdComisionCargo=" + IdComisionCargo + ", TipoComision=" + TipoComision + ", Nombre="
+                + Nombre + ", BaseCalculo=" + BaseCalculo + ", Monto=" + Monto + ", Frecuencia=" + Frecuencia
+                + ", servicioAsociado=" + servicioAsociado + ", exenciones=" + exenciones + ", cuentaComisionCargos="
                 + cuentaComisionCargos + "]";
     }
 
-    
+    //ToString
+
 
 
     

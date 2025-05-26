@@ -14,11 +14,11 @@ import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
 import jakarta.transaction.Transactional;
 
 @Service
-public class PrestamosServicio {
+public class PrestamoServicio {
     
     private final PrestamoRepositorio repositorio;
 
-    public PrestamosServicio(PrestamoRepositorio repositorio) {
+    public PrestamoServicio(PrestamoRepositorio repositorio) {
         this.repositorio = repositorio;
     }
 
