@@ -146,7 +146,6 @@ public class TipoPrestamosServicio {
                 tipoPrestamoDb.setPlazoMaximo(tipoPrestamo.getPlazoMaximo());
                 tipoPrestamoDb.setRequisitos(tipoPrestamo.getRequisitos());
                 tipoPrestamoDb.setTipoCliente(tipoPrestamo.getTipoCliente());
-                tipoPrestamoDb.setEstado(tipoPrestamo.getEstado());
                 tipoPrestamoDb.setFechaModificacion(LocalDate.now());
 
                 this.repositorio.save(tipoPrestamoDb);
@@ -168,7 +167,10 @@ public class TipoPrestamosServicio {
         try {
             Optional<TipoPrestamo> tipoOptional = this.repositorio.findById(id);
             if (tipoOptional.isPresent()) {
-                this.repositorio.delete(tipoOptional.get());
+                TipoPrestamo tipoPrestamo = tipoOptional.get();
+                tipoPrestamo.setEstado("INACTIVO");
+                tipoPrestamo.setFechaModificacion(LocalDate.now());
+                this.repositorio.save(tipoPrestamo);
             } else {
                 throw new TipoPrestamoNoEncontradoExcepcion("Tipo prestamo",
                         "Error al eliminar el Tipo de préstamo. No se encontró el tipo de préstamo con ID: " + id);
