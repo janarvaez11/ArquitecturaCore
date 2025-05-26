@@ -32,13 +32,16 @@ public class LocacionGeografica {
     @Column(name = "CodigoPostal", length = 10)
     private String codigoPostal;
 
+    @Column(name = "Estado", length = 3, nullable = false)
+    private String estado;
+
     @OneToMany(mappedBy = "locacionPadre")
     private List<LocacionGeografica> locacionesHijas;
 
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", insertable = false, updatable = false),
-        @JoinColumn(name = "CodigoNivel", referencedColumnName = "CodigoNivel", insertable = false, updatable = false)
+            @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", insertable = false, updatable = false),
+            @JoinColumn(name = "CodigoNivel", referencedColumnName = "CodigoNivel", insertable = false, updatable = false)
     })
     private EstructuraGeografica estructuraGeografica;
 
@@ -155,7 +158,5 @@ public class LocacionGeografica {
                 + codigoPostal + ", locacionesHijas=" + locacionesHijas + ", estructuraGeografica="
                 + estructuraGeografica + "]";
     }
-
-    
 
 }

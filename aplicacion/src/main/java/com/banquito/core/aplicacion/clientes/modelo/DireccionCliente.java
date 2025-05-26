@@ -1,8 +1,8 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "direccioncliente")
@@ -10,19 +10,34 @@ public class DireccionCliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdDireccion", nullable = false)
     private Integer idDireccion;
 
     @ManyToOne
-    @JoinColumn(name = "idCliente", nullable = false)
+    @JoinColumn(name = "IdCliente", nullable = false)
     private Cliente cliente;
 
+    @Column(name = "Tipo", length = 30)
     private String tipo;
+
+    @Column(name = "Estado", length = 10)
     private String estado;
+
+    @Column(name = "Linea1", length = 150)
     private String linea1;
+
+    @Column(name = "Linea2", length = 150)
     private String linea2;
+
+    @Column(name = "CodigoPostal", length = 10)
     private String codigoPostal;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+
+    @Column(name = "FechaCreacion")
+    private Date fechaCreacion;
+
+    @Column(name = "FechaActualizacion")
+    private Date fechaActualizacion;
+
 
     public DireccionCliente() {}
 
@@ -86,19 +101,19 @@ public class DireccionCliente {
         this.codigoPostal = codigoPostal;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDateTime getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 

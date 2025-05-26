@@ -1,20 +1,16 @@
 package com.banquito.core.aplicacion.clientes.controlador;
 
-
-import com.banquito.core.aplicacion.clientes.dto.TelefonoClienteDTO;
-import com.banquito.core.aplicacion.clientes.controlador.mapper.TelefonoClienteMapper;
 import com.banquito.core.aplicacion.clientes.modelo.TelefonoCliente;
 import com.banquito.core.aplicacion.clientes.servicio.TelefonoClienteServicio;
-import com.banquito.core.aplicacion.clientes.excepcion.NoEncontradoExcepcion;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import com.banquito.core.aplicacion.clientes.excepcion.TelefonoNoEncontradoExcepcion;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/v1/telefonos-cliente")
+@RequestMapping("/v1/telefonos")
 public class TelefonoClienteControlador {
 
     private final TelefonoClienteServicio servicio;
@@ -24,22 +20,27 @@ public class TelefonoClienteControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<TelefonoClienteDTO>> obtenerTodos() {
-        List<TelefonoClienteDTO> resultado = this.servicio.buscarTodos()
-                .stream()
-                .map(TelefonoClienteMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(resultado);
+    public ResponseEntity<List<TelefonoCliente>> obtenerTodos() {
+        return ResponseEntity.ok(servicio.buscarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TelefonoClienteDTO> obtenerPorId(@PathVariable("id") Integer id) {
-        TelefonoCliente tel = this.servicio.buscarPorId(id);
-        return ResponseEntity.ok(TelefonoClienteMapper.toDTO(tel));
+    public ResponseEntity<TelefonoCliente> obtenerPorId(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(servicio.buscarPorId(id));
+        } catch (TelefonoNoEncontradoExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @ExceptionHandler(NoEncontradoExcepcion.class)
-    public ResponseEntity<Void> manejarNoEncontrado() {
-        return ResponseEntity.notFound().build();
+    @PostMapping
+    public ResponseEntity<TelefonoCliente> crear(@RequestBody TelefonoCliente telefono) {
+        return ResponseEntity.ok(servicio.crear(telefono));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TelefonoCliente> actualizar(@PathVariable Integer id, @RequestBody TelefonoCliente telefono) {
+        telefono.setIdTelefonoCliente(id);
+        return ResponseEntity.ok(servicio.modificar(telefono));
     }
 }

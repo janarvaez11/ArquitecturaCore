@@ -34,20 +34,6 @@ public class AccionistaServicio {
         }
     }
 
-    public List<Accionista> obtenerPorIdEmpresa(Integer idEmpresa) {
-
-        if (idEmpresa == null) {
-            throw new IllegalArgumentException("Id de empresa no puede ser nulo");
-        }
-
-        List<Accionista> accionistas = this.accionistaRepositorio.findById_IdEmpresa(idEmpresa);
-
-        if (accionistas.isEmpty()) {
-            throw new NoEncontradoExcepcion(idEmpresa.toString(), "Accionistas");
-        }
-
-        return accionistas;
-    }
 
     @Transactional
     public void crear(Accionista accionista) {
@@ -65,8 +51,8 @@ public class AccionistaServicio {
             if (accionistaOptional.isPresent()) {
                 Accionista accionistaDB = accionistaOptional.get();
 
-                if (accionista.getIdEmpresa() != null) {
-                    accionistaDB.setIdEmpresa(accionista.getIdEmpresa());
+                if (accionista.getEmpresa() != null) {
+                    accionistaDB.setEmpresa(accionista.getEmpresa());
                 }
                 if (accionista.getParticipacion() != null) {
                     accionistaDB.setParticipacion(accionista.getParticipacion());

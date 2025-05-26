@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
@@ -20,6 +19,10 @@ public class EsquemasAmortizacion {
 
     @Column(name = "PermiteGracia")
     private Boolean permiteGracia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdTipoPrestamo")
+    private TipoPrestamo tipoPrestamo;
 
     public EsquemasAmortizacion() {
     }
@@ -60,6 +63,14 @@ public class EsquemasAmortizacion {
         this.permiteGracia = permiteGracia;
     }
 
+    public TipoPrestamo getTipoPrestamo() {
+        return tipoPrestamo;
+    }
+
+    public void setTipoPrestamo(TipoPrestamo tipoPrestamo) {
+        this.tipoPrestamo = tipoPrestamo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass())
@@ -75,11 +86,8 @@ public class EsquemasAmortizacion {
 
     @Override
     public String toString() {
-        return "EsquemasAmortizacion{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", permiteGracia=" + permiteGracia +
-                '}';
+        return "EsquemasAmortizacion [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion
+                + ", permiteGracia=" + permiteGracia + ", tipoPrestamo=" + tipoPrestamo + "]";
     }
+
 }

@@ -1,7 +1,8 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
-import java.time.Instant;
+import java.util.Date;
 
+import com.banquito.core.aplicacion.general.modelo.Moneda;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "TipoCuentas")
@@ -20,9 +23,6 @@ public class TipoCuenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdTipoCuenta", nullable = false)
     private Integer IdTipoCuenta;
-
-    @Column(name = "IdTasaInteresPorDefecto", nullable = false)
-    private Integer IdTasaInteresPorDefecto;
 
     @Column(name = "Nombre", length = 20, nullable = false)
     private String Nombre;
@@ -42,17 +42,24 @@ public class TipoCuenta {
     @Column(name = "Estado", length = 20, nullable = false)
     private String Estado;
 
-    @Column(name = "FechaCreacion")
-    private Instant FechaCreacion;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaCreacion", nullable = false)
+    private Date FechaCreacion;
 
+
+    @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion")
-    private Instant FechaModificacion;
-
+     private Date FechaModificacion;
 
     //relacion a la tabla TasaInteres
     @ManyToOne
     @JoinColumn(name = "IdTasaInteresPorDefecto", referencedColumnName = "IdTasaInteres")
     private TasaInteres tasaInteres;
+
+    //relacion a la tabla Monedas
+    @ManyToOne
+    @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
+    private Moneda moneda;
 
 
 
@@ -123,31 +130,22 @@ public class TipoCuenta {
         Estado = estado;
     }
 
-    public Instant getFechaCreacion() {
+    public Date getFechaCreacion() {
         return FechaCreacion;
     }
 
-    public void setFechaCreacion(Instant fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         FechaCreacion = fechaCreacion;
     }
 
-    public Instant getFechaModificacion() {
+    public Date getFechaModificacion() {
         return FechaModificacion;
     }
 
-    public void setFechaModificacion(Instant fechaModificacion) {
+    public void setFechaModificacion(Date fechaModificacion) {
         FechaModificacion = fechaModificacion;
     }
 
-    
-
-    public Integer getIdTasaInteresPorDefecto() {
-        return IdTasaInteresPorDefecto;
-    }
-
-    public void setIdTasaInteresPorDefecto(Integer idTasaInteresPorDefecto) {
-        IdTasaInteresPorDefecto = idTasaInteresPorDefecto;
-    }
 
     public TasaInteres getTasaInteres() {
         return tasaInteres;
@@ -155,6 +153,14 @@ public class TipoCuenta {
 
     public void setTasaInteres(TasaInteres tasaInteres) {
         this.tasaInteres = tasaInteres;
+    }
+
+    public Moneda getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(Moneda moneda) {
+        this.moneda = moneda;
     }
 
     // HashCode y Equals
@@ -183,16 +189,17 @@ public class TipoCuenta {
         return true;
     }
 
-    
-    // ToString
     @Override
     public String toString() {
-        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", IdTasaInteresPorDefecto=" + IdTasaInteresPorDefecto
-                + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", RequisitosApertura=" + RequisitosApertura
-                + ", tipocliente=" + tipocliente + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas
-                + ", Estado=" + Estado + ", FechaCreacion=" + FechaCreacion + ", FechaModificacion=" + FechaModificacion
-                + ", tasaInteres=" + tasaInteres + "]";
+        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
+                + ", RequisitosApertura=" + RequisitosApertura + ", tipocliente=" + tipocliente
+                + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas + ", Estado=" + Estado + ", FechaCreacion="
+                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres 
+                + ", moneda=" + moneda + "]";
     }
+
+    
+    // ToString
 
 
 }

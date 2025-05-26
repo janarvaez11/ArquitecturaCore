@@ -2,9 +2,10 @@ package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.banquito.core.aplicacion.general.modelo.Moneda;
+
+//import com.banquito.core.aplicacion.general.modelo.Moneda;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "TiposPrestamos")
@@ -31,16 +32,16 @@ public class TipoPrestamo {
     @Column(name = "Descripcion", length = 100, nullable = false)
     private String descripcion;
 
-    @Column(name = "MontoMinito", precision = 15, scale = 2, nullable = false)
+    @Column(name = "MontoMinimo", precision = 15, scale = 2, nullable = false)
     private BigDecimal montoMinimo;
 
-    @Column(name = "MondoMaximo", precision = 15, scale = 2, nullable = false)
+    @Column(name = "MontoMaximo", precision = 15, scale = 2, nullable = false)
     private BigDecimal montoMaximo;
 
-    @Column(name = "PlazoMinimo", length = 2, nullable = false)
+    @Column(name = "PlazoMinimo", nullable = false)
     private Integer plazoMinimo;
 
-    @Column(name = "PlazoMaximo", length = 2, nullable = false)
+    @Column(name = "PlazoMaximo", nullable = false)
     private Integer plazoMaximo;
 
     @Column(name = "Requisitos", length = 300, nullable = false)
@@ -55,18 +56,15 @@ public class TipoPrestamo {
     @Column(name = "FechaCreacion", nullable = false)
     private LocalDate fechaCreacion;
 
-    @Column(name = "FechaModifica", nullable = false)
-    private LocalDate fechaModifica;
+    @Column(name = "FechaModificacion", nullable = false)
+    private LocalDate fechaModificacion;
 
-    @ManyToOne
-    @JoinColumn(name = "IdTipoPrestamo", referencedColumnName = "IdTipoPrestamo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
+    @JsonIgnoreProperties({"pais", "hibernateLazyInitializer"})
     private Moneda moneda;
 
-    @OneToMany(mappedBy = "tipoPrestamo")
-    private List<Garantia> Garantias;
-
-    @OneToMany(mappedBy = "tipoPrestamo")
-    private List<TipoPrestamo> TipoPrestamos;
+    
 
     // Constructor
     public TipoPrestamo() {
@@ -164,12 +162,12 @@ public class TipoPrestamo {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDate getFechaModifica() {
-        return fechaModifica;
+    public LocalDate getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public void setFechaModifica(LocalDate fechaModifica) {
-        this.fechaModifica = fechaModifica;
+    public void setFechaModificacion(LocalDate fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
     }
 
     public Moneda getMoneda() {
@@ -178,22 +176,6 @@ public class TipoPrestamo {
 
     public void setMoneda(Moneda moneda) {
         this.moneda = moneda;
-    }
-
-    public List<Garantia> getGarantias() {
-        return Garantias;
-    }
-
-    public void setGarantias(List<Garantia> garantias) {
-        this.Garantias = garantias;
-    }
-
-    public List<TipoPrestamo> getTipoPrestamos() {
-        return TipoPrestamos;
-    }
-
-    public void setTipoPrestamos(List<TipoPrestamo> tipoPrestamos) {
-        TipoPrestamos = tipoPrestamos;
     }
 
     @Override
@@ -226,7 +208,7 @@ public class TipoPrestamo {
         return "TipoPrestamo [IdTipoPrestamo=" + IdTipoPrestamo + ", nombre=" + nombre + ", descripcion=" + descripcion
                 + ", montoMinimo=" + montoMinimo + ", montoMaximo=" + montoMaximo + ", plazoMinimo=" + plazoMinimo
                 + ", plazoMaximo=" + plazoMaximo + ", requisitos=" + requisitos + ", tipoCliente=" + tipoCliente
-                + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModifica=" + fechaModifica
+                + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
                 + ", moneda=" + moneda + "]";
     }
 

@@ -1,10 +1,14 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
@@ -15,8 +19,9 @@ public class ServicioTipoCuenta {
     @EmbeddedId
     private ServicioTipoCuentaId id;
 
+    @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaAsignacion", nullable = false)
-    private Instant fechaAsignacion;
+    private Date fechaAsignacion;
 
     @ManyToOne()
     @JoinColumn(name = "IdServicio", referencedColumnName = "IdServicio", insertable = false, updatable = false)
@@ -41,11 +46,11 @@ public class ServicioTipoCuenta {
         this.id = id;
     }
 
-    public Instant getFechaAsignacion() {
+    public Date getFechaAsignacion() {
         return fechaAsignacion;
     }
 
-    public void setFechaAsignacion(Instant fechaAsignacion) {
+    public void setFechaAsignacion(Date fechaAsignacion) {
         this.fechaAsignacion = fechaAsignacion;
     }
 
@@ -97,5 +102,6 @@ public class ServicioTipoCuenta {
         return "ServicioTipoCuenta [id=" + id + ", fechaAsignacion=" + fechaAsignacion + ", servicioAsociado="
                 + servicioAsociado + ", cuenta=" + cuenta + "]";
     }
+
 
 }

@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
-import java.time.Instant;
+import java.util.Date;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "TasasIntereses")
@@ -24,17 +27,19 @@ public class TasaInteres {
     @Column(name = "MetodoCalculo", length = 20, nullable = false)
     private String MetodoCalculo;
 
-    @Column(name = "FrencuenciaCapitalizacion", length = 30, nullable = false)
-    private String FrencuenciaCapitalizacion;
+    @Column(name = "FrecuenciaCapitalizacion", length = 30, nullable = false)
+    private String FrecuenciaCapitalizacion;
 
     @Column(name = "Estado", length = 15, nullable = false)
-    private Instant Estado;
+    private String Estado;
 
-    @Column(name = "FechaInicioVigencia")
-    private Instant FechaInicioVigencia;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaInicioVigencia", nullable = false)
+    private Date FechaInicioVigencia;
 
-    @Column(name = "FechaFinVigencia")
-    private Instant FechaFinVigencia;
+    @Temporal (TemporalType.TIMESTAMP)
+    @Column(name = "FechaFinVigencia", nullable = false)
+    private Date FechaFinVigencia;
 
 
     // Constructores
@@ -70,35 +75,35 @@ public class TasaInteres {
         MetodoCalculo = metodoCalculo;
     }
 
-    public String getFrencuenciaCapitalizacion() {
-        return FrencuenciaCapitalizacion;
+    public String getFrecuenciaCapitalizacion() {
+        return FrecuenciaCapitalizacion;
     }
 
-    public void setFrencuenciaCapitalizacion(String frencuenciaCapitalizacion) {
-        FrencuenciaCapitalizacion = frencuenciaCapitalizacion;
+    public void setFrecuenciaCapitalizacion(String frecuenciaCapitalizacion) {
+        FrecuenciaCapitalizacion = frecuenciaCapitalizacion;
     }
 
-    public Instant getEstado() {
+    public String getEstado() {
         return Estado;
     }
 
-    public void setEstado(Instant estado) {
+    public void setEstado(String estado) {
         Estado = estado;
     }
 
-    public Instant getFechaInicioVigencia() {
+    public Date getFechaInicioVigencia() {
         return FechaInicioVigencia;
     }
 
-    public void setFechaInicioVigencia(Instant fechaInicioVigencia) {
+    public void setFechaInicioVigencia(Date fechaInicioVigencia) {
         FechaInicioVigencia = fechaInicioVigencia;
     }
 
-    public Instant getFechaFinVigencia() {
+    public Date getFechaFinVigencia() {
         return FechaFinVigencia;
     }
 
-    public void setFechaFinVigencia(Instant fechaFinVigencia) {
+    public void setFechaFinVigencia(Date fechaFinVigencia) {
         FechaFinVigencia = fechaFinVigencia;
     }
 
@@ -132,7 +137,7 @@ public class TasaInteres {
     @Override
     public String toString() {
         return "TasaInteres [IdTasaInteres=" + IdTasaInteres + ", BaseCalculo=" + BaseCalculo + ", MetodoCalculo="
-                + MetodoCalculo + ", FrencuenciaCapitalizacion=" + FrencuenciaCapitalizacion + ", Estado=" + Estado
+                + MetodoCalculo + ", FrecuenciaCapitalizacion=" + FrecuenciaCapitalizacion + ", Estado=" + Estado
                 + ", FechaInicioVigencia=" + FechaInicioVigencia + ", FechaFinVigencia=" + FechaFinVigencia + "]";
     }
 

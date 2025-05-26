@@ -28,22 +28,6 @@ public class RepresentanteServicio {
         return representanteRepositorio.findAll();
     }
 
-    public List<Representante> obtenerPorIdEmpresa(Integer idEmpresa) {
-
-        if (idEmpresa == null) {
-            throw new IllegalArgumentException("Id de empresa no puede ser nulo");
-        }
-
-        List<Representante> representantes = this.representanteRepositorio.findById_IdEmpresa(idEmpresa);
-
-        if (representantes.isEmpty()) {
-            throw new NoEncontradoExcepcion(idEmpresa.toString(), "Representantes");
-        }
-
-        return representantes;
-    }
-
-
 
     public Representante buscarPorId(RepresentanteId id) {
         Optional<Representante> representante = representanteRepositorio.findById(id);

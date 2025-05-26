@@ -1,16 +1,16 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "ComisionesPrestamos")
@@ -18,7 +18,7 @@ public class ComisionPrestamo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdComisionPrestamo", nullable = false)
+    @Column(name = "idComisionPrestamo", nullable = false)
     private Integer id;
 
     @Column(name = "Nombre", length = 100)
@@ -33,11 +33,9 @@ public class ComisionPrestamo {
     @Column(name = "Valor", precision = 15, scale = 2)
     private BigDecimal valor;
 
-    @Column(name = "FechaCreacion")
-    private LocalDateTime fechaCreacion;
-
-    @OneToMany(mappedBy = "comisionPrestamo")
-    private List<CondicionComisiones> condiciones;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fechaCreacion", updatable = false)
+    private Date fechaCreacion;
 
     public ComisionPrestamo() {
     }
@@ -83,23 +81,18 @@ public class ComisionPrestamo {
     }
 
     public void setValor(BigDecimal valor) {
+        if (this.tipoCalculo.equals("PORCENTAJE") && valor.compareTo(new BigDecimal("100")) > 0) {
+            throw new IllegalArgumentException("El porcentaje no puede ser mayor al 100%");
+        }
         this.valor = valor;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
-    }
-
-    public List<CondicionComisiones> getCondiciones() {
-        return condiciones;
-    }
-
-    public void setCondiciones(List<CondicionComisiones> condiciones) {
-        this.condiciones = condiciones;
     }
 
     @Override

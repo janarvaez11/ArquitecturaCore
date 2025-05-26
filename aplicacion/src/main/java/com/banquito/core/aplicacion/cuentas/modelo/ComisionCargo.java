@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -16,15 +18,12 @@ import jakarta.persistence.Table;
 
 public class ComisionCargo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdComisionCargo", nullable = false)
     private Integer IdComisionCargo;
 
     @Column(name = "TipoComision", length = 30, nullable = false)
     private String TipoComision;
-
-    @Column(name = "IdServicio", nullable = false)
-    private Integer IdServicio;
 
     @Column(name = "Nombre", length = 30, nullable = false)
     private String Nombre;
@@ -37,6 +36,13 @@ public class ComisionCargo {
 
     @Column(name = "Frecuencia", length = 30, nullable = false)
     private String Frecuencia;
+
+
+    //Relacion a la tabla ServiciosAsociados
+    @ManyToOne
+    @JoinColumn(name = "IdServicio", referencedColumnName = "IdServicio")
+    private ServicioAsociado servicioAsociado;
+
 
     //Relacion a la tabla ExencionCuentas y ComisionesCargos
     @OneToMany(mappedBy = "comision")
@@ -66,12 +72,7 @@ public class ComisionCargo {
     public void setTipoComision(String tipoComision) {
         TipoComision = tipoComision;
     }
-    public Integer getIdServicio() {
-        return IdServicio;
-    }
-    public void setIdServicio(Integer idServicio) {
-        IdServicio = idServicio;
-    }
+
     public String getNombre() {
         return Nombre;
     }
@@ -133,21 +134,12 @@ public class ComisionCargo {
             return false;
         return true;
     }
-
-    //ToString
     @Override
     public String toString() {
-        return "ComisionCargo [IdComisionCargo=" + IdComisionCargo + ", TipoComision=" + TipoComision + ", IdServicio="
-                + IdServicio + ", Nombre=" + Nombre + ", BaseCalculo=" + BaseCalculo + ", Monto=" + Monto
-                + ", Frecuencia=" + Frecuencia + ", exenciones=" + exenciones + ", cuentaComisionCargos="
+        return "ComisionCargo [IdComisionCargo=" + IdComisionCargo + ", TipoComision=" + TipoComision + ", Nombre="
+                + Nombre + ", BaseCalculo=" + BaseCalculo + ", Monto=" + Monto + ", Frecuencia=" + Frecuencia
+                + ", servicioAsociado=" + servicioAsociado + ", exenciones=" + exenciones + ", cuentaComisionCargos="
                 + cuentaComisionCargos + "]";
     }
-
-    
-
-
-    
-
-    
 
 }

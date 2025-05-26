@@ -20,9 +20,6 @@ public class TasaPlazo {
     @Column(name = "IdPlazo", nullable = false)
     private Integer IdPlazo;
 
-    @Column(name = "IdTasaInteres", nullable = false)
-    private Integer IdTasaInteres;
-
     @Column(name = "PlazoMinimo", nullable = false)
     private Integer PlazoMinimo;
 
@@ -70,14 +67,6 @@ public class TasaPlazo {
         PlazoMaximo = plazoMaximo;
     }
 
-    public Integer getIdTasaInteres() {
-        return IdTasaInteres;
-    }
-
-    public void setIdTasaInteres(Integer idTasaInteres) {
-        IdTasaInteres = idTasaInteres;
-    }
-
     public TasaInteres getTasaInteres() {
         return tasaInteres;
     }
@@ -120,11 +109,13 @@ public class TasaPlazo {
         return true;
     }
 
-    //toString
     @Override
     public String toString() {
-        return "TasaPlazo [IdPlazo=" + IdPlazo + ", IdTasaInteres=" + IdTasaInteres + ", PlazoMinimo=" + PlazoMinimo
-                + ", PlazoMaximo=" + PlazoMaximo + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
+        return "TasaPlazo [IdPlazo=" + IdPlazo + ", PlazoMinimo=" + PlazoMinimo + ", PlazoMaximo=" + PlazoMaximo
+                + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
     }
+
+    //toString
+
 
 }

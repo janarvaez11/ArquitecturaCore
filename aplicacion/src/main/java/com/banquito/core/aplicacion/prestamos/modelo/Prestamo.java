@@ -1,8 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,8 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "Prestamos")
@@ -36,17 +36,15 @@ public class Prestamo {
     @Column(name = "Estado", length = 20, nullable = false)
     private String estado;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion", nullable = false)
-    private LocalDateTime fechaModificacion;
+    private Date fechaModificacion;
 
     @Column(name = "BaseCalculo", length = 30, nullable = false)
     private String baseCalculo;
 
     @Column(name = "TasaMoratoria", precision = 5, scale = 2, nullable = false)
     private BigDecimal tasaMonetaria;
-
-    @OneToMany(mappedBy = "prestamo")
-    private List<Prestamo> Prestamos;
 
     public Prestamo() {
     }
@@ -95,11 +93,11 @@ public class Prestamo {
         this.estado = estado;
     }
 
-    public LocalDateTime getFechaModificacion() {
+    public Date getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(LocalDateTime fechaModificacion) {
+    public void setFechaModificacion(Date fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 
@@ -117,14 +115,6 @@ public class Prestamo {
 
     public void setTasaMonetaria(BigDecimal tasaMonetaria) {
         this.tasaMonetaria = tasaMonetaria;
-    }
-
-    public List<Prestamo> getPrestamos() {
-        return Prestamos;
-    }
-
-    public void setPrestamos(List<Prestamo> prestamos) {
-        Prestamos = prestamos;
     }
 
     @Override
