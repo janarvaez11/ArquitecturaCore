@@ -12,7 +12,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.ComisionPrestamoServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/comisionesPrestamos")
+@RequestMapping("/api/comisiones-prestamos")
 public class ComisionPrestamoControlador {
 
     private final ComisionPrestamoServicio comisionPrestamoServicio;
@@ -31,7 +31,7 @@ public class ComisionPrestamoControlador {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> crear(@RequestBody ComisionPrestamo comisionPrestamo) {
         try {
             comisionPrestamoServicio.create(comisionPrestamo);

@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.banquito.core.aplicacion.general.modelo.Moneda;
 
@@ -53,16 +53,14 @@ public class TipoPrestamo {
     private String estado;
 
     @Column(name = "FechaCreacion", nullable = false)
-    private LocalDate fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "FechaModificacion", nullable = false)
-    private LocalDate fechaModificacion;
+    private LocalDateTime fechaModificacion;
 
     @ManyToOne
     @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
     private Moneda moneda;
-
-    
 
     // Constructor
     public TipoPrestamo() {
@@ -152,19 +150,19 @@ public class TipoPrestamo {
         this.estado = estado;
     }
 
-    public LocalDate getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDate fechaCreacion) {
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDate getFechaModificacion() {
+    public LocalDateTime getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(LocalDate fechaModificacion) {
+    public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 

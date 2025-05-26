@@ -12,7 +12,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.CondicionComisionServicio
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/condicionesComisiones")
+@RequestMapping("/api/condiciones-comisiones")
 public class CondicionComisionControlador {
 
     private final CondicionComisionServicio condicionComisionServicio;
@@ -31,7 +31,7 @@ public class CondicionComisionControlador {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> crear(@RequestBody CondicionComision condicionComision) {
         try {
             condicionComisionServicio.create(condicionComision);
@@ -61,4 +61,4 @@ public class CondicionComisionControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-} 
+}

@@ -2,6 +2,8 @@ package com.banquito.core.aplicacion.prestamos.controlador;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +15,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
+import com.banquito.core.aplicacion.prestamos.servicio.PrestamoServicio;
 import com.banquito.core.aplicacion.prestamos.servicio.PrestamosClientesServicio;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/v1/prestamos-clientes")
+@RequestMapping("/api/prestamos-clientes")
 public class PrestamoClienteControlador {
+
+    private final PrestamoServicio prestamoServicio;
 
     private final PrestamosClientesServicio prestamosClientesServicio;
 
-    public PrestamoClienteControlador(PrestamosClientesServicio prestamosClientesServicio) {
+    public PrestamoClienteControlador(PrestamosClientesServicio prestamosClientesServicio,
+            PrestamoServicio prestamoServicio) {
         this.prestamosClientesServicio = prestamosClientesServicio;
+        this.prestamoServicio = prestamoServicio;
     }
 
     @GetMapping("/{id}")
@@ -43,6 +51,12 @@ public class PrestamoClienteControlador {
     @GetMapping
     public ResponseEntity<List<PrestamosClientes>> listarTodos() {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
+    }
+
+    // http://localhost:8080/api/prestamos-clientes?page=0&size=10
+    @GetMapping
+    public Page<PrestamosClientes> getAll(Pageable pageable) {
+        return prestamosClientesServicio.findAll(pageable);
     }
 
     @PostMapping

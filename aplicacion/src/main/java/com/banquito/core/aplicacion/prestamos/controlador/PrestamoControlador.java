@@ -31,7 +31,7 @@ public class PrestamoControlador {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Prestamo prestamo) {
         try {
             prestamoServicio.create(prestamo);
@@ -61,4 +61,4 @@ public class PrestamoControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-} 
+}

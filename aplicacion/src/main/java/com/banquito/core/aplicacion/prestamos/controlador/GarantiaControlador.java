@@ -30,7 +30,7 @@ public class GarantiaControlador {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Garantia garantia) {
         try {
             garantiaServicio.create(garantia);
@@ -60,4 +60,4 @@ public class GarantiaControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-} 
+}

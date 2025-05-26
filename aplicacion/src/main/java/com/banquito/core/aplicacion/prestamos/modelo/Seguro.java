@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,8 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "Seguros")
@@ -36,13 +34,11 @@ public class Seguro {
     @Column(name = "MontoAsegurado", precision = 15, scale = 2, nullable = false)
     private BigDecimal montoAsegurado;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaInicio", nullable = false)
-    private Date fechaInicio;
+    private LocalDateTime fechaInicio;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaFin", nullable = false)
-    private Date fechaFin;
+    private LocalDateTime fechaFin;
 
     @Column(name = "Estado", length = 20, nullable = false)
     private String estado;
@@ -94,19 +90,19 @@ public class Seguro {
         this.montoAsegurado = montoAsegurado;
     }
 
-    public Date getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Date getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
 

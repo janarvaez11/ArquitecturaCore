@@ -2,6 +2,7 @@ package com.banquito.core.aplicacion.prestamos.servicio;
 
 import java.util.Optional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -103,11 +104,11 @@ public class TipoPrestamosServicio {
 
             // Buscar la moneda por su ID y asignarla
             Moneda moneda = monedaRepositorio.findById(tipoPrestamo.getMoneda().getId())
-                .orElseThrow(() -> new CrearEntidadExcepcion("Tipo Prestamos", "La moneda especificada no existe"));
+                    .orElseThrow(() -> new CrearEntidadExcepcion("Tipo Prestamos", "La moneda especificada no existe"));
             tipoPrestamo.setMoneda(moneda);
 
-            tipoPrestamo.setFechaCreacion(LocalDate.now());
-            tipoPrestamo.setFechaModificacion(LocalDate.now());
+            tipoPrestamo.setFechaCreacion(LocalDateTime.now());
+            tipoPrestamo.setFechaModificacion(LocalDateTime.now());
             tipoPrestamo.setEstado("ACTIVO");
             this.repositorio.save(tipoPrestamo);
         } catch (CrearEntidadExcepcion rte) {
@@ -147,7 +148,7 @@ public class TipoPrestamosServicio {
                 tipoPrestamoDb.setRequisitos(tipoPrestamo.getRequisitos());
                 tipoPrestamoDb.setTipoCliente(tipoPrestamo.getTipoCliente());
                 tipoPrestamoDb.setEstado(tipoPrestamo.getEstado());
-                tipoPrestamoDb.setFechaModificacion(LocalDate.now());
+                tipoPrestamoDb.setFechaModificacion(LocalDateTime.now());
 
                 this.repositorio.save(tipoPrestamoDb);
             } else {
