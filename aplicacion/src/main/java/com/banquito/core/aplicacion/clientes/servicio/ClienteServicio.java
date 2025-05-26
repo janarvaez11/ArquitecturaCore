@@ -7,6 +7,10 @@ import com.banquito.core.aplicacion.clientes.excepcion.CrearClienteExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.ActualizarClienteExcepcion;
 import com.banquito.core.aplicacion.clientes.repositorio.EmpresaRepositorio;
 import com.banquito.core.aplicacion.clientes.repositorio.PersonaRepositorio;
+import com.banquito.core.aplicacion.general.modelo.Pais;
+import com.banquito.core.aplicacion.general.modelo.Sucursal;
+import com.banquito.core.aplicacion.general.repositorio.PaisRepositorio;
+import com.banquito.core.aplicacion.general.repositorio.SucursalRepositorio;
 import org.springframework.data.domain.PageRequest;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +23,19 @@ public class ClienteServicio {
     private final ClienteRepositorio clienteRepositorio;
     private final PersonaRepositorio personaRepositorio;
     private final EmpresaRepositorio empresaRepositorio;
+    private final PaisRepositorio paisRepositorio;
+    private final SucursalRepositorio sucursalRepositorio;
 
     public ClienteServicio(ClienteRepositorio clienteRepositorio,
             PersonaRepositorio personaRepositorio,
-            EmpresaRepositorio empresaRepositorio) {
+            EmpresaRepositorio empresaRepositorio,
+            PaisRepositorio paisRepositorio,
+            SucursalRepositorio sucursalRepositorio) {
         this.clienteRepositorio = clienteRepositorio;
         this.personaRepositorio = personaRepositorio;
         this.empresaRepositorio = empresaRepositorio;
+        this.paisRepositorio = paisRepositorio;
+        this.sucursalRepositorio = sucursalRepositorio;
     }
 
     public List<Cliente> buscarPrimeros10() {
@@ -39,13 +49,33 @@ public class ClienteServicio {
 
     public Cliente crear(Cliente cliente) {
         try {
-            validarTipoEntidad(cliente); // ← ¡AQUÍ es donde debe usarse!
+            validarTipoEntidad(cliente);
+            validarReferencias(cliente);
+            
             cliente.setFechaCreacion(new Date());
             cliente.setEstado("ACTIVO");
             return clienteRepositorio.save(cliente);
         } catch (Exception e) {
-            throw new CrearClienteExcepcion("Error al crear cliente");
+            throw new CrearClienteExcepcion("Error al crear cliente: " + e.getMessage());
         }
+    }
+
+    private void validarReferencias(Cliente cliente) {
+        // Validar País
+        if (cliente.getPais() == null || cliente.getPais().getId() == null) {
+            throw new CrearClienteExcepcion("El país es requerido");
+        }
+        Pais pais = paisRepositorio.findById(cliente.getPais().getId())
+                .orElseThrow(() -> new CrearClienteExcepcion("País no encontrado con ID: " + cliente.getPais().getId()));
+        cliente.setPais(pais);
+
+        // Validar Sucursal
+        if (cliente.getSucursal() == null || cliente.getSucursal().getIdSucursal() == null) {
+            throw new CrearClienteExcepcion("La sucursal es requerida");
+        }
+        Sucursal sucursal = sucursalRepositorio.findById(cliente.getSucursal().getIdSucursal())
+                .orElseThrow(() -> new CrearClienteExcepcion("Sucursal no encontrada con ID: " + cliente.getSucursal().getIdSucursal()));
+        cliente.setSucursal(sucursal);
     }
 
     public Cliente modificar(Cliente cliente) {

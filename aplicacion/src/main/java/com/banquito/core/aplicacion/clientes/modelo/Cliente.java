@@ -24,7 +24,7 @@ public class Cliente {
     private Integer idEntidad;
 
     @ManyToOne
-    @JoinColumn(name = "IdPais", referencedColumnName = "IdPais", nullable = false)
+    @JoinColumn(name = "id_pais", referencedColumnName = "IdPais", nullable = false)
     private Pais pais;
 
     @ManyToOne
