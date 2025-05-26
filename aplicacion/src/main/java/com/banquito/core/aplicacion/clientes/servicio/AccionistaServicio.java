@@ -5,7 +5,6 @@ import com.banquito.core.aplicacion.clientes.excepcion.CrearExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.EliminarExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.NoEncontradoExcepcion;
 import com.banquito.core.aplicacion.clientes.modelo.Accionista;
-import com.banquito.core.aplicacion.clientes.modelo.Empresa;
 import com.banquito.core.aplicacion.clientes.repositorio.AccionistaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
