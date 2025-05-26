@@ -1,9 +1,12 @@
 package com.banquito.core.aplicacion.prestamos.controlador;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CondicionComisionNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
@@ -28,6 +31,16 @@ public class CondicionComisionControlador {
             return ResponseEntity.ok(condicion);
         } catch (CondicionComisionNoEncontradoExcepcion e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/tipo/{tipoCondicion}")
+    public ResponseEntity<List<CondicionComision>> obtenerPorTipoCondicion(@PathVariable String tipoCondicion) {
+        try {
+            List<CondicionComision> condiciones = condicionComisionServicio.findByTipoCondicion(tipoCondicion);
+            return ResponseEntity.ok(condiciones);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 

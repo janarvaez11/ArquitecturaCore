@@ -34,7 +34,7 @@ public class ComisionPrestamo {
     private BigDecimal valor;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fechaCreacion")
+    @Column(name = "fechaCreacion", updatable = false)
     private Date fechaCreacion;
 
     public ComisionPrestamo() {
@@ -81,6 +81,9 @@ public class ComisionPrestamo {
     }
 
     public void setValor(BigDecimal valor) {
+        if (this.tipoCalculo.equals("PORCENTAJE") && valor.compareTo(new BigDecimal("100")) > 0) {
+            throw new IllegalArgumentException("El porcentaje no puede ser mayor al 100%");
+        }
         this.valor = valor;
     }
 
