@@ -13,6 +13,7 @@ public class Feriado {
     @Column(name = "IdFeriado", nullable = false)
     private Integer id;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "FechaFeriado", nullable = false)
     private Date fechaFeriado;
 

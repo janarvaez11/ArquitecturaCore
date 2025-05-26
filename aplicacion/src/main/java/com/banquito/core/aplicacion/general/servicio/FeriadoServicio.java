@@ -1,5 +1,6 @@
 package com.banquito.core.aplicacion.general.servicio;
 
+import com.banquito.core.aplicacion.general.excepcion.CrearEntidadException;
 import com.banquito.core.aplicacion.general.excepcion.FeriadoNoEncontradoException;
 import com.banquito.core.aplicacion.general.modelo.Feriado;
 import com.banquito.core.aplicacion.general.repositorio.FeriadoRepositorio;
@@ -28,23 +29,30 @@ public class FeriadoServicio {
         this.locaciongeograficarepositorio = locaciongeograficarepositorio;
     }
 
-
     @Transactional
     public void crearFeriadoPorPais(Feriado feriado, String paisId) {
-        Pais pais = paisrepositorio.findById(paisId)
-                .orElseThrow(() -> new IllegalArgumentException("País no encontrado"));
-        feriado.setPais(pais);
-        feriado.setLocacion(null);
-        feriadorepositorio.save(feriado);
+        try {
+            Pais pais = paisrepositorio.findById(paisId)
+                    .orElseThrow(() -> new IllegalArgumentException("País no encontrado"));
+            feriado.setPais(pais);
+            feriado.setLocacion(null);
+            feriadorepositorio.save(feriado);
+        } catch (RuntimeException rte) {
+            throw new CrearEntidadException("Feriado", "Error al crear el feriado por país. Texto del error: " + rte.getMessage());
+        }
     }
 
     @Transactional
     public void crearFeriadoPorLocacion(Feriado feriado, Integer locacionId) {
-        LocacionGeografica locacion = locaciongeograficarepositorio.findById(locacionId)
-                .orElseThrow(() -> new IllegalArgumentException("Locación no encontrada"));
-        feriado.setLocacion(locacion);
-        feriado.setPais(locacion.getPais());
-        feriadorepositorio.save(feriado);
+        try {
+            LocacionGeografica locacion = locaciongeograficarepositorio.findById(locacionId)
+                    .orElseThrow(() -> new IllegalArgumentException("Locación no encontrada"));
+            feriado.setLocacion(locacion);
+            feriado.setPais(locacion.getPais());
+            feriadorepositorio.save(feriado);
+        } catch (RuntimeException rte) {
+            throw new CrearEntidadException("Feriado", "Error al crear el feriado por locación. Texto del error: " + rte.getMessage());
+        }
     }
 
     public Map<String, Object> findById(Integer id) {
