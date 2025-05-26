@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
 import com.banquito.core.aplicacion.prestamos.servicio.PrestamoServicio;
 import com.banquito.core.aplicacion.prestamos.servicio.PrestamosClientesServicio;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/prestamos-clientes")
