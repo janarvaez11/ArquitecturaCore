@@ -21,7 +21,7 @@ public class Feriado {
     private Pais pais;
 
     @ManyToOne
-    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = false)
+    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = true)
     private LocacionGeografica locacion;
 
     @Column(name = "Nombre", length = 25, nullable = false)
