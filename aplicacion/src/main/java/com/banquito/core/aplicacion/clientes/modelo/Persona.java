@@ -13,7 +13,7 @@ public class Persona {
     private Integer idPersona;
 
     @Column(name = "TipoIdentificacion", length = 10, nullable = false)
-    private String tipoIdentificación;
+    private String tipoIdentificacion;
 
     @Column(name = "NumeroIdentificacion", length = 10, nullable = false)
     private String numeroIdentificacion;
@@ -61,12 +61,12 @@ public class Persona {
         this.idPersona = idPersona;
     }
 
-    public String getTipoIdentificación() {
-        return tipoIdentificación;
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
     }
 
-    public void setTipoIdentificación(String tipoIdentificación) {
-        this.tipoIdentificación = tipoIdentificación;
+    public void setTipoIdentificacion(String tipoIdentificacion) {
+        this.tipoIdentificacion = tipoIdentificacion;
     }
 
     public String getNumeroIdentificacion() {
@@ -186,7 +186,7 @@ public class Persona {
     public String toString() {
         return "Persona{" +
                 "idPersona=" + idPersona +
-                ", tipoIdentificación='" + tipoIdentificación + '\'' +
+                ", tipoIdentificacion='" + tipoIdentificacion + '\'' +
                 ", numeroIdentificacion='" + numeroIdentificacion + '\'' +
                 ", nombres='" + nombres + '\'' +
                 ", genero='" + genero + '\'' +

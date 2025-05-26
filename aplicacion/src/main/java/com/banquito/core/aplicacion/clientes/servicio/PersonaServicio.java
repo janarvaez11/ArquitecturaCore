@@ -27,7 +27,7 @@ public class PersonaServicio {
         return personaRepositorio.findAll();
     }
 
-    public Persona buscarPorId(Integer id) {
+    /*public Persona buscarPorId(Integer id) {
         Optional<Persona> persona = personaRepositorio.findById(id);
         if (persona.isPresent()) {
             return persona.get();
@@ -35,7 +35,7 @@ public class PersonaServicio {
             throw new NoEncontradoExcepcion("Persona","El id:" + id + "No corresponde a niguna persona registrada");
         }
 
-    }
+    }*/
 
     public Persona buscarPorNumeroIdentificacion(String numeroIdentificacion) {
         return personaRepositorio.findByNumeroIdentificacion(numeroIdentificacion)
@@ -59,8 +59,8 @@ public class PersonaServicio {
             if (personaOptional.isPresent()) {
                 Persona personaDB = personaOptional.get();
 
-                if (persona.getTipoIdentificación() != null) {
-                    personaDB.setTipoIdentificación(persona.getTipoIdentificación());
+                if (persona.getTipoIdentificacion() != null) {
+                    personaDB.setTipoIdentificacion(persona.getTipoIdentificacion());
                 }
 
                 if (persona.getEstadoCivil() != null) {

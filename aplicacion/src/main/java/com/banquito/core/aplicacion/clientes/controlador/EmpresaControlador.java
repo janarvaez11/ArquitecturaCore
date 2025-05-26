@@ -17,12 +17,6 @@ public class EmpresaControlador {
         this.empresaServicio = empresaServicio;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Empresa> obtenerPorId(@PathVariable Integer id) {
-        Empresa empresa = empresaServicio.buscarPorId(id);
-        return ResponseEntity.ok(empresa);
-    }
-
     @GetMapping
     public ResponseEntity<List<Empresa>> listarTodas() {
         List<Empresa> empresas = empresaServicio.buscarTodas();

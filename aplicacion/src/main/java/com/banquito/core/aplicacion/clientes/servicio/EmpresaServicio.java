@@ -24,14 +24,14 @@ public class EmpresaServicio {
         return empresaRepositorio.findAll();
     }
 
-    public Empresa buscarPorId(Integer id) {
+    /*public Empresa buscarPorId(Integer id) {
         Optional<Empresa> empresa = empresaRepositorio.findById(id);
         if (empresa.isPresent()) {
             return empresa.get();
         }else {
             throw new NoEncontradoExcepcion("Empresa","Error al buscar la empresa:" + id);
         }
-    }
+    }*/
 
     public Empresa buscarPorNumeroIdentificacion(String numeroIdentificacion) {
         Optional<Empresa> empresa = empresaRepositorio.findByNumeroIdentificacion(numeroIdentificacion);

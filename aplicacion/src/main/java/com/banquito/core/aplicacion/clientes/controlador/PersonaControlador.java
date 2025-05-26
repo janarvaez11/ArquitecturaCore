@@ -17,11 +17,6 @@ public class PersonaControlador {
         this.personaServicio = personaServicio;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Persona> obtenerPorId(@PathVariable Integer id) {
-        return ResponseEntity.ok(personaServicio.buscarPorId(id));
-    }
-
     @GetMapping
     public ResponseEntity<List<Persona>> listarTodos() {
         return ResponseEntity.ok(personaServicio.buscarTodos());
