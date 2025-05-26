@@ -7,5 +7,4 @@ import com.banquito.core.aplicacion.cuentas.modelo.ExencionCuenta;
 
 @Repository
 public interface ExencionCuentaRepositorio extends JpaRepository<ExencionCuenta, Integer> {
-    // Aquí puedes agregar métodos personalizados de búsqueda si los necesitas
 }

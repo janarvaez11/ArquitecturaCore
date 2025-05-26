@@ -5,8 +5,8 @@ public class ComisionCargoNoEncontradaExcepcion extends RuntimeException {
     private final Integer errorCode;
     private final String entidad;
 
-    public ComisionCargoNoEncontradaExcepcion(String entidad, String message) {
-        super(message);
+    public ComisionCargoNoEncontradaExcepcion(String entidad, String mensaje) {
+        super(String.format("La entidad %s no fue encontrada. %s", entidad, mensaje));
         this.errorCode = 1;
         this.entidad = entidad;
     }
