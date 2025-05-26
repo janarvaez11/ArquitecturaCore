@@ -3,6 +3,7 @@ package com.banquito.core.aplicacion.prestamos.controlador;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
@@ -23,64 +24,69 @@ public class TipoPrestamoControlador {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TipoPrestamo> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<?> obtenerPorId(@PathVariable Integer id) {
         try {
             TipoPrestamo tipoPrestamo = tipoPrestamosServicio.findById(id);
             return ResponseEntity.ok(tipoPrestamo);
         } catch (BusquedaExcepcion e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error: " + e.getMessage());
         }
     }
 
     @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<TipoPrestamo>> obtenerPorEstado(@PathVariable String estado) {
+    public ResponseEntity<?> obtenerPorEstado(@PathVariable String estado) {
         try {
             List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByEstado(estado);
             return ResponseEntity.ok(tiposPrestamo);
         } catch (BusquedaExcepcion e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
         }
     }
 
     @GetMapping("/tipoCliente/{tipoCliente}")
-    public ResponseEntity<List<TipoPrestamo>> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
+    public ResponseEntity<?> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
         try {
             List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByTipoCliente(tipoCliente);
             return ResponseEntity.ok(tiposPrestamo);
         } catch (BusquedaExcepcion e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> crear(@RequestBody TipoPrestamo tipoPrestamo) {
+    public ResponseEntity<?> crear(@RequestBody TipoPrestamo tipoPrestamo) {
         try {
             tipoPrestamosServicio.create(tipoPrestamo);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (CrearEntidadExcepcion e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al crear: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody TipoPrestamo tipoPrestamo) {
+    public ResponseEntity<?> actualizar(@PathVariable Integer id, @RequestBody TipoPrestamo tipoPrestamo) {
         try {
             tipoPrestamo.setIdTipoPrestamo(id);
             tipoPrestamosServicio.update(tipoPrestamo);
             return ResponseEntity.ok().build();
         } catch (ActualizarEntidadExcepcion e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al actualizar: " + e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
         try {
             tipoPrestamosServicio.delete(id);
             return ResponseEntity.ok().build();
         } catch (EliminarEntidadExcepcion e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al eliminar: " + e.getMessage());
         }
     }
-    
 } 

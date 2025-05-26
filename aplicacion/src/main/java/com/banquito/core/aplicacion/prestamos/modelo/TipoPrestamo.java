@@ -2,7 +2,7 @@ package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.banquito.core.aplicacion.general.modelo.Moneda;
 
 //import com.banquito.core.aplicacion.general.modelo.Moneda;
@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "TiposPrestamos")
@@ -58,8 +59,9 @@ public class TipoPrestamo {
     @Column(name = "FechaModificacion", nullable = false)
     private LocalDate fechaModificacion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
+    @JsonIgnoreProperties({"pais", "hibernateLazyInitializer"})
     private Moneda moneda;
 
     
