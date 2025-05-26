@@ -2,7 +2,6 @@ package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
