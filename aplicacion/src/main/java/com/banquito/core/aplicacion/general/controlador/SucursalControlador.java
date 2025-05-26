@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.general.controlador;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,29 +39,23 @@ public class SucursalControlador {
     }
 
     @GetMapping("/{codigo}")
-    public ResponseEntity<Sucursal> obtenerPorCodigo(@PathVariable String codigo) {
+    public ResponseEntity<Map<String, Object>> obtenerPorCodigo(@PathVariable String codigo) {
         return ResponseEntity.ok(sucursalServicio.obtenerPorCodigo(codigo));
     }
 
     @GetMapping
-    public ResponseEntity<List<Sucursal>> listarTodas() {
+    public ResponseEntity<List<Map<String, Object>>> listarTodas() {
         return ResponseEntity.ok(sucursalServicio.listarTodas());
     }
 
     @GetMapping("/activas")
-    public ResponseEntity<List<Sucursal>> listarActivas() {
+    public ResponseEntity<List<Map<String, Object>>> listarActivas() {
         return ResponseEntity.ok(sucursalServicio.listarActivas());
     }
 
     @GetMapping("/locacion/{idLocacion}")
-    public ResponseEntity<List<Sucursal>> buscarPorLocacion(@PathVariable Integer idLocacion) {
+    public ResponseEntity<List<Map<String, Object>>> buscarPorLocacion(@PathVariable Integer idLocacion) {
         return ResponseEntity.ok(sucursalServicio.buscarPorLocacion(idLocacion));
     }
 
-    @GetMapping("/entidad-bancaria/{idEntidadBancaria}/estado/{estado}")
-    public ResponseEntity<List<Sucursal>> buscarPorEntidadBancariaYEstado(
-            @PathVariable Integer idEntidadBancaria,
-            @PathVariable String estado) {
-        return ResponseEntity.ok(sucursalServicio.buscarPorEntidadBancariaYEstado(idEntidadBancaria, estado));
-    }
 }
