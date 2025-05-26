@@ -16,6 +16,7 @@ import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion
 import com.banquito.core.aplicacion.prestamos.excepcion.TipoPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.TipoPrestamoRepositorio;
+import com.banquito.core.aplicacion.general.modelo.Moneda;
 
 import jakarta.transaction.Transactional;
 
@@ -27,10 +28,9 @@ public class TipoPrestamosServicio {
 
     // Lista de tipos de cliente permitidos
     private static final List<String> TIPOS_CLIENTE_PERMITIDOS = Arrays.asList(
-            "Persona Natural",
-            "Persona Jurídica",
-            "Ambos",
-            "Segmento Específico");
+            "PERSONA NATURAL",
+            "EMPRESA JURIDICA",
+            "AMBOS");
 
     public TipoPrestamosServicio(TipoPrestamoRepositorio repositorio, MonedaRepositorio monedaRepositorio) {
         this.repositorio = repositorio;
@@ -101,14 +101,16 @@ public class TipoPrestamosServicio {
                         "Ya existe un tipo de préstamo con el nombre: " + tipoPrestamo.getNombre());
             }
 
-            tipoPrestamo.setMoneda(monedaRepositorio.findById(tipoPrestamo.getMoneda().getId().toString()).get());
+            // Buscar la moneda por su ID y asignarla
+            Moneda moneda = monedaRepositorio.findById(tipoPrestamo.getMoneda().getId())
+                .orElseThrow(() -> new CrearEntidadExcepcion("Tipo Prestamos", "La moneda especificada no existe"));
+            tipoPrestamo.setMoneda(moneda);
+
             tipoPrestamo.setFechaCreacion(LocalDate.now());
             tipoPrestamo.setFechaModificacion(LocalDate.now());
             tipoPrestamo.setEstado("ACTIVO");
             this.repositorio.save(tipoPrestamo);
-        } catch (CrearEntidadExcepcion e) {
-            throw e;
-        } catch (Exception rte) {
+        } catch (CrearEntidadExcepcion rte) {
             throw new CrearEntidadExcepcion("Tipo Prestamos",
                     "Error al crear el Tipo de préstamo. Texto del error: " + rte.getMessage());
         }
@@ -178,13 +180,9 @@ public class TipoPrestamosServicio {
     }
 
     private void validarTipoPrestamo(TipoPrestamo tipoPrestamo) {
-        // Validación de moneda
-        if (tipoPrestamo.getMoneda() == null || tipoPrestamo.getMoneda().getId() == null) {
-            throw new CrearEntidadExcepcion("Tipo Prestamos", "Debe especificar una moneda base válida");
-        }
-        if (!monedaRepositorio.existsById(tipoPrestamo.getMoneda().getId().toString())) {
-            throw new CrearEntidadExcepcion("Tipo Prestamos",
-                    "La moneda con ID " + tipoPrestamo.getMoneda().getId() + " no existe");
+        // Validación de moneda - solo verificar que no sea nula
+        if (tipoPrestamo.getMoneda() == null) {
+            throw new CrearEntidadExcepcion("Tipo Prestamos", "Debe especificar una moneda");
         }
 
         // Validación de montos
