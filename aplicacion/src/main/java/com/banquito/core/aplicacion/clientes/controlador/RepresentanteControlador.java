@@ -35,12 +35,6 @@ public class RepresentanteControlador {
         return ResponseEntity.ok(representantes);
     }
 
-    @GetMapping("/{idEmpresa}")
-    public ResponseEntity<List<Representante>> obtenerPorIdEmpresa(@PathVariable Integer idEmpresa) {
-        List<Representante> representantes = representanteServicio.obtenerPorIdEmpresa(idEmpresa);
-        return ResponseEntity.ok(representantes);
-    }
-
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Representante representante) {
         representanteServicio.crear(representante);

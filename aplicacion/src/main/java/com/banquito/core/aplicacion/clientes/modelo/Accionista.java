@@ -10,54 +10,54 @@ public class Accionista {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdAccionista", nullable = false)
-    private Integer IdAccionista;
+    private Integer idAccionista;
 
     @ManyToOne
     @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa")
-    private Empresa IdEmpresa;
+    private Empresa empresa;
 
     @Column(name = "Participacion", precision = 5, scale = 2, nullable = false)
-    private BigDecimal Participacion;
+    private BigDecimal participacion;
 
     @Column(name = "TipoEntidad",  length = 50, nullable = false)
-    private String TipoEntidad;
+    private String tipoEntidad;
 
     public Accionista() {}
 
     public Accionista(Integer IdAccionista){
-        this.IdAccionista = IdAccionista;
+        this.idAccionista = IdAccionista;
     }
 
     public Integer getIdAccionista() {
-        return IdAccionista;
+        return idAccionista;
     }
 
     public void setIdAccionista(Integer idAccionista) {
-        IdAccionista = idAccionista;
+        this.idAccionista = idAccionista;
     }
 
-    public Empresa getIdEmpresa() {
-        return IdEmpresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setIdEmpresa(Empresa idEmpresa) {
-        IdEmpresa = idEmpresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public BigDecimal getParticipacion() {
-        return Participacion;
+        return participacion;
     }
 
     public void setParticipacion(BigDecimal participacion) {
-        Participacion = participacion;
+        this.participacion = participacion;
     }
 
     public String getTipoEntidad() {
-        return TipoEntidad;
+        return tipoEntidad;
     }
 
     public void setTipoEntidad(String tipoEntidad) {
-        TipoEntidad = tipoEntidad;
+        this.tipoEntidad = tipoEntidad;
     }
 
     @Override
@@ -69,10 +69,10 @@ public class Accionista {
         if (getClass() != obj.getClass())
             return false;
         Accionista other = (Accionista) obj;
-        if (IdAccionista == null) {
-            if (other.IdAccionista != null)
+        if (idAccionista == null) {
+            if (other.idAccionista != null)
                 return false;
-        } else if (!IdAccionista.equals(other.IdAccionista))
+        } else if (!idAccionista.equals(other.idAccionista))
             return false;
         return true;
     }
@@ -81,17 +81,17 @@ public class Accionista {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdAccionista == null) ? 0 : IdAccionista.hashCode());
+        result = prime * result + ((idAccionista == null) ? 0 : idAccionista.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
         return "Accionista{" +
-                "IdAccionista=" + IdAccionista +
-                ", IdEmpresa=" + IdEmpresa +
-                ", Participacion=" + Participacion +
-                ", TipoEntidad='" + TipoEntidad + '\'' +
+                "IdAccionista=" + idAccionista +
+                ", IdEmpresa=" + empresa +
+                ", Participacion=" + participacion +
+                ", TipoEntidad='" + tipoEntidad + '\'' +
                 '}';
     }
 }

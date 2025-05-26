@@ -29,12 +29,6 @@ public class AccionistaControlador {
         return ResponseEntity.ok(accionistas);
     }
 
-    @GetMapping("/{idEmpresa}")
-    public ResponseEntity<List<Accionista>> obtenerPorIdEmpresa(@PathVariable Integer idEmpresa) {
-        List<Accionista> accionistas = accionistaServicio.obtenerPorIdEmpresa(idEmpresa);
-        return ResponseEntity.ok(accionistas);
-    }
-
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Accionista accionista) {

@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface RepresentanteRepositorio extends JpaRepository<Representante, RepresentanteId> {
 
-    List<Representante> findById_IdEmpresa(Integer idEmpresa);
 }
