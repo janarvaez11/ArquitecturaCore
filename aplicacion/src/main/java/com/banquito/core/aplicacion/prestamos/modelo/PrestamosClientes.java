@@ -1,29 +1,25 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "PrestamosClientes")
 public class PrestamosClientes {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PrestamosClientes_id_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdPrestamoCliente", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @ManyToOne
     @JoinColumn(name = "IdCliente")
     private Cliente idCliente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
+    @ManyToOne
     @JoinColumn(name = "IdPrestamo")
     private Prestamo idPrestamo;
 
@@ -31,13 +27,13 @@ public class PrestamosClientes {
     private String estado;
 
     @Column(name = "FechaAprobacion")
-    private Instant fechaAprobacion;
+    private LocalDateTime fechaAprobacion;
 
     @Column(name = "FechaDesembolso")
-    private Instant fechaDesembolso;
+    private LocalDateTime fechaDesembolso;
 
     @Column(name = "FechaVencimiento")
-    private Instant fechaVencimiento;
+    private LocalDateTime fechaVencimiento;
 
     public PrestamosClientes() {
     }
@@ -70,36 +66,36 @@ public class PrestamosClientes {
         this.estado = estado;
     }
 
-    public Instant getFechaAprobacion() {
-        return fechaAprobacion;
-    }
-
-    public void setFechaAprobacion(Instant fechaAprobacion) {
-        this.fechaAprobacion = fechaAprobacion;
-    }
-
-    public Instant getFechaDesembolso() {
-        return fechaDesembolso;
-    }
-
-    public void setFechaDesembolso(Instant fechaDesembolso) {
-        this.fechaDesembolso = fechaDesembolso;
-    }
-
-    public Instant getFechaVencimiento() {
-        return fechaVencimiento;
-    }
-
-    public void setFechaVencimiento(Instant fechaVencimiento) {
-        this.fechaVencimiento = fechaVencimiento;
-    }
-
     public Cliente getIdCliente() {
         return idCliente;
     }
 
     public void setIdCliente(Cliente idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public LocalDateTime getFechaAprobacion() {
+        return fechaAprobacion;
+    }
+
+    public void setFechaAprobacion(LocalDateTime fechaAprobacion) {
+        this.fechaAprobacion = fechaAprobacion;
+    }
+
+    public LocalDateTime getFechaDesembolso() {
+        return fechaDesembolso;
+    }
+
+    public void setFechaDesembolso(LocalDateTime fechaDesembolso) {
+        this.fechaDesembolso = fechaDesembolso;
+    }
+
+    public LocalDateTime getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(LocalDateTime fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
 
     @Override

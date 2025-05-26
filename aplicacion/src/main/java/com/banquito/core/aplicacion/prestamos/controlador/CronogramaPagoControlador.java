@@ -15,7 +15,7 @@ import com.banquito.core.aplicacion.prestamos.modelo.CronogramasPagos;
 import com.banquito.core.aplicacion.prestamos.servicio.CronogramasPagosServicio;
 
 @RestController
-@RequestMapping("/api/v1/cronogramas-pagos")
+@RequestMapping("/api/cronogramas-pagos")
 public class CronogramaPagoControlador {
 
     private final CronogramasPagosServicio servicio;
