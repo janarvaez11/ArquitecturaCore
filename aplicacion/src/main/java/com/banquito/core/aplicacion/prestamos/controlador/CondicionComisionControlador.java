@@ -15,7 +15,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.CondicionComisionServicio
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/condiciones-comisiones")
+@RequestMapping("/api/condicionesComisiones")
 public class CondicionComisionControlador {
 
     private final CondicionComisionServicio condicionComisionServicio;
@@ -34,7 +34,17 @@ public class CondicionComisionControlador {
         }
     }
 
-    @PostMapping
+    @GetMapping("/tipo/{tipoCondicion}")
+    public ResponseEntity<List<CondicionComision>> obtenerPorTipoCondicion(@PathVariable String tipoCondicion) {
+        try {
+            List<CondicionComision> condiciones = condicionComisionServicio.findByTipoCondicion(tipoCondicion);
+            return ResponseEntity.ok(condiciones);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<Void> crear(@RequestBody CondicionComision condicionComision) {
         try {
             condicionComisionServicio.create(condicionComision);
@@ -64,4 +74,4 @@ public class CondicionComisionControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-}
+} 

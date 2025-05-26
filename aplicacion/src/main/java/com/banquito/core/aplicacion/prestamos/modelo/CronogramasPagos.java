@@ -11,11 +11,11 @@ import java.util.Objects;
 @Table(name = "CronogramasPagos")
 public class CronogramasPagos {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CronogramasPagos_id_gen")
     @Column(name = "IdCuota", nullable = false)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdPrestamoCliente")
     private PrestamosClientes idPrestamoCliente;
 

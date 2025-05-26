@@ -39,12 +39,12 @@ public class PrestamoComisionControlador {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> crear(@RequestBody PrestamoComisionCargo prestamoComisionCargo) {
         try {
-            if (prestamoComisionCargo.getId() == null ||
-                    prestamoComisionCargo.getId().getIdPrestamo() == null ||
-                    prestamoComisionCargo.getId().getIdComisionPrestamo() == null) {
+            if (prestamoComisionCargo.getId() == null || 
+                prestamoComisionCargo.getId().getIdPrestamo() == null || 
+                prestamoComisionCargo.getId().getIdComisionPrestamo() == null) {
                 Map<String, String> error = new HashMap<>();
                 error.put("error", "Se requieren los IDs de préstamo y comisión");
                 return ResponseEntity.badRequest().body(error);
@@ -97,4 +97,5 @@ public class PrestamoComisionControlador {
             return ResponseEntity.badRequest().body(error);
         }
     }
-}
+    */
+} 

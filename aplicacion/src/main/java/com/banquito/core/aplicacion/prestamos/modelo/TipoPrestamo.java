@@ -1,8 +1,8 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.banquito.core.aplicacion.general.modelo.Moneda;
 
 //import com.banquito.core.aplicacion.general.modelo.Moneda;
@@ -54,15 +54,17 @@ public class TipoPrestamo {
     private String estado;
 
     @Column(name = "FechaCreacion", nullable = false)
-    private LocalDateTime fechaCreacion;
+    private LocalDate fechaCreacion;
 
     @Column(name = "FechaModificacion", nullable = false)
-    private LocalDateTime fechaModificacion;
+    private LocalDate fechaModificacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
     @JsonIgnoreProperties({"pais", "hibernateLazyInitializer"})
     private Moneda moneda;
+
+    
 
     // Constructor
     public TipoPrestamo() {
@@ -152,19 +154,19 @@ public class TipoPrestamo {
         this.estado = estado;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+    public void setFechaCreacion(LocalDate fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public LocalDateTime getFechaModificacion() {
+    public LocalDate getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(LocalDateTime fechaModificacion) {
+    public void setFechaModificacion(LocalDate fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 

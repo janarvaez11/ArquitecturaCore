@@ -31,7 +31,7 @@ public class SeguroControlador {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> crear(@RequestBody Seguro seguro) {
         try {
             seguroServicio.create(seguro);
@@ -61,4 +61,4 @@ public class SeguroControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-}
+} 

@@ -14,7 +14,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.TipoPrestamosServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/tipos-prestamos")
+@RequestMapping("/api/tiposPrestamos")
 public class TipoPrestamoControlador {
 
     private final TipoPrestamosServicio tipoPrestamosServicio;
@@ -45,8 +45,8 @@ public class TipoPrestamoControlador {
         }
     }
 
-    @GetMapping("/tipo-cliente/{tipoCliente}")
-    public ResponseEntity<List<TipoPrestamo>> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
+    @GetMapping("/tipoCliente/{tipoCliente}")
+    public ResponseEntity<?> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
         try {
             List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByTipoCliente(tipoCliente);
             return ResponseEntity.ok(tiposPrestamo);
@@ -56,8 +56,8 @@ public class TipoPrestamoControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody TipoPrestamo tipoPrestamo) {
+    @PostMapping("/create")
+    public ResponseEntity<?> crear(@RequestBody TipoPrestamo tipoPrestamo) {
         try {
             tipoPrestamosServicio.create(tipoPrestamo);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -89,5 +89,4 @@ public class TipoPrestamoControlador {
                     .body("Error al eliminar: " + e.getMessage());
         }
     }
-
-}
+} 

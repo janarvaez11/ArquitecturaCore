@@ -1,14 +1,15 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.banquito.core.aplicacion.prestamos.excepcion.*;
+import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
@@ -26,11 +27,6 @@ public class PrestamosClientesServicio {
             PrestamoRepositorio prestamoRepositorio) {
         this.repositorio = repositorio;
         this.prestamoRepositorio = prestamoRepositorio;
-    }
-
-    /// Pagenable
-    public Page<PrestamosClientes> findAll(Pageable pageable) {
-        return repositorio.findAll(pageable);
     }
 
     public PrestamosClientes buscarPorId(Integer id) {
@@ -52,7 +48,6 @@ public class PrestamosClientesServicio {
         return this.repositorio.findByIdPrestamo(prestamoOpt.get());
     }
 
-    /// delete
     public List<PrestamosClientes> buscarPorEstado(String estado) {
         return this.repositorio.findByEstado(estado);
     }
@@ -75,10 +70,9 @@ public class PrestamosClientesServicio {
                 prestamoCliente.setIdPrestamo(prestamoOpt.get());
             }
 
-            prestamoCliente.setEstado("SOLICITADO"); // Estado inicial: SOLICITADO
+            prestamoCliente.setEstado("SOL"); // Estado inicial: SOLICITADO
             prestamoCliente.setFechaAprobacion(null);
             prestamoCliente.setFechaDesembolso(null);
-            prestamoCliente.setFechaVencimiento(null);
             this.repositorio.save(prestamoCliente);
         } catch (Exception e) {
             throw new CrearEntidadExcepcion("Prestamos Clientes",
@@ -97,7 +91,7 @@ public class PrestamosClientesServicio {
                             "Solo se pueden aprobar préstamos en estado SOLICITADO");
                 }
                 prestamoCliente.setEstado("APR");
-                prestamoCliente.setFechaAprobacion(LocalDateTime.now());
+                prestamoCliente.setFechaAprobacion(Instant.now());
                 this.repositorio.save(prestamoCliente);
             } else {
                 throw new PrestamoNoEncontradoExcepcion("Prestamos Clientes",
@@ -120,7 +114,7 @@ public class PrestamosClientesServicio {
                             "Solo se pueden desembolsar préstamos en estado APROBADO");
                 }
                 prestamoCliente.setEstado("DES");
-                prestamoCliente.setFechaDesembolso(LocalDateTime.now());
+                prestamoCliente.setFechaDesembolso(Instant.now());
                 this.repositorio.save(prestamoCliente);
             } else {
                 throw new PrestamoNoEncontradoExcepcion("Prestamos Clientes",

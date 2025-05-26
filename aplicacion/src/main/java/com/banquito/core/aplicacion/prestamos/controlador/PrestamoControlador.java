@@ -35,8 +35,19 @@ public class PrestamoControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody Prestamo prestamo) {
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<?> obtenerPorEstado(@PathVariable String estado) {
+        try {
+            List<Prestamo> prestamos = prestamoServicio.findByEstado(estado);
+            return ResponseEntity.ok(prestamos);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> crear(@RequestBody Prestamo prestamo) {
         try {
             prestamoServicio.create(prestamo);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -75,4 +86,4 @@ public class PrestamoControlador {
                     .body("Error: " + e.getMessage());
         }
     }
-}
+} 

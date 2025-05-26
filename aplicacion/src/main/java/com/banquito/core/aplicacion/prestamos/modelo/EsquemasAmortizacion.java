@@ -7,7 +7,7 @@ import java.util.Objects;
 @Table(name = "EsquemasAmortizacion")
 public class EsquemasAmortizacion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EsquemasAmortizacion_id_gen")
     @Column(name = "IdEsquema", nullable = false)
     private Integer id;
 
@@ -20,7 +20,7 @@ public class EsquemasAmortizacion {
     @Column(name = "PermiteGracia")
     private Boolean permiteGracia;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdTipoPrestamo")
     private TipoPrestamo tipoPrestamo;
 

@@ -34,8 +34,19 @@ public class GarantiaControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody Garantia garantia) {
+    @GetMapping("/tipo/{tipoGarantia}")
+    public ResponseEntity<?> obtenerPorTipoGarantia(@PathVariable String tipoGarantia) {
+        try {
+            List<Garantia> garantias = garantiaServicio.findByTipoGarantia(tipoGarantia);
+            return ResponseEntity.ok(garantias);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> crear(@RequestBody Garantia garantia) {
         try {
             garantiaServicio.create(garantia);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -67,4 +78,4 @@ public class GarantiaControlador {
                     .body("Error al eliminar: " + e.getMessage());
         }
     }
-}
+} 

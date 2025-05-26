@@ -31,7 +31,7 @@ public class ExencionesControlador {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> crear(@RequestBody ExencionesPrestamo exencionesPrestamo) {
         try {
             exencionesServicio.create(exencionesPrestamo);
@@ -42,8 +42,7 @@ public class ExencionesControlador {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id,
-            @RequestBody ExencionesPrestamo exencionesPrestamo) {
+    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody ExencionesPrestamo exencionesPrestamo) {
         try {
             exencionesPrestamo.setId(id);
             exencionesServicio.update(exencionesPrestamo);
@@ -62,4 +61,4 @@ public class ExencionesControlador {
             return ResponseEntity.badRequest().build();
         }
     }
-}
+} 

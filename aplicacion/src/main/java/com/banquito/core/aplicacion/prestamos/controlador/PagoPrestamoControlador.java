@@ -18,7 +18,7 @@ import com.banquito.core.aplicacion.prestamos.modelo.PagosPrestamos;
 import com.banquito.core.aplicacion.prestamos.servicio.PagosPrestamoServicio;
 
 @RestController
-@RequestMapping("/api/pagos-prestamos")
+@RequestMapping("/api/v1/pagos-prestamos")
 public class PagoPrestamoControlador {
 
     private final PagosPrestamoServicio servicio;

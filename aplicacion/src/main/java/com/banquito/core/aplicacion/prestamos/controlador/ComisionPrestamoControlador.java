@@ -15,7 +15,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.ComisionPrestamoServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/comisiones-prestamos")
+@RequestMapping("/api/comisionesPrestamos")
 public class ComisionPrestamoControlador {
 
     private final ComisionPrestamoServicio comisionPrestamoServicio;
@@ -34,7 +34,6 @@ public class ComisionPrestamoControlador {
         }
     }
 
-<<<<<<< HEAD
     @GetMapping("/tipo/{tipoComision}")
     public ResponseEntity<List<ComisionPrestamo>> obtenerPorTipoComision(@PathVariable String tipoComision) {
         try {
@@ -46,9 +45,6 @@ public class ComisionPrestamoControlador {
     }
 
     @PostMapping("/create")
-=======
-    @PostMapping
->>>>>>> origin/PredtamosAPI
     public ResponseEntity<Void> crear(@RequestBody ComisionPrestamo comisionPrestamo) {
         try {
             comisionPrestamoServicio.create(comisionPrestamo);
