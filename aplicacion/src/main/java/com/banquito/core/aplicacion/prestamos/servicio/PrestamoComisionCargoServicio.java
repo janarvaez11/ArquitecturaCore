@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
+//import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
+//import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoComisionCargoExepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.ComisionPrestamo;
@@ -74,6 +74,7 @@ public class PrestamoComisionCargoServicio {
         }
     }
 
+    /*
     @Transactional
     public void update(PrestamoComisionCargo prestamoComisionCargo) {
         try {
@@ -93,7 +94,9 @@ public class PrestamoComisionCargoServicio {
                 "Error al actualizar la comisión de préstamo. Texto del error: " + rte.getMessage());
         }
     }
+    */
 
+    /*
     @Transactional
     public void delete(PrestamoComisionCargoId id) {
         try {
@@ -109,4 +112,5 @@ public class PrestamoComisionCargoServicio {
                 "Error al eliminar la comisión de préstamo. Texto del error: " + rte.getMessage());
         }
     }
+    */
 } 

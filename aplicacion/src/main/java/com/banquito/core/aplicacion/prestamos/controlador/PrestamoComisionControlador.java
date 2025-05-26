@@ -3,9 +3,9 @@ package com.banquito.core.aplicacion.prestamos.controlador;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
+//import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
+//import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoComisionCargoExepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargo;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargoId;
@@ -63,6 +63,7 @@ public class PrestamoComisionControlador {
         }
     }
 
+    /*
     @PutMapping("/{idPrestamo}/{idComisionPrestamo}")
     public ResponseEntity<?> actualizar(
             @PathVariable Integer idPrestamo,
@@ -79,7 +80,9 @@ public class PrestamoComisionControlador {
             return ResponseEntity.badRequest().body(error);
         }
     }
+    */
 
+    /*
     @DeleteMapping("/{idPrestamo}/{idComisionPrestamo}")
     public ResponseEntity<?> eliminar(
             @PathVariable Integer idPrestamo,
@@ -94,4 +97,5 @@ public class PrestamoComisionControlador {
             return ResponseEntity.badRequest().body(error);
         }
     }
+    */
 } 
