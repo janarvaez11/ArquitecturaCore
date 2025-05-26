@@ -142,12 +142,4 @@ public class ComisionCargo {
                 + cuentaComisionCargos + "]";
     }
 
-    //ToString
-
-
-
-    
-
-    
-
 }

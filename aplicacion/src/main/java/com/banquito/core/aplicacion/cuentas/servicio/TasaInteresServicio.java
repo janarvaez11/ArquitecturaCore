@@ -3,12 +3,15 @@ package com.banquito.core.aplicacion.cuentas.servicio;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.TasaInteresNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.modelo.EstadoTasaInteres;
 import com.banquito.core.aplicacion.cuentas.modelo.TasaInteres;
 import com.banquito.core.aplicacion.cuentas.repositorio.TasaInteresRepositorio;
 
@@ -23,11 +26,11 @@ public class TasaInteresServicio {
         this.tasaInteresRepositorio = tasaInteresRepositorio;
     }
 
-    public List<TasaInteres> findAll() {
-        return this.tasaInteresRepositorio.findAll();
+    public Page<TasaInteres> listarTodos(Pageable pageable) {
+        return this.tasaInteresRepositorio.findAll(pageable);
     }
 
-    public TasaInteres findById(Integer id) {
+    public TasaInteres obtenerPorId(Integer id) {
         Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(id);
         if (tasaInteresOptional.isPresent()) {
             return tasaInteresOptional.get();
@@ -37,16 +40,16 @@ public class TasaInteresServicio {
     }
 
     @Transactional
-    public void create(TasaInteres tasaInteres) {
+    public TasaInteres crear(TasaInteres tasaInteres) {
         try {
-            this.tasaInteresRepositorio.save(tasaInteres);
+            return this.tasaInteresRepositorio.save(tasaInteres);
         } catch (Exception e) {
             throw new CrearEntidadExcepcion("TasaInteres", "Error al crear la tasa de interés. Error: " + e.getMessage());
         }
     }
 
     @Transactional
-    public void update(TasaInteres tasaInteres) {
+    public TasaInteres actualizar(TasaInteres tasaInteres) {
         try {
             Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(tasaInteres.getIdTasaInteres());
             if (tasaInteresOptional.isPresent()) {
@@ -56,7 +59,7 @@ public class TasaInteresServicio {
                 tasaInteresDB.setEstado(tasaInteres.getEstado());
                 tasaInteresDB.setFrecuenciaCapitalizacion(tasaInteres.getFrecuenciaCapitalizacion());
                 tasaInteresDB.setFechaInicioVigencia(tasaInteres.getFechaInicioVigencia());
-                this.tasaInteresRepositorio.save(tasaInteresDB);
+                return this.tasaInteresRepositorio.save(tasaInteresDB);
             } else {
                 throw new TasaInteresNoEncontradaExcepcion("TasaInteres", "No se encontró la tasa de interés con ID: " + tasaInteres.getIdTasaInteres());
             }
@@ -66,7 +69,7 @@ public class TasaInteresServicio {
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void eliminar(Integer id) {
         try {
             Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(id);
             if (tasaInteresOptional.isPresent()) {
@@ -77,5 +80,17 @@ public class TasaInteresServicio {
         } catch (Exception e) {
             throw new EliminarEntidadExcepcion("TasaInteres", "Error al eliminar la tasa de interés. Error: " + e.getMessage());
         }
+    }
+
+    public List<TasaInteres> buscarPorTipoCuenta(Integer idTipoCuenta) {
+        return this.tasaInteresRepositorio.findByTipoCuentaId(idTipoCuenta);
+    }
+
+    public List<TasaInteres> buscarPorRangoSaldo(Double saldoMinimo, Double saldoMaximo) {
+        return this.tasaInteresRepositorio.findByRangoSaldo(saldoMinimo, saldoMaximo);
+    }
+
+    public List<TasaInteres> buscarTasasVigentes() {
+        return this.tasaInteresRepositorio.findByEstado(EstadoTasaInteres.VIGENTE.getValor());
     }
 }

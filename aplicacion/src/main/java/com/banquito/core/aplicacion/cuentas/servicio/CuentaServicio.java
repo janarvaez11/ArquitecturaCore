@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CuentaNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.Cuenta;
 import com.banquito.core.aplicacion.cuentas.repositorio.CuentaRepositorio;
 
@@ -51,12 +51,10 @@ public class CuentaServicio {
             Optional<Cuenta> cuentaOptional = this.cuentaRepositorio.findById(cuenta.getIdCuenta());
             if (cuentaOptional.isPresent()) {
                 Cuenta cuentaDB = cuentaOptional.get();
+                cuentaDB.setTipoCuenta(cuenta.getTipoCuenta());
                 cuentaDB.setNombre(cuenta.getNombre());
                 cuentaDB.setDescripcion(cuenta.getDescripcion());
                 cuentaDB.setEstado(cuenta.getEstado());
-                cuentaDB.setTipoCuenta(cuenta.getTipoCuenta());
-                cuentaDB.setTasaInteres(cuenta.getTasaInteres());
-                cuentaDB.setFechaModificacion(cuenta.getFechaModificacion());
                 this.cuentaRepositorio.save(cuentaDB);
             } else {
                 throw new CuentaNoEncontradaExcepcion("Cuenta", "No se encontró la cuenta con ID: " + cuenta.getIdCuenta());
@@ -78,5 +76,13 @@ public class CuentaServicio {
         } catch (Exception e) {
             throw new EliminarEntidadExcepcion("Cuenta", "Error al eliminar la cuenta. Error: " + e.getMessage());
         }
+    }
+
+    public List<Cuenta> findByTipoCuentaId(Integer idTipoCuenta) {
+        return this.cuentaRepositorio.findByTipoCuentaId(idTipoCuenta);
+    }
+
+    public List<Cuenta> findByEstado(String estado) {
+        return this.cuentaRepositorio.findByEstado(estado);
     }
 }
