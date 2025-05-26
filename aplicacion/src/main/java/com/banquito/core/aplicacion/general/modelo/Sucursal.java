@@ -11,10 +11,10 @@ public class Sucursal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdSucursal", nullable = false)
-    private Integer IdSucursal;
+    @Column(name = "IdSucursal")
+    private Integer idSucursal;
 
-    @Column(name = "Codigo", length = 10, nullable = false)
+    @Column(name = "Codigo", length = 10, nullable = false, unique = true)
     private String codigo;
 
     @Column(name = "ClaveUnica", length = 36, nullable = false)
@@ -30,8 +30,8 @@ public class Sucursal {
     @Column(name = "FechaCreacion", nullable = false)
     private Date fechaCreacion;
 
-    @Column(name = "CorreoElecronico", length = 10, nullable = false)
-    private String correoElecronico;
+    @Column(name = "CorreoElectronico", length = 50, nullable = false)
+    private String correoElectronico;
 
     @Column(name = "Telefono", length = 10, nullable = false)
     private String telefono;
@@ -49,26 +49,26 @@ public class Sucursal {
     private BigDecimal longitud;
 
     @ManyToOne
-    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = false)
+    @JoinColumn(name = "IdLocacion", nullable = false)
     private LocacionGeografica locacion;
 
     @ManyToOne
-    @JoinColumn(name = "IdEntidadBancaria", referencedColumnName = "IdEntidadBancaria", nullable = false)
+    @JoinColumn(name = "IdEntidadBancaria", nullable = false)
     private EntidadBancaria entidadBancaria;
 
     public Sucursal() {
     }
 
     public Sucursal(Integer idSucursal) {
-        IdSucursal = idSucursal;
+        this.idSucursal = idSucursal;
     }
 
     public Integer getIdSucursal() {
-        return IdSucursal;
+        return idSucursal;
     }
 
     public void setIdSucursal(Integer idSucursal) {
-        IdSucursal = idSucursal;
+        this.idSucursal = idSucursal;
     }
 
     public String getCodigo() {
@@ -111,12 +111,12 @@ public class Sucursal {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getCorreoElecronico() {
-        return correoElecronico;
+    public String getCorreoElectronico() {
+        return correoElectronico;
     }
 
-    public void setCorreoElecronico(String correoElecronico) {
-        this.correoElecronico = correoElecronico;
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
     }
 
     public String getTelefono() {
@@ -179,7 +179,9 @@ public class Sucursal {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdSucursal == null) ? 0 : IdSucursal.hashCode());
+        result = prime * result + ((idSucursal == null) ? 0 : idSucursal.hashCode());
+        result = prime * result + ((locacion == null) ? 0 : locacion.hashCode());
+        result = prime * result + ((entidadBancaria == null) ? 0 : entidadBancaria.hashCode());
         return result;
     }
 
@@ -192,21 +194,32 @@ public class Sucursal {
         if (getClass() != obj.getClass())
             return false;
         Sucursal other = (Sucursal) obj;
-        if (IdSucursal == null) {
-            if (other.IdSucursal != null)
+        if (idSucursal == null) {
+            if (other.idSucursal != null)
                 return false;
-        } else if (!IdSucursal.equals(other.IdSucursal))
+        } else if (!idSucursal.equals(other.idSucursal))
+            return false;
+        if (locacion == null) {
+            if (other.locacion != null)
+                return false;
+        } else if (!locacion.equals(other.locacion))
+            return false;
+        if (entidadBancaria == null) {
+            if (other.entidadBancaria != null)
+                return false;
+        } else if (!entidadBancaria.equals(other.entidadBancaria))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Sucursal [IdSucursal=" + IdSucursal + ", codigo=" + codigo + ", claveUnica=" + claveUnica + ", nombre="
-                + nombre + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", correoElecronico="
-                + correoElecronico + ", telefono=" + telefono + ", linea1=" + linea1 + ", linea2=" + linea2
+        return "Sucursal [idSucursal=" + idSucursal + ", codigo=" + codigo + ", claveUnica=" + claveUnica + ", nombre="
+                + nombre + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", correoElectronico="
+                + correoElectronico + ", telefono=" + telefono + ", linea1=" + linea1 + ", linea2=" + linea2
                 + ", latitud=" + latitud + ", longitud=" + longitud + ", locacion=" + locacion + ", entidadBancaria="
                 + entidadBancaria + "]";
     }
 
+    
 }
