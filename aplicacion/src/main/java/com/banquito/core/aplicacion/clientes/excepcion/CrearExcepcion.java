@@ -11,7 +11,7 @@ public class CrearExcepcion extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Registro correxto:" + dato;
+        return "Error al crear la entidad" + entidad+ "con el dato " + dato;
     }
 
 }
