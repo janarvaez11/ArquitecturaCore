@@ -6,7 +6,6 @@ import com.banquito.core.aplicacion.clientes.excepcion.CrearContactoExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.ActualizarContactoExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.ContactoNoEncontradoExcepcion;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 

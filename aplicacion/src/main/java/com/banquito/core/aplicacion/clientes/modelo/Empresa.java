@@ -2,7 +2,7 @@ package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
 
-import java.time.Instant;
+
 import java.util.Date;
 
 @Entity
@@ -40,11 +40,13 @@ public class Empresa {
     @Column(name = "SectorEconomico",  length = 20, nullable = false)
     private String SectorEconomico;
 
-    @Column(name = "FechaRegistro")
-    private Instant FechaRegistro;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "FechaRegistro", nullable = false)
+    private Date FechaRegistro;
 
-    @Column(name = "FechaActualizacion")
-    private Instant FechaActualizacion;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "FechaActualizacion", nullable = false)
+    private Date FechaActualizacion;
 
     public Empresa() {}
 
@@ -132,19 +134,19 @@ public class Empresa {
         SectorEconomico = sectorEconomico;
     }
 
-    public Instant getFechaRegistro() {
+    public Date getFechaRegistro() {
         return FechaRegistro;
     }
 
-    public void setFechaRegistro(Instant fechaRegistro) {
+    public void setFechaRegistro(Date fechaRegistro) {
         FechaRegistro = fechaRegistro;
     }
 
-    public Instant getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return FechaActualizacion;
     }
 
-    public void setFechaActualizacion(Instant fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         FechaActualizacion = fechaActualizacion;
     }
 

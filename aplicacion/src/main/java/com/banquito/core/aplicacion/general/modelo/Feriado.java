@@ -9,7 +9,7 @@ import java.util.Date;
 public class Feriado {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdFeriado", nullable = false)
     private Integer id;
 
@@ -21,7 +21,7 @@ public class Feriado {
     private Pais pais;
 
     @ManyToOne
-    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = false)
+    @JoinColumn(name = "IdLocacion", referencedColumnName = "IdLocacion", nullable = true)
     private LocacionGeografica locacion;
 
     @Column(name = "Nombre", length = 25, nullable = false)
