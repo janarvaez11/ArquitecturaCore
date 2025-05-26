@@ -1,7 +1,16 @@
 package com.banquito.core.aplicacion.prestamos.controlador;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
@@ -10,31 +19,40 @@ import com.banquito.core.aplicacion.prestamos.excepcion.GarantiaNoEncontradoExce
 import com.banquito.core.aplicacion.prestamos.modelo.Garantia;
 import com.banquito.core.aplicacion.prestamos.servicio.GarantiaServicio;
 
-@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/garantias")
+@RequestMapping("/api/v1/garantias")
 public class GarantiaControlador {
 
-    private final GarantiaServicio garantiaServicio;
+    private final GarantiaServicio servicio;
 
-    public GarantiaControlador(GarantiaServicio garantiaServicio) {
-        this.garantiaServicio = garantiaServicio;
+    public GarantiaControlador(GarantiaServicio servicio) {
+        this.servicio = servicio;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Garantia> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<Garantia> findById(@PathVariable Integer id) {
         try {
-            Garantia garantia = garantiaServicio.findById(id);
+            Garantia garantia = servicio.findById(id);
             return ResponseEntity.ok(garantia);
         } catch (GarantiaNoEncontradoExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Void> crear(@RequestBody Garantia garantia) {
+    @GetMapping("/tipo/{tipoGarantia}")
+    public ResponseEntity<List<Garantia>> findByTipoGarantia(@PathVariable String tipoGarantia) {
         try {
-            garantiaServicio.create(garantia);
+            List<Garantia> garantias = servicio.findByTipoGarantia(tipoGarantia);
+            return ResponseEntity.ok(garantias);
+        } catch (GarantiaNoEncontradoExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody Garantia garantia) {
+        try {
+            servicio.create(garantia);
             return ResponseEntity.ok().build();
         } catch (CrearEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
@@ -42,23 +60,25 @@ public class GarantiaControlador {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody Garantia garantia) {
+    public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody Garantia garantia) {
         try {
             garantia.setId(id);
-            garantiaServicio.update(garantia);
+            servicio.update(garantia);
             return ResponseEntity.ok().build();
-        } catch (ActualizarEntidadExcepcion e) {
+        } catch (ActualizarEntidadExcepcion | GarantiaNoEncontradoExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         try {
-            garantiaServicio.delete(id);
+            servicio.delete(id);
             return ResponseEntity.ok().build();
-        } catch (EliminarEntidadExcepcion e) {
+        } catch (EliminarEntidadExcepcion | GarantiaNoEncontradoExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    
 } 
