@@ -40,10 +40,10 @@ public class PrestamoClienteControlador {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorEstado(estado));
     }
 
-    @GetMapping
-    public ResponseEntity<List<PrestamosClientes>> listarTodos() {
-        return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
-    }
+    //@GetMapping
+    //public ResponseEntity<List<PrestamosClientes>> listarTodos() {
+    //    return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
+    //}
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody PrestamosClientes prestamoCliente) {

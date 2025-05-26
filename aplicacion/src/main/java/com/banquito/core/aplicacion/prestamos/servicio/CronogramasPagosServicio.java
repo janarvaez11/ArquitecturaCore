@@ -52,7 +52,7 @@ public class CronogramasPagosServicio {
         try {
             validarCronogramaPago(cronogramaPago);
             cronogramaPago.setEstado("PENDIENTE");
-            cronogramaPago.setFechaPago(null);
+            cronogramaPago.setFechaPago(LocalDate.now());
 
             // Calcular el total
             BigDecimal total = cronogramaPago.getCapital()
@@ -60,6 +60,7 @@ public class CronogramasPagosServicio {
                     .add(cronogramaPago.getComisiones() != null ? cronogramaPago.getComisiones() : BigDecimal.ZERO)
                     .add(cronogramaPago.getSeguros() != null ? cronogramaPago.getSeguros() : BigDecimal.ZERO);
             cronogramaPago.setTotal(total);
+            cronogramaPago.setSaldo(total);
 
             this.repositorio.save(cronogramaPago);
         } catch (Exception e) {
