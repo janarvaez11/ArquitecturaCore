@@ -48,10 +48,10 @@ public class PrestamoClienteControlador {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorEstado(estado));
     }
 
-    @GetMapping
-    public ResponseEntity<List<PrestamosClientes>> listarTodos() {
-        return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
-    }
+    //@GetMapping
+    //public ResponseEntity<List<PrestamosClientes>> listarTodos() {
+    //    return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
+    //}
 
     // http://localhost:8080/api/prestamos-clientes?page=0&size=10
     @GetMapping
