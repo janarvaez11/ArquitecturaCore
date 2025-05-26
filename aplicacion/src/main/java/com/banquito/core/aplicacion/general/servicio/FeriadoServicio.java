@@ -35,6 +35,7 @@ public class FeriadoServicio {
             Pais pais = paisrepositorio.findById(paisId)
                     .orElseThrow(() -> new IllegalArgumentException("País no encontrado"));
             feriado.setPais(pais);
+            feriado.setTipoFeriado("NAC");
             feriado.setLocacion(null);
             feriadorepositorio.save(feriado);
         } catch (RuntimeException rte) {
@@ -48,6 +49,7 @@ public class FeriadoServicio {
             LocacionGeografica locacion = locaciongeograficarepositorio.findById(locacionId)
                     .orElseThrow(() -> new IllegalArgumentException("Locación no encontrada"));
             feriado.setLocacion(locacion);
+            feriado.setTipoFeriado("REG");
             feriado.setPais(locacion.getPais());
             feriadorepositorio.save(feriado);
         } catch (RuntimeException rte) {
