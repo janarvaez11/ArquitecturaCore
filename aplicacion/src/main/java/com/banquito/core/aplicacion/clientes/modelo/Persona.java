@@ -10,155 +10,151 @@ public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdPersona", nullable = false)
-    private Integer IdPersona;
+    private Integer idPersona;
 
     @Column(name = "TipoIdentificacion", length = 10, nullable = false)
-    private String TipoIdentificación;
+    private String tipoIdentificación;
 
     @Column(name = "NumeroIdentificacion", length = 10, nullable = false)
-    private String NumeroIdentificacion;
+    private String numeroIdentificacion;
 
     @Column(name = "Nombres", length = 50, nullable = false)
-    private String Nombres;
+    private String nombres;
 
     @Column(name = "Genero", length = 10, nullable = false)
-    private String Genero;
+    private String genero;
 
-    @Column(name = "FechaNacimiento", nullable = false)
-    private Date FechaNacimiento;
+    @Column(name = "fechaNacimiento", nullable = false)
+    private Date fechaNacimiento;
 
     @Column(name = "Nacionalidad", length = 25, nullable = false)
-    private String Nacionalidad;
+    private String nacionalidad;
 
     @Column(name = "EstadoCivil", length = 15, nullable = false)
-    private String EstadoCivil;
+    private String estadoCivil;
 
     @Column(name = "NivelEstudio", length = 30, nullable = false)
-    private String NivelEstudio;
+    private String nivelEstudio;
 
     @Column(name = "CorreoElectronico", length = 100, nullable = false)
-    private String CorreoElectronico;
+    private String correoElectronico;
 
     @Column(name = "Estado", length = 15, nullable = false)
-    private String Estado;
+    private String estado;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaRegistro", nullable = false)
-    private Date FechaRegistro;
+    private Date fechaRegistro;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaActualizacion", nullable = false)
-    private Date FechaActualizacion;
+    private Date fechaActualizacion;
 
     public Persona() {
     }
 
-    public Persona(Integer IdPersona) {
-        this.IdPersona = IdPersona;
-    }
-
     public Integer getIdPersona() {
-        return IdPersona;
+        return idPersona;
     }
 
-    public void setIdPersona(Integer IdPersona) {
-        this.IdPersona = IdPersona;
+    public void setIdPersona(Integer idPersona) {
+        this.idPersona = idPersona;
     }
 
     public String getTipoIdentificación() {
-        return TipoIdentificación;
+        return tipoIdentificación;
     }
 
     public void setTipoIdentificación(String tipoIdentificación) {
-        TipoIdentificación = tipoIdentificación;
+        this.tipoIdentificación = tipoIdentificación;
     }
 
     public String getNumeroIdentificacion() {
-        return NumeroIdentificacion;
+        return numeroIdentificacion;
     }
 
     public void setNumeroIdentificacion(String numeroIdentificacion) {
-        NumeroIdentificacion = numeroIdentificacion;
+        this.numeroIdentificacion = numeroIdentificacion;
     }
 
     public String getNombres() {
-        return Nombres;
+        return nombres;
     }
 
     public void setNombres(String nombres) {
-        Nombres = nombres;
+        this.nombres = nombres;
     }
 
     public String getGenero() {
-        return Genero;
+        return genero;
     }
 
     public void setGenero(String genero) {
-        Genero = genero;
+        this.genero = genero;
     }
 
     public Date getFechaNacimiento() {
-        return FechaNacimiento;
+        return fechaNacimiento;
     }
 
     public void setFechaNacimiento(Date fechaNacimiento) {
-        FechaNacimiento = fechaNacimiento;
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public String getNacionalidad() {
-        return Nacionalidad;
+        return nacionalidad;
     }
 
     public void setNacionalidad(String nacionalidad) {
-        Nacionalidad = nacionalidad;
+        this.nacionalidad = nacionalidad;
     }
 
     public String getEstadoCivil() {
-        return EstadoCivil;
+        return estadoCivil;
     }
 
     public void setEstadoCivil(String estadoCivil) {
-        EstadoCivil = estadoCivil;
+        this.estadoCivil = estadoCivil;
     }
 
     public String getNivelEstudio() {
-        return NivelEstudio;
+        return nivelEstudio;
     }
 
     public void setNivelEstudio(String nivelEstudio) {
-        NivelEstudio = nivelEstudio;
+        this.nivelEstudio = nivelEstudio;
     }
 
     public String getCorreoElectronico() {
-        return CorreoElectronico;
+        return correoElectronico;
     }
 
     public void setCorreoElectronico(String correoElectronico) {
-        CorreoElectronico = correoElectronico;
+        this.correoElectronico = correoElectronico;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     public Date getFechaRegistro() {
-        return FechaRegistro;
+        return fechaRegistro;
     }
 
     public void setFechaRegistro(Date fechaRegistro) {
-        FechaRegistro = fechaRegistro;
+        this.fechaRegistro = fechaRegistro;
     }
 
     public Date getFechaActualizacion() {
-        return FechaActualizacion;
+        return fechaActualizacion;
     }
 
     public void setFechaActualizacion(Date fechaActualizacion) {
-        FechaActualizacion = fechaActualizacion;
+        this.fechaActualizacion = fechaActualizacion;
     }
 
     @Override
@@ -170,10 +166,10 @@ public class Persona {
         if (getClass() != obj.getClass())
             return false;
         Persona other = (Persona) obj;
-        if (IdPersona == null) {
-            if (other.IdPersona != null)
+        if (idPersona == null) {
+            if (other.idPersona != null)
                 return false;
-        } else if (!IdPersona.equals(other.IdPersona))
+        } else if (!idPersona.equals(other.idPersona))
             return false;
         return true;
     }
@@ -182,26 +178,26 @@ public class Persona {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdPersona == null) ? 0 : IdPersona.hashCode());
+        result = prime * result + ((idPersona == null) ? 0 : idPersona.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
         return "Persona{" +
-                "idPersona=" + IdPersona +
-                ", TipoIdentificación='" + TipoIdentificación + '\'' +
-                ", NumeroIdentificacion='" + NumeroIdentificacion + '\'' +
-                ", Nombres='" + Nombres + '\'' +
-                ", Genero='" + Genero + '\'' +
-                ", FechaNacimiento=" + FechaNacimiento +
-                ", Nacionalidad='" + Nacionalidad + '\'' +
-                ", EstadoCivil='" + EstadoCivil + '\'' +
-                ", NivelEstudio=" + NivelEstudio +
-                ", CorreoElectronico=" + CorreoElectronico +
-                ", Estado=" + Estado +
-                ", FechaRegistro=" + FechaRegistro +
-                ", FechaActualizacion=" + FechaActualizacion +
+                "idPersona=" + idPersona +
+                ", tipoIdentificación='" + tipoIdentificación + '\'' +
+                ", numeroIdentificacion='" + numeroIdentificacion + '\'' +
+                ", nombres='" + nombres + '\'' +
+                ", genero='" + genero + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
+                ", nacionalidad='" + nacionalidad + '\'' +
+                ", estadoCivil='" + estadoCivil + '\'' +
+                ", nivelEstudio='" + nivelEstudio + '\'' +
+                ", correoElectronico='" + correoElectronico + '\'' +
+                ", estado='" + estado + '\'' +
+                ", fechaRegistro=" + fechaRegistro +
+                ", fechaActualizacion=" + fechaActualizacion +
                 '}';
     }
 }

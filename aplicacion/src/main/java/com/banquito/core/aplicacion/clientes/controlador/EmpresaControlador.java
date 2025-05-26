@@ -29,6 +29,13 @@ public class EmpresaControlador {
         return ResponseEntity.ok(empresas);
     }
 
+    @GetMapping("/{numero}")
+    public ResponseEntity<Empresa> obtenerPorIdentificacion(@PathVariable String numero) {
+        Empresa empresa = empresaServicio.buscarPorNumeroIdentificacion(numero);
+        return ResponseEntity.ok(empresa);
+    }
+
+
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Empresa empresa) {
         empresaServicio.crear(empresa);

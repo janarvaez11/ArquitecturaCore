@@ -29,9 +29,19 @@ public class EmpresaServicio {
         if (empresa.isPresent()) {
             return empresa.get();
         }else {
-            throw new NoEncontradoExcepcion("Error al buscar la empresa:" + id, "Empresa");
+            throw new NoEncontradoExcepcion("Empresa","Error al buscar la empresa:" + id);
         }
     }
+
+    public Empresa buscarPorNumeroIdentificacion(String numeroIdentificacion) {
+        Optional<Empresa> empresa = empresaRepositorio.findByNumeroIdentificacion(numeroIdentificacion);
+        if (empresa.isPresent()) {
+            return empresa.get();
+        } else {
+            throw new NoEncontradoExcepcion("Empresa","Empresa no encontrada con número de identificación: " + numeroIdentificacion);
+        }
+    }
+
 
     @Transactional
     public void crear(Empresa empresa) {

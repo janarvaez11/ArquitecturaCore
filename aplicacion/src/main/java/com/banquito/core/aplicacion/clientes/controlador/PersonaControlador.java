@@ -27,6 +27,11 @@ public class PersonaControlador {
         return ResponseEntity.ok(personaServicio.buscarTodos());
     }
 
+    @GetMapping("/{numeroIdentificacion}")
+    public ResponseEntity<Persona> obtenerPorNumeroIdentificacion(@PathVariable String numeroIdentificacion) {
+        return ResponseEntity.ok(personaServicio.buscarPorNumeroIdentificacion(numeroIdentificacion));
+    }
+
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Persona persona) {
         personaServicio.crear(persona);

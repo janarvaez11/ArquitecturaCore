@@ -32,10 +32,16 @@ public class PersonaServicio {
         if (persona.isPresent()) {
             return persona.get();
         }else {
-            throw new NoEncontradoExcepcion("El id:" + id + "No corresponde a niguna persona registrada", "Persona"  );
+            throw new NoEncontradoExcepcion("Persona","El id:" + id + "No corresponde a niguna persona registrada");
         }
 
     }
+
+    public Persona buscarPorNumeroIdentificacion(String numeroIdentificacion) {
+        return personaRepositorio.findByNumeroIdentificacion(numeroIdentificacion)
+                .orElseThrow(() -> new NoEncontradoExcepcion("Persona","No se encontró persona con número de identificación: " + numeroIdentificacion));
+    }
+
 
     @Transactional
     public void crear(Persona persona) {
