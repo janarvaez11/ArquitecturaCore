@@ -9,7 +9,7 @@ import java.util.Date;
 public class Feriado {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdFeriado", nullable = false)
     private Integer id;
 
