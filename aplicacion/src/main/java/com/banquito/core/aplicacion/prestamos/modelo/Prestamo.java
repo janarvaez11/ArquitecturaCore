@@ -34,7 +34,6 @@ public class Prestamo {
     @Column(name = "Estado", length = 20, nullable = false)
     private String estado;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion", nullable = false)
     private Date fechaModificacion;
 

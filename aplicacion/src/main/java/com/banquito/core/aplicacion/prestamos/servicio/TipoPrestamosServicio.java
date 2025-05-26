@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
 import java.util.Optional;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.Arrays;
