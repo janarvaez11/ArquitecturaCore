@@ -3,10 +3,8 @@ package com.banquito.core.aplicacion.cuentas.modelo;
 import java.util.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -15,21 +13,15 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "CuentasComisionesCargos")
-
 public class CuentaComisionCargo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdCuenta", nullable = false)
-    private Integer IdCuenta;
+    
+    @EmbeddedId
+    private CuentaComisionCargoId id;
 
-    @Column(name = "IdComisionCargo", nullable = false)
-    private Integer IdComisionCargo;
-
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaAsignacion", nullable = false)
     private Date FechaAsignacion;
 
-    //Relacion a la tabla Cuentas y ComisionesCargos
     @ManyToOne
     @JoinColumn(name = "IdCuenta", insertable = false, updatable = false)
     private Cuenta cuenta;
@@ -38,33 +30,20 @@ public class CuentaComisionCargo {
     @JoinColumn(name = "IdComisionCargo", insertable = false, updatable = false)
     private ComisionCargo comisionCargo;
 
-    
-    //Constructores
+    // Constructores
     public CuentaComisionCargo() {
+        this.id = new CuentaComisionCargoId();
     }
 
-    public CuentaComisionCargo(Integer idCuenta) {
-        IdCuenta = idCuenta;
+    // Getters y Setters
+    public CuentaComisionCargoId getId() {
+        return id;
     }
 
-    //Getters y Setters
-
-    public Integer getIdCuenta() {
-        return IdCuenta;
+    public void setId(CuentaComisionCargoId id) {
+        this.id = id;
     }
 
-    public void setIdCuenta(Integer idCuenta) {
-        IdCuenta = idCuenta;
-    }
-
-    public Integer getIdComisionCargo() {
-        return IdComisionCargo;
-    }
-
-    public void setIdComisionCargo(Integer idComisionCargo) {
-        IdComisionCargo = idComisionCargo;
-    }
-    
     public Date getFechaAsignacion() {
         return FechaAsignacion;
     }
@@ -73,13 +52,16 @@ public class CuentaComisionCargo {
         FechaAsignacion = fechaAsignacion;
     }
 
-
     public Cuenta getCuenta() {
         return cuenta;
     }
 
     public void setCuenta(Cuenta cuenta) {
         this.cuenta = cuenta;
+        if (this.id == null) {
+            this.id = new CuentaComisionCargoId();
+        }
+        this.id.setIdCuenta(cuenta.getIdCuenta());
     }
 
     public ComisionCargo getComisionCargo() {
@@ -88,15 +70,18 @@ public class CuentaComisionCargo {
 
     public void setComisionCargo(ComisionCargo comisionCargo) {
         this.comisionCargo = comisionCargo;
+        if (this.id == null) {
+            this.id = new CuentaComisionCargoId();
+        }
+        this.id.setIdComisionCargo(comisionCargo.getIdComisionCargo());
     }
 
-    //HashCode y Equals
-    
+    // HashCode y Equals
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdCuenta == null) ? 0 : IdCuenta.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -105,25 +90,20 @@ public class CuentaComisionCargo {
         if (this == obj)
             return true;
         if (obj == null)
-            return false; 
+            return false;
         if (getClass() != obj.getClass())
             return false;
         CuentaComisionCargo other = (CuentaComisionCargo) obj;
-        if (IdCuenta == null) {
-            if (other.IdCuenta != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!IdCuenta.equals(other.IdCuenta))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
 
-    //ToString
-
     @Override
     public String toString() {
-        return "CuentaComisionCargo [IdCuenta=" + IdCuenta + ", IdComisionCargo=" + IdComisionCargo
-                + ", FechaAsignacion=" + FechaAsignacion + ", cuenta=" + cuenta + ", comisionCargo=" + comisionCargo
-                + "]";
+        return "CuentaComisionCargo [id=" + id + ", FechaAsignacion=" + FechaAsignacion + "]";
     }
-
 }

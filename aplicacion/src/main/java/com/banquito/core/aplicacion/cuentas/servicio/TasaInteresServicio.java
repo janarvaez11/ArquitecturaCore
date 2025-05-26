@@ -11,7 +11,6 @@ import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.TasaInteresNoEncontradaExcepcion;
-import com.banquito.core.aplicacion.cuentas.modelo.EstadoTasaInteres;
 import com.banquito.core.aplicacion.cuentas.modelo.TasaInteres;
 import com.banquito.core.aplicacion.cuentas.repositorio.TasaInteresRepositorio;
 
@@ -19,6 +18,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TasaInteresServicio {
+
+    public static final String ESTADO_VIGENTE = "VIGENTE";
 
     private final TasaInteresRepositorio tasaInteresRepositorio;
 
@@ -91,6 +92,6 @@ public class TasaInteresServicio {
     }
 
     public List<TasaInteres> buscarTasasVigentes() {
-        return this.tasaInteresRepositorio.findByEstado(EstadoTasaInteres.VIGENTE.getValor());
+        return this.tasaInteresRepositorio.findByEstado(ESTADO_VIGENTE);
     }
 }

@@ -15,12 +15,13 @@ import jakarta.persistence.QueryHint;
 @Repository
 public interface TasaInteresRepositorio extends JpaRepository<TasaInteres, Integer> {
     
-    @Query("SELECT DISTINCT t FROM TasaInteres t JOIN TipoCuenta tc ON t.idTasaInteres = tc.tasaInteres.idTasaInteres WHERE tc.idTipoCuenta = :idTipoCuenta")
+    @Query("SELECT DISTINCT t FROM TasaInteres t JOIN TipoCuenta tc ON t.IdTasaInteres = tc.tasaInteres.IdTasaInteres WHERE tc.IdTipoCuenta = :idTipoCuenta")
     List<TasaInteres> findByTipoCuentaId(@Param("idTipoCuenta") Integer idTipoCuenta);
     
-    @Query("SELECT t FROM TasaInteres t JOIN TasaSaldo ts ON t.idTasaInteres = ts.tasaInteres.idTasaInteres WHERE ts.saldoMinimo >= :saldoMinimo AND ts.saldoMaximo <= :saldoMaximo")
+    @Query("SELECT t FROM TasaInteres t JOIN TasaSaldo ts ON t.IdTasaInteres = ts.tasaInteres.IdTasaInteres WHERE ts.SaldoMinimo >= :saldoMinimo AND ts.SaldoMaximo <= :saldoMaximo")
     List<TasaInteres> findByRangoSaldo(@Param("saldoMinimo") Double saldoMinimo, @Param("saldoMaximo") Double saldoMaximo);
     
+    @Query("SELECT t FROM TasaInteres t WHERE t.Estado = :estado")
     @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-    List<TasaInteres> findByEstado(String estado);
+    List<TasaInteres> findByEstado(@Param("estado") String estado);
 } 

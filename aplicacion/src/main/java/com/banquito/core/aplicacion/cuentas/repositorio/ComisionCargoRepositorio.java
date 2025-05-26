@@ -12,15 +12,18 @@ import com.banquito.core.aplicacion.cuentas.modelo.ComisionCargo;
 @Repository
 public interface ComisionCargoRepositorio extends JpaRepository<ComisionCargo, Integer> {
     
-    @Query("SELECT c FROM ComisionCargo c WHERE c.servicioAsociado.tipoCuenta.idTipoCuenta = :idTipoCuenta")
+    @Query("SELECT DISTINCT cc FROM ComisionCargo cc " +
+           "JOIN CuentaComisionCargo ccc ON cc.IdComisionCargo = ccc.id.idComisionCargo " +
+           "JOIN Cuenta c ON ccc.id.idCuenta = c.IdCuenta " +
+           "WHERE c.tipoCuenta.IdTipoCuenta = :idTipoCuenta")
     List<ComisionCargo> findByTipoCuentaId(@Param("idTipoCuenta") Integer idTipoCuenta);
     
-    @Query("SELECT c FROM ComisionCargo c WHERE c.tipoComision = :tipoComision")
+    @Query("SELECT c FROM ComisionCargo c WHERE c.TipoComision = :tipoComision")
     List<ComisionCargo> findByTipoComision(@Param("tipoComision") String tipoComision);
     
-    @Query("SELECT c FROM ComisionCargo c WHERE c.frecuencia = :frecuencia")
+    @Query("SELECT c FROM ComisionCargo c WHERE c.Frecuencia = :frecuencia")
     List<ComisionCargo> findByFrecuencia(@Param("frecuencia") String frecuencia);
     
-    @Query("SELECT c FROM ComisionCargo c WHERE c.baseCalculo = :baseCalculo")
+    @Query("SELECT c FROM ComisionCargo c WHERE c.BaseCalculo = :baseCalculo")
     List<ComisionCargo> findByBaseCalculo(@Param("baseCalculo") String baseCalculo);
 }

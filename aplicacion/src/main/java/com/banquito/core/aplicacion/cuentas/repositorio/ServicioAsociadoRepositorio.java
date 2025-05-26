@@ -12,11 +12,15 @@ import com.banquito.core.aplicacion.cuentas.modelo.ServicioAsociado;
 @Repository
 public interface ServicioAsociadoRepositorio extends JpaRepository<ServicioAsociado, Integer> {
     
-    @Query("SELECT s FROM ServicioAsociado s WHERE s.nombre LIKE %:nombre%")
+    @Query("SELECT s FROM ServicioAsociado s WHERE s.Nombre LIKE %:nombre%")
     List<ServicioAsociado> findByNombreContaining(@Param("nombre") String nombre);
     
-    List<ServicioAsociado> findByEstado(String estado);
+    @Query("SELECT s FROM ServicioAsociado s WHERE s.Estado = :estado")
+    List<ServicioAsociado> findByEstado(@Param("estado") String estado);
     
-    @Query("SELECT s FROM ServicioAsociado s JOIN ServicioTipoCuenta stc ON s.idServicio = stc.servicioAsociado.idServicio WHERE stc.cuenta.tipoCuenta.idTipoCuenta = :idTipoCuenta")
-    List<ServicioAsociado> findByTipoCuentaId(@Param("idTipoCuenta") Integer idTipoCuenta);
+    @Query("SELECT DISTINCT s FROM ServicioAsociado s " +
+           "JOIN ServicioTipoCuenta stc ON s.IdServicio = stc.servicioAsociado.IdServicio " +
+           "JOIN Cuenta c ON stc.cuenta.IdCuenta = c.IdCuenta " +
+           "WHERE c.IdCuenta = :idCuenta")
+    List<ServicioAsociado> findByCuentaId(@Param("idCuenta") Integer idCuenta);
 }

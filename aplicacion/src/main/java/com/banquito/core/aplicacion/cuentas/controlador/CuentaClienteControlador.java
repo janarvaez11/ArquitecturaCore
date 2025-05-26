@@ -1,5 +1,6 @@
 package com.banquito.core.aplicacion.cuentas.controlador;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class CuentaClienteControlador {
 
     @GetMapping("/saldo-disponible")
     public ResponseEntity<List<CuentaCliente>> buscarPorSaldoDisponibleMayorQue(
-            @RequestParam Double saldoMinimo) {
+            @RequestParam BigDecimal saldoMinimo) {
         return ResponseEntity.ok(cuentaClienteServicio.findBySaldoDisponibleGreaterThan(saldoMinimo));
     }
 

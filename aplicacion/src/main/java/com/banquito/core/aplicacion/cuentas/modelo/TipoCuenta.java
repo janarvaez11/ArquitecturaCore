@@ -2,6 +2,7 @@ package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.util.Date;
 
+import com.banquito.core.aplicacion.general.modelo.Moneda;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,6 +55,11 @@ public class TipoCuenta {
     @ManyToOne
     @JoinColumn(name = "IdTasaInteresPorDefecto", referencedColumnName = "IdTasaInteres")
     private TasaInteres tasaInteres;
+
+    //relacion a la tabla Monedas
+    @ManyToOne
+    @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
+    private Moneda moneda;
 
 
 
@@ -149,6 +155,14 @@ public class TipoCuenta {
         this.tasaInteres = tasaInteres;
     }
 
+    public Moneda getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(Moneda moneda) {
+        this.moneda = moneda;
+    }
+
     // HashCode y Equals
     @Override
     public int hashCode() {
@@ -180,7 +194,8 @@ public class TipoCuenta {
         return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
                 + ", RequisitosApertura=" + RequisitosApertura + ", tipocliente=" + tipocliente
                 + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas + ", Estado=" + Estado + ", FechaCreacion="
-                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres + "]";
+                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres 
+                + ", moneda=" + moneda + "]";
     }
 
     

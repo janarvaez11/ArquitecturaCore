@@ -14,7 +14,7 @@ import com.banquito.core.aplicacion.cuentas.servicio.TasaPlazoServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/tasasPlazo")
+@RequestMapping("/api/tasas-plazos")
 public class TasaPlazoControlador {
     private final TasaPlazoServicio tasaPlazoServicio;
 

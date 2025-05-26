@@ -11,15 +11,16 @@ import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion
 import com.banquito.core.aplicacion.cuentas.excepcion.ComisionCargoNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.modelo.BaseCalculoComision;
 import com.banquito.core.aplicacion.cuentas.modelo.ComisionCargo;
-import com.banquito.core.aplicacion.cuentas.modelo.EstadoComision;
 import com.banquito.core.aplicacion.cuentas.repositorio.ComisionCargoRepositorio;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class ComisionCargoServicio {
+
+    public static final String ESTADO_VIGENTE = "VIGENTE";
+    public static final String BASE_CALCULO_EXENTO = "EXENTO";
 
     private final ComisionCargoRepositorio comisionCargoRepositorio;
 
@@ -92,10 +93,10 @@ public class ComisionCargoServicio {
     }
 
     public List<ComisionCargo> buscarComisionesVigentes() {
-        return this.comisionCargoRepositorio.findByFrecuencia(EstadoComision.VIGENTE.getValor());
+        return this.comisionCargoRepositorio.findByFrecuencia(ESTADO_VIGENTE);
     }
 
     public List<ComisionCargo> buscarComisionesExentas() {
-        return this.comisionCargoRepositorio.findByBaseCalculo(BaseCalculoComision.EXENTO.getValor());
+        return this.comisionCargoRepositorio.findByBaseCalculo(BASE_CALCULO_EXENTO);
     }
 } 

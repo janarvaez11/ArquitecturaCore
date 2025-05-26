@@ -109,7 +109,7 @@ public class CuentaClienteServicio {
         return this.cuentaClienteRepositorio.findByEstado(estado);
     }
 
-    public List<CuentaCliente> findBySaldoDisponibleGreaterThan(Double saldoMinimo) {
+    public List<CuentaCliente> findBySaldoDisponibleGreaterThan(BigDecimal saldoMinimo) {
         return this.cuentaClienteRepositorio.findBySaldoDisponibleGreaterThan(saldoMinimo);
     }
 
