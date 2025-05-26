@@ -14,7 +14,7 @@ import com.banquito.core.aplicacion.cuentas.servicio.ExencionCuentaServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/exencionesCuenta")
+@RequestMapping("/api/exenciones-cuentas")
 public class ExencionCuentaControlador {
 
     private final ExencionCuentaServicio exencionCuentaServicio;
