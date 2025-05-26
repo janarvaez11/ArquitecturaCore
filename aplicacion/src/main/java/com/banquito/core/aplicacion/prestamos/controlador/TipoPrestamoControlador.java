@@ -1,12 +1,13 @@
 package com.banquito.core.aplicacion.prestamos.controlador;
 
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.TipoPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.servicio.TipoPrestamosServicio;
 
@@ -26,8 +27,28 @@ public class TipoPrestamoControlador {
         try {
             TipoPrestamo tipoPrestamo = tipoPrestamosServicio.findById(id);
             return ResponseEntity.ok(tipoPrestamo);
-        } catch (TipoPrestamoNoEncontradoExcepcion e) {
+        } catch (BusquedaExcepcion e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<TipoPrestamo>> obtenerPorEstado(@PathVariable String estado) {
+        try {
+            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByEstado(estado);
+            return ResponseEntity.ok(tiposPrestamo);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/tipoCliente/{tipoCliente}")
+    public ResponseEntity<List<TipoPrestamo>> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
+        try {
+            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByTipoCliente(tipoCliente);
+            return ResponseEntity.ok(tiposPrestamo);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -61,4 +82,5 @@ public class TipoPrestamoControlador {
             return ResponseEntity.badRequest().build();
         }
     }
+    
 } 
