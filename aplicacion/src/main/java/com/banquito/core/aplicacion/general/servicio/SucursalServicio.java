@@ -82,6 +82,12 @@ public class SucursalServicio {
                 .collect(Collectors.toList());
     }
 
+    public List<Map<String, Object>> buscarPorEntidadBancaria(Integer idEntidadBancaria) {
+        return this.sucursalRepositorio.findByEntidadBancariaId(idEntidadBancaria).stream()
+                .map(this::mapSucursal)
+                .collect(Collectors.toList());
+    }
+
     private Map<String, Object> mapSucursal(Sucursal sucursal) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", sucursal.getIdSucursal());
