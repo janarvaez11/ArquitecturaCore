@@ -17,17 +17,18 @@ public class EmpresaControlador {
         this.empresaServicio = empresaServicio;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Empresa> obtenerPorId(@PathVariable Integer id) {
-        Empresa empresa = empresaServicio.buscarPorId(id);
-        return ResponseEntity.ok(empresa);
-    }
-
     @GetMapping
     public ResponseEntity<List<Empresa>> listarTodas() {
         List<Empresa> empresas = empresaServicio.buscarTodas();
         return ResponseEntity.ok(empresas);
     }
+
+    @GetMapping("/{numero}")
+    public ResponseEntity<Empresa> obtenerPorIdentificacion(@PathVariable String numero) {
+        Empresa empresa = empresaServicio.buscarPorNumeroIdentificacion(numero);
+        return ResponseEntity.ok(empresa);
+    }
+
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody Empresa empresa) {

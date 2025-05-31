@@ -13,21 +13,21 @@ public class Representante {
     private RepresentanteId id;
 
     @ManyToOne
-    @MapsId("IdEmpresa")
-    @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa")
-    private Empresa IdEmpresa;
+    @MapsId("idEmpresa")
+    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
+    private Empresa idEmpresa;
 
     @ManyToOne
-    @MapsId("IdCliente")
-    @JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente")
-    private Cliente IdCliente;
+    @MapsId("idCliente")
+    @JoinColumn(name = "idCliente", referencedColumnName = "idCliente")
+    private Cliente idCliente;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "FechaAsignacion")
-    private Date FechaAsignacion;
+    @Column(name = "fechaAsignacion")
+    private Date fechaAsignacion;
 
-    @Column(name = "Estado", length = 15, nullable = false)
-    private String Estado;
+    @Column(name = "estado", length = 15, nullable = false)
+    private String estado;
 
     public Representante() {}
 
@@ -44,35 +44,35 @@ public class Representante {
     }
 
     public Empresa getIdEmpresa() {
-        return IdEmpresa;
+        return idEmpresa;
     }
 
     public void setIdEmpresa(Empresa idEmpresa) {
-        IdEmpresa = idEmpresa;
+        this.idEmpresa = idEmpresa;
     }
 
     public Cliente getIdCliente() {
-        return IdCliente;
+        return idCliente;
     }
 
     public void setIdCliente(Cliente idCliente) {
-        IdCliente = idCliente;
+        this.idCliente = idCliente;
     }
 
     public Date getFechaAsignacion() {
-        return FechaAsignacion;
+        return fechaAsignacion;
     }
 
     public void setFechaAsignacion(Date fechaAsignacion) {
-        FechaAsignacion = fechaAsignacion;
+        this.fechaAsignacion = fechaAsignacion;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     @Override
@@ -92,10 +92,10 @@ public class Representante {
     public String toString() {
         return "Representante{" +
                 "id=" + id +
-                ", IdEmpresa=" + IdEmpresa +
-                ", IdCliente=" + IdCliente +
-                ", FechaAsignacion=" + FechaAsignacion +
-                ", Estado='" + Estado + '\'' +
+                ", idEmpresa=" + idEmpresa +
+                ", idCliente=" + idCliente +
+                ", fechaAsignacion=" + fechaAsignacion +
+                ", estado='" + estado + '\'' +
                 '}';
     }
 }

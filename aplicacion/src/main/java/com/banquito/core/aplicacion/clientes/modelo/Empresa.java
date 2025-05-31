@@ -11,143 +11,143 @@ public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdEmpresa", nullable = false)
-    private Integer IdEmpresa;
+    private Integer idEmpresa;
 
     @Column(name = "TipoIdentificacion", length = 10, nullable = false)
-    private String TipoIdentificacion;
+    private String tipoIdentificacion;
 
     @Column(name = "NumeroIdentificacion",  length = 20, nullable = false)
-    private String NumeroIdentificacion;
+    private String numeroIdentificacion;
 
     @Column(name = "NombreEmpresa",  length = 25, nullable = false)
-    private String NombreEmpresa;
+    private String nombreEmpresa;
 
     @Column(name = "RazonSocial",  length = 25, nullable = false)
-    private String RazonSocial;
+    private String razonSocial;
 
-    @Column(name = "FechaConstitucion", nullable = false)
-    private Date FechaConstitucion;
+    @Column(name = "fechaConstitucion", nullable = false)
+    private Date fechaConstitucion;
 
     @Column(name = "CorreoElectronico",  length = 40, nullable = false)
-    private String CorreoElectronico;
+    private String correoElectronico;
 
-    @Column(name = "TipoCompania",  length = 20, nullable = false)
-    private String TipoCompania;
+    @Column(name = "tipoCompania",  length = 20, nullable = false)
+    private String tipoCompania;
 
     @Column(name = "Estado",  length = 20, nullable = false)
-    private String Estado;
+    private String estado;
 
     @Column(name = "SectorEconomico",  length = 20, nullable = false)
-    private String SectorEconomico;
+    private String sectorEconomico;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "FechaRegistro", nullable = false)
-    private Date FechaRegistro;
+    @Column(name = "fechaRegistro", nullable = false)
+    private Date fechaRegistro;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaActualizacion", nullable = false)
-    private Date FechaActualizacion;
+    private Date fechaActualizacion;
 
     public Empresa() {}
 
-    public Empresa(Integer IdEmpresa) {
-        this.IdEmpresa = IdEmpresa;
+    public Empresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     public Integer getIdEmpresa() {
-        return IdEmpresa;
+        return idEmpresa;
     }
 
     public void setIdEmpresa(Integer idEmpresa) {
-        IdEmpresa = idEmpresa;
+        this.idEmpresa = idEmpresa;
     }
 
     public String getTipoIdentificacion() {
-        return TipoIdentificacion;
+        return tipoIdentificacion;
     }
 
     public void setTipoIdentificacion(String tipoIdentificacion) {
-        TipoIdentificacion = tipoIdentificacion;
+        this.tipoIdentificacion = tipoIdentificacion;
     }
 
     public String getNumeroIdentificacion() {
-        return NumeroIdentificacion;
+        return numeroIdentificacion;
     }
 
     public void setNumeroIdentificacion(String numeroIdentificacion) {
-        NumeroIdentificacion = numeroIdentificacion;
+        this.numeroIdentificacion = numeroIdentificacion;
     }
 
     public String getNombreEmpresa() {
-        return NombreEmpresa;
+        return nombreEmpresa;
     }
 
     public void setNombreEmpresa(String nombreEmpresa) {
-        NombreEmpresa = nombreEmpresa;
+        this.nombreEmpresa = nombreEmpresa;
     }
 
     public String getRazonSocial() {
-        return RazonSocial;
+        return razonSocial;
     }
 
     public void setRazonSocial(String razonSocial) {
-        RazonSocial = razonSocial;
+        this.razonSocial = razonSocial;
     }
 
     public Date getFechaConstitucion() {
-        return FechaConstitucion;
+        return fechaConstitucion;
     }
 
     public void setFechaConstitucion(Date fechaConstitucion) {
-        FechaConstitucion = fechaConstitucion;
+        this.fechaConstitucion = fechaConstitucion;
     }
 
     public String getCorreoElectronico() {
-        return CorreoElectronico;
+        return correoElectronico;
     }
 
     public void setCorreoElectronico(String correoElectronico) {
-        CorreoElectronico = correoElectronico;
+        this.correoElectronico = correoElectronico;
     }
 
     public String getTipoCompania() {
-        return TipoCompania;
+        return tipoCompania;
     }
 
     public void setTipoCompania(String tipoCompania) {
-        TipoCompania = tipoCompania;
+        this.tipoCompania = tipoCompania;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     public String getSectorEconomico() {
-        return SectorEconomico;
+        return sectorEconomico;
     }
 
     public void setSectorEconomico(String sectorEconomico) {
-        SectorEconomico = sectorEconomico;
+        this.sectorEconomico = sectorEconomico;
     }
 
     public Date getFechaRegistro() {
-        return FechaRegistro;
+        return fechaRegistro;
     }
 
     public void setFechaRegistro(Date fechaRegistro) {
-        FechaRegistro = fechaRegistro;
+        this.fechaRegistro = fechaRegistro;
     }
 
     public Date getFechaActualizacion() {
-        return FechaActualizacion;
+        return fechaActualizacion;
     }
 
     public void setFechaActualizacion(Date fechaActualizacion) {
-        FechaActualizacion = fechaActualizacion;
+        this.fechaActualizacion = fechaActualizacion;
     }
 
     @Override
@@ -159,10 +159,10 @@ public class Empresa {
         if (getClass() != obj.getClass())
             return false;
         Empresa other = (Empresa) obj;
-        if (IdEmpresa == null) {
-            if (other.IdEmpresa != null)
+        if (idEmpresa == null) {
+            if (other.idEmpresa != null)
                 return false;
-        } else if (!IdEmpresa.equals(other.IdEmpresa))
+        } else if (!idEmpresa.equals(other.idEmpresa))
             return false;
         return true;
     }
@@ -171,25 +171,25 @@ public class Empresa {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdEmpresa == null) ? 0 : IdEmpresa.hashCode());
+        result = prime * result + ((idEmpresa == null) ? 0 : idEmpresa.hashCode());
         return result;
     }
 
     @Override
     public String toString() {
         return "Empresa{" +
-                "IdEmpresa=" + IdEmpresa +
-                ", TipoIdentificacion='" + TipoIdentificacion + '\'' +
-                ", NumeroIdentificacion='" + NumeroIdentificacion + '\'' +
-                ", NombreEmpresa='" + NombreEmpresa + '\'' +
-                ", RazonSocial='" + RazonSocial + '\'' +
-                ", FechaConstitucion=" + FechaConstitucion +
-                ", CorreoElectronico='" + CorreoElectronico + '\'' +
-                ", TipoCompania='" + TipoCompania + '\'' +
-                ", Estado='" + Estado + '\'' +
-                ", SectorEconomico='" + SectorEconomico + '\'' +
-                ", FechaRegistro=" + FechaRegistro +
-                ", FechaActualizacion=" + FechaActualizacion +
+                "idEmpresa=" + idEmpresa +
+                ", tipoIdentificacion='" + tipoIdentificacion + '\'' +
+                ", numeroIdentificacion='" + numeroIdentificacion + '\'' +
+                ", nombreEmpresa='" + nombreEmpresa + '\'' +
+                ", razonSocial='" + razonSocial + '\'' +
+                ", fechaConstitucion=" + fechaConstitucion +
+                ", correoElectronico='" + correoElectronico + '\'' +
+                ", tipoCompania='" + tipoCompania + '\'' +
+                ", estado='" + estado + '\'' +
+                ", sectorEconomico='" + sectorEconomico + '\'' +
+                ", fechaRegistro=" + fechaRegistro +
+                ", fechaActualizacion=" + fechaActualizacion +
                 '}';
     }
 }

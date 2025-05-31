@@ -4,40 +4,40 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class RepresentanteId implements Serializable {
-    private Integer IdEmpresa;
-    private Integer IdCliente;
-    private String Rol;
+    private Integer idEmpresa;
+    private Integer idCliente;
+    private String rol;
 
     public RepresentanteId() {}
 
     public RepresentanteId(Integer idEmpresa, Integer idCliente, String rol) {
-        this.IdEmpresa = idEmpresa;
-        this.IdCliente = idCliente;
-        this.Rol = rol;
+        this.idEmpresa = idEmpresa;
+        this.idCliente = idCliente;
+        this.rol = rol;
     }
 
     public Integer getIdEmpresa() {
-        return IdEmpresa;
+        return idEmpresa;
     }
 
     public void setIdEmpresa(Integer idEmpresa) {
-        IdEmpresa = idEmpresa;
+        this.idEmpresa = idEmpresa;
     }
 
     public Integer getIdCliente() {
-        return IdCliente;
+        return idCliente;
     }
 
     public void setIdCliente(Integer idCliente) {
-        IdCliente = idCliente;
+        this.idCliente = idCliente;
     }
 
     public String getRol() {
-        return Rol;
+        return rol;
     }
 
     public void setRol(String rol) {
-        Rol = rol;
+        this.rol = rol;
     }
 
     @Override
@@ -45,22 +45,22 @@ public class RepresentanteId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RepresentanteId that = (RepresentanteId) o;
-        return Objects.equals(IdEmpresa, that.IdEmpresa) &&
-                Objects.equals(IdCliente, that.IdCliente) &&
-                Objects.equals(Rol, that.Rol);
+        return Objects.equals(idEmpresa, that.idEmpresa) &&
+                Objects.equals(idCliente, that.idCliente) &&
+                Objects.equals(rol, that.rol);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(IdEmpresa, IdCliente, Rol);
+        return Objects.hash(idEmpresa, idCliente, rol);
     }
 
     @Override
     public String toString() {
         return "RepresentanteId{" +
-                "IdEmpresa=" + IdEmpresa +
-                ", IdCliente=" + IdCliente +
-                ", Rol='" + Rol + '\'' +
+                "idEmpresa=" + idEmpresa +
+                ", idCliente=" + idCliente +
+                ", rol='" + rol + '\'' +
                 '}';
     }
 }
