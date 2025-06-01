@@ -58,4 +58,9 @@ public class SucursalControlador {
         return ResponseEntity.ok(sucursalServicio.buscarPorLocacion(idLocacion));
     }
 
+    @GetMapping("/entidad-bancaria/{idEntidadBancaria}")
+    public ResponseEntity<List<Map<String, Object>>> buscarPorEntidadBancaria(@PathVariable Integer idEntidadBancaria) {
+        return ResponseEntity.ok(sucursalServicio.buscarPorEntidadBancaria(idEntidadBancaria));
+    }
+
 }

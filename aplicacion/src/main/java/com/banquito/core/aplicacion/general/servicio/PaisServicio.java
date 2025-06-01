@@ -1,16 +1,16 @@
 package com.banquito.core.aplicacion.general.servicio;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.banquito.core.aplicacion.general.excepcion.PaisNoEncontradoExcepcion;
-import com.banquito.core.aplicacion.general.excepcion.CrearPaisExcepcion;
-import com.banquito.core.aplicacion.general.excepcion.ActualizarPaisExcepcion;
 import com.banquito.core.aplicacion.general.modelo.Pais;
 import com.banquito.core.aplicacion.general.repositorio.PaisRepositorio;
+import com.banquito.core.aplicacion.general.excepcion.*;
 
 @Service
 public class PaisServicio {
@@ -23,55 +23,84 @@ public class PaisServicio {
 
     @Transactional
     public void crearPais(Pais pais) {
-        try {
-            if (this.paisRepositorio.existsById(pais.getId())) {
-                throw new CrearPaisExcepcion("Pais", "El país con ID " + pais.getId() + " ya existe.");
-            }
-            this.paisRepositorio.save(pais);
-        } catch (RuntimeException e) {
-            throw new CrearPaisExcepcion("Pais", "Error al crear el país: " + e.getMessage());
+        if (paisRepositorio.existsById(pais.getId())) {
+            throw new CrearPaisExcepcion("Pais", "El país con ID " + pais.getId() + " ya existe.");
         }
+        this.paisRepositorio.save(pais);
     }
 
     @Transactional
-    public void actualizarPais(Pais pais) {
-        try {
-            Optional<Pais> paisOptional = this.paisRepositorio.findById(pais.getId());
-            if (paisOptional.isPresent()) {
-                Pais paisExistente = paisOptional.get();
-                paisExistente.setNombre(pais.getNombre());
-                paisExistente.setCodigoTelefono(pais.getCodigoTelefono());
-                this.paisRepositorio.save(paisExistente);
-            } else {
-                throw new PaisNoEncontradoExcepcion("No se encontró el país con ID: " + pais.getId());
-            }
-        } catch (RuntimeException e) {
-            throw new ActualizarPaisExcepcion("Pais", "Error al actualizar el país: " + e.getMessage());
-        }
+    public void actualizarPais(String id, Pais pais) {
+        Pais paisDB = obtenerPorIdNoMapeado(id);
+        
+        paisDB.setNombre(pais.getNombre());
+        paisDB.setCodigoTelefono(pais.getCodigoTelefono());
+        
+        this.paisRepositorio.save(paisDB);
     }
 
-    public Pais obtenerPorId(String id) {
+    public Map<String, Object> obtenerPorId(String id) {
+        Pais pais = this.paisRepositorio.findById(id)
+                .orElseThrow(() -> new PaisNoEncontradoExcepcion("País no encontrado con ID: " + id));
+        return mapPais(pais);
+    }
+
+    private Pais obtenerPorIdNoMapeado(String id) {
         return this.paisRepositorio.findById(id)
                 .orElseThrow(() -> new PaisNoEncontradoExcepcion("País no encontrado con ID: " + id));
     }
 
-    public List<Pais> listarTodos() {
+    public List<Map<String, Object>> listarTodos() {
         List<Pais> paises = this.paisRepositorio.findAll();
         if (paises.isEmpty()) {
             throw new PaisNoEncontradoExcepcion("No hay países registrados en el sistema.");
         }
-        return paises;
+        return paises.stream()
+                .map(this::mapPais)
+                .collect(Collectors.toList());
     }
 
-    public boolean existePais(String id) {
-        return this.paisRepositorio.existsById(id);
-    }
-
-    public Pais obtenerPaisPorDefecto() {
+    public Map<String, Object> obtenerPaisPorDefecto() {
         List<Pais> paises = this.paisRepositorio.findAll();
         if (paises.isEmpty()) {
             throw new PaisNoEncontradoExcepcion("No hay países registrados en el sistema.");
         }
-        return paises.getFirst(); 
+        return mapPais(paises.getFirst());
+    }
+
+    private Map<String, Object> mapPais(Pais pais) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", pais.getId());
+        map.put("nombre", pais.getNombre());
+        map.put("codigoTelefono", pais.getCodigoTelefono());
+        
+        // Mapeo de relaciones
+        if (pais.getEstructurasGeograficas() != null && !pais.getEstructurasGeograficas().isEmpty()) {
+            map.put("estructurasGeograficas", pais.getEstructurasGeograficas().stream()
+                    .map(eg -> {
+                        Map<String, Object> egMap = new LinkedHashMap<>();
+                        egMap.put("id", eg.getId());
+                        egMap.put("nombre", eg.getNombre());
+                        return egMap;
+                    })
+                    .collect(Collectors.toList()));
+        } else {
+            map.put("estructurasGeograficas", null);
+        }
+        
+        if (pais.getLocacionesGeograficas() != null && !pais.getLocacionesGeograficas().isEmpty()) {
+            map.put("locacionesGeograficas", pais.getLocacionesGeograficas().stream()
+                    .map(lg -> {
+                        Map<String, Object> lgMap = new LinkedHashMap<>();
+                        lgMap.put("id", lg.getId());
+                        lgMap.put("nombre", lg.getNombre());
+                        return lgMap;
+                    })
+                    .collect(Collectors.toList()));
+        } else {
+            map.put("locacionesGeograficas", null);
+        }
+        
+        return map;
     }
 }

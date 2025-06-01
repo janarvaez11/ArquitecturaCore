@@ -20,4 +20,6 @@ public interface SucursalRepositorio extends JpaRepository<Sucursal, Integer> {
     boolean existsByCodigo(String codigo);
     
     List<Sucursal> findByLocacionId(Integer idLocacion);
+    
+    List<Sucursal> findByEntidadBancariaId(Integer idEntidadBancaria);
 }
