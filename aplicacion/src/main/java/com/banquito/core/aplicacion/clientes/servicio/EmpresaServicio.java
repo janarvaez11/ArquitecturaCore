@@ -9,6 +9,7 @@ import com.banquito.core.aplicacion.clientes.repositorio.EmpresaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,6 @@ public class EmpresaServicio {
         return empresaRepositorio.findAll();
     }
 
-    /*public Empresa buscarPorId(Integer id) {
-        Optional<Empresa> empresa = empresaRepositorio.findById(id);
-        if (empresa.isPresent()) {
-            return empresa.get();
-        }else {
-            throw new NoEncontradoExcepcion("Empresa","Error al buscar la empresa:" + id);
-        }
-    }*/
 
     public Empresa buscarPorNumeroIdentificacion(String numeroIdentificacion) {
         Optional<Empresa> empresa = empresaRepositorio.findByNumeroIdentificacion(numeroIdentificacion);
@@ -42,64 +35,93 @@ public class EmpresaServicio {
         }
     }
 
-
     @Transactional
     public void crear(Empresa empresa) {
+        validarCamposObligatorios(empresa);
+
+        if (!"RUC".equalsIgnoreCase(empresa.getTipoIdentificacion())) {
+            throw new CrearExcepcion("Solo se permite tipo de identificación: RUC", "Empresa");
+        }
+
+        boolean existe = empresaRepositorio.findByNumeroIdentificacion(empresa.getNumeroIdentificacion()).isPresent();
+        if (existe) {
+            throw new CrearExcepcion("Ya existe una empresa con el número de identificación: " + empresa.getNumeroIdentificacion(), "Empresa");
+        }
+
         try {
+            empresa.setFechaRegistro(new Date());
+            empresa.setFechaActualizacion(new Date());
             empresaRepositorio.save(empresa);
-        }catch (RuntimeException rte){
-            throw new CrearExcepcion("Error al crear la empresa:" + rte.getMessage(), "Empresa");
+        } catch (RuntimeException e) {
+            throw new CrearExcepcion("Error al crear la empresa: " + e.getMessage(), "Empresa");
         }
     }
 
     @Transactional
     public void actualizar(Empresa empresa) {
-        try{
-            Optional<Empresa> empresaOptional = this.empresaRepositorio.findById(empresa.getIdEmpresa());
-            if (empresaOptional.isPresent()) {
-                Empresa empresaDB = empresaOptional.get();
+        if (empresa.getIdEmpresa() == null) {
+            throw new ActualizarExcepcion("ID de empresa no proporcionado", "Empresa");
+        }
 
-                if (empresa.getNombreEmpresa() != null) {
-                    empresaDB.setNombreEmpresa(empresa.getNombreEmpresa());
-                }
+        try {
+            Empresa empresaDB = empresaRepositorio.findById(empresa.getIdEmpresa())
+                    .orElseThrow(() -> new ActualizarExcepcion(String.valueOf(empresa.getIdEmpresa()), "Empresa"));
 
-                if (empresa.getCorreoElectronico() != null) {
-                    empresaDB.setCorreoElectronico(empresa.getCorreoElectronico());
-                }
-
-                if (empresa.getTipoCompania() != null) {
-                    empresaDB.setTipoCompania(empresa.getTipoCompania());
-                }
-
-                if (empresa.getEstado() != null) {
-                    empresaDB.setEstado(empresa.getEstado());
-                }
-
-                if (empresa.getSectorEconomico() != null) {
-                    empresaDB.setSectorEconomico(empresa.getSectorEconomico());
-                }
-
-                empresaRepositorio.save(empresaDB);
-            }else {
-                throw new ActualizarExcepcion(String.valueOf(empresa.getIdEmpresa()), "Empresa");
+            if (empresa.getNombreEmpresa() != null) {
+                empresaDB.setNombreEmpresa(empresa.getNombreEmpresa());
             }
-        }catch (RuntimeException rte){
-            throw new ActualizarExcepcion("Error al actualizar la empresa:" + rte.getMessage(), "Empresa");
+
+            if (empresa.getCorreoElectronico() != null) {
+                empresaDB.setCorreoElectronico(empresa.getCorreoElectronico());
+            }
+
+            if (empresa.getTipoCompania() != null) {
+                empresaDB.setTipoCompania(empresa.getTipoCompania());
+            }
+
+            if (empresa.getEstado() != null) {
+                empresaDB.setEstado(empresa.getEstado());
+            }
+
+            if (empresa.getSectorEconomico() != null) {
+                empresaDB.setSectorEconomico(empresa.getSectorEconomico());
+            }
+
+            empresaDB.setFechaActualizacion(new Date());
+
+            empresaRepositorio.save(empresaDB);
+        } catch (RuntimeException e) {
+            throw new ActualizarExcepcion("Error al actualizar la empresa: " + e.getMessage(), "Empresa");
         }
     }
 
     @Transactional
     public void eliminar(Integer id) {
+        if (id == null) {
+            throw new EliminarExcepcion("ID de empresa no proporcionado", "Empresa");
+        }
         try {
-            Optional<Empresa> empresaOptional = empresaRepositorio.findById(id);
+            Empresa empresa = empresaRepositorio.findById(id)
+                    .orElseThrow(() -> new EliminarExcepcion(String.valueOf(id), "Empresa"));
 
-            if (empresaOptional.isPresent()) {
-                empresaRepositorio.deleteById(id);
-            }else {
-                throw new EliminarExcepcion(String.valueOf(id), "Empresa");
-            }
-        }catch (RuntimeException rte){
-            throw new EliminarExcepcion("Error al eliminar la empresa:" +rte.getMessage(), "Empresa");
+            empresaRepositorio.delete(empresa);
+        } catch (RuntimeException e) {
+            throw new EliminarExcepcion("Error al eliminar la empresa: " + e.getMessage(), "Empresa");
+        }
+    }
+
+    private void validarCamposObligatorios(Empresa empresa) {
+        if (empresa.getTipoIdentificacion() == null || empresa.getNumeroIdentificacion() == null ||
+                empresa.getNombreEmpresa() == null || empresa.getRazonSocial() == null ||
+                empresa.getFechaConstitucion() == null || empresa.getCorreoElectronico() == null ||
+                empresa.getTipoCompania() == null || empresa.getEstado() == null ||
+                empresa.getSectorEconomico() == null) {
+
+            throw new CrearExcepcion("Faltan campos obligatorios para la creación de la empresa", "Empresa");
+        }
+
+        if (!empresa.getTipoIdentificacion().equalsIgnoreCase("RUC")) {
+            throw new CrearExcepcion("Tipo de identificación inválido. Solo se permite RUC", "Empresa");
         }
     }
 }

@@ -13,14 +13,14 @@ public class Representante {
     private RepresentanteId id;
 
     @ManyToOne
-    @MapsId("idEmpresa")
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
-    private Empresa idEmpresa;
+    @MapsId("empresa")
+    @JoinColumn(name = "empresa", referencedColumnName = "empresa")
+    private Empresa empresa;
 
     @ManyToOne
-    @MapsId("idCliente")
-    @JoinColumn(name = "idCliente", referencedColumnName = "idCliente")
-    private Cliente idCliente;
+    @MapsId("cliente")
+    @JoinColumn(name = "cliente", referencedColumnName = "cliente")
+    private Cliente cliente;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fechaAsignacion")
@@ -43,20 +43,20 @@ public class Representante {
         this.id = id;
     }
 
-    public Empresa getIdEmpresa() {
-        return idEmpresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setIdEmpresa(Empresa idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public Cliente getIdCliente() {
-        return idCliente;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setIdCliente(Cliente idCliente) {
-        this.idCliente = idCliente;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public Date getFechaAsignacion() {
@@ -92,8 +92,8 @@ public class Representante {
     public String toString() {
         return "Representante{" +
                 "id=" + id +
-                ", idEmpresa=" + idEmpresa +
-                ", idCliente=" + idCliente +
+                ", empresa=" + empresa +
+                ", cliente=" + cliente +
                 ", fechaAsignacion=" + fechaAsignacion +
                 ", estado='" + estado + '\'' +
                 '}';

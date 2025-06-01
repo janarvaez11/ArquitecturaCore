@@ -27,28 +27,30 @@ public class PersonaServicio {
         return personaRepositorio.findAll();
     }
 
-    /*public Persona buscarPorId(Integer id) {
-        Optional<Persona> persona = personaRepositorio.findById(id);
-        if (persona.isPresent()) {
-            return persona.get();
-        }else {
-            throw new NoEncontradoExcepcion("Persona","El id:" + id + "No corresponde a niguna persona registrada");
-        }
-
-    }*/
-
     public Persona buscarPorNumeroIdentificacion(String numeroIdentificacion) {
         return personaRepositorio.findByNumeroIdentificacion(numeroIdentificacion)
-                .orElseThrow(() -> new NoEncontradoExcepcion("Persona","No se encontró persona con número de identificación: " + numeroIdentificacion));
+                .orElseThrow(() -> new NoEncontradoExcepcion("Persona", "No se encontró persona con número de identificación: " + numeroIdentificacion));
     }
-
 
     @Transactional
     public void crear(Persona persona) {
         try {
+            validarDatosObligatorios(persona);
+            validarCorreo(persona.getCorreoElectronico());
+            validarTipoIdentificacion(persona.getTipoIdentificacion());
+            validarNumeroIdentificacionUnico(persona.getNumeroIdentificacion());
+            validarLongitudNumeroIdentificacion(persona.getNumeroIdentificacion());
+            validarFechaNacimiento(persona.getFechaNacimiento());
+
+            if (persona.getFechaRegistro() == null) {
+                persona.setFechaRegistro(Date.from(Instant.now()));
+            }
+
+            persona.setFechaActualizacion(Date.from(Instant.now()));
+
             personaRepositorio.save(persona);
-        }catch (RuntimeException rte) {
-            throw new CrearExcepcion("Error al crear una persona. Texto: " + rte.getMessage(),"Persona");
+        } catch (RuntimeException rte) {
+            throw new CrearExcepcion("Error al crear una persona. Texto: " + rte.getMessage(), "Persona");
         }
     }
 
@@ -60,6 +62,7 @@ public class PersonaServicio {
                 Persona personaDB = personaOptional.get();
 
                 if (persona.getTipoIdentificacion() != null) {
+                    validarTipoIdentificacion(persona.getTipoIdentificacion());
                     personaDB.setTipoIdentificacion(persona.getTipoIdentificacion());
                 }
 
@@ -72,6 +75,7 @@ public class PersonaServicio {
                 }
 
                 if (persona.getCorreoElectronico() != null) {
+                    validarCorreo(persona.getCorreoElectronico());
                     personaDB.setCorreoElectronico(persona.getCorreoElectronico());
                 }
 
@@ -80,7 +84,6 @@ public class PersonaServicio {
                 }
 
                 personaDB.setFechaActualizacion(Date.from(Instant.now()));
-
                 personaRepositorio.save(personaDB);
             } else {
                 throw new ActualizarExcepcion(String.valueOf(persona.getIdPersona()), "Persona");
@@ -90,20 +93,57 @@ public class PersonaServicio {
         }
     }
 
-
     @Transactional
     public void eliminar(Integer id) {
         try {
             Optional<Persona> personaOptional = this.personaRepositorio.findById(id);
-
             if (personaOptional.isPresent()) {
                 this.personaRepositorio.deleteById(id);
-            }else {
+            } else {
                 throw new EliminarExcepcion(String.valueOf(id), "Persona");
             }
-        }catch (RuntimeException rte) {
-            throw new EliminarExcepcion("Error al eliminar la persona:" + rte.getMessage(), "Persona");
+        } catch (RuntimeException rte) {
+            throw new EliminarExcepcion("Error al eliminar la persona: " + rte.getMessage(), "Persona");
+        }
+    }
 
+    private void validarDatosObligatorios(Persona persona) {
+        if (persona.getTipoIdentificacion() == null || persona.getNumeroIdentificacion() == null ||
+                persona.getNombres() == null || persona.getGenero() == null || persona.getFechaNacimiento() == null ||
+                persona.getNacionalidad() == null || persona.getEstadoCivil() == null || persona.getNivelEstudio() == null ||
+                persona.getCorreoElectronico() == null || persona.getEstado() == null) {
+            throw new CrearExcepcion("Todos los campos obligatorios deben estar presentes", "Persona");
+        }
+    }
+
+    private void validarCorreo(String correo) {
+        if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new CrearExcepcion("Correo electrónico inválido", "Persona");
+        }
+    }
+
+    private void validarTipoIdentificacion(String tipoIdentificacion) {
+        if (!tipoIdentificacion.equalsIgnoreCase("CEDULA") &&
+                !tipoIdentificacion.equalsIgnoreCase("PASAPORTE")) {
+            throw new CrearExcepcion("Tipo de identificación inválido (debe ser 'CEDULA' o 'PASAPORTE')", "Persona");
+        }
+    }
+
+    private void validarNumeroIdentificacionUnico(String numeroIdentificacion) {
+        if (personaRepositorio.findByNumeroIdentificacion(numeroIdentificacion).isPresent()) {
+            throw new CrearExcepcion("Ya existe una persona con ese número de identificación", "Persona");
+        }
+    }
+
+    private void validarLongitudNumeroIdentificacion(String numeroIdentificacion) {
+        if (numeroIdentificacion.length() > 10) {
+            throw new CrearExcepcion("Número de identificación excede longitud permitida", "Persona");
+        }
+    }
+
+    private void validarFechaNacimiento(Date fechaNacimiento) {
+        if (fechaNacimiento.after(new Date())) {
+            throw new CrearExcepcion("La fecha de nacimiento no puede ser en el futuro", "Persona");
         }
     }
 }
