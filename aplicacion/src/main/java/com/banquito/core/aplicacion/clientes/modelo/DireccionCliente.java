@@ -1,26 +1,25 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.util.Objects;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "direccioncliente")
+@Table(name = "DireccionCliente")
 public class DireccionCliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdDireccion", nullable = false)
+    @Column(name = "IdDireccion")
     private Integer idDireccion;
 
     @ManyToOne
-    @JoinColumn(name = "IdCliente", nullable = false)
+    @JoinColumn(name = "IdCliente")
     private Cliente cliente;
 
     @Column(name = "Tipo", length = 30)
     private String tipo;
 
-    @Column(name = "Estado", length = 10)
+    @Column(name = "Estado", length = 20)
     private String estado;
 
     @Column(name = "Linea1", length = 150)
@@ -33,23 +32,16 @@ public class DireccionCliente {
     private String codigoPostal;
 
     @Column(name = "FechaCreacion")
-    private Date fechaCreacion;
+    private Timestamp fechaCreacion;
 
     @Column(name = "FechaActualizacion")
-    private Date fechaActualizacion;
+    private Timestamp fechaActualizacion;
 
-
-    public DireccionCliente() {}
-
-    public DireccionCliente(Integer idDireccion) {
-        this.idDireccion = idDireccion;
-    }
-
-    public Integer getIdDireccion() {
+    public Integer getidDireccion() {
         return idDireccion;
     }
 
-    public void setIdDireccion(Integer idDireccion) {
+    public void setidDireccion(Integer idDireccion) {
         this.idDireccion = idDireccion;
     }
 
@@ -101,38 +93,47 @@ public class DireccionCliente {
         this.codigoPostal = codigoPostal;
     }
 
-    public Date getFechaCreacion() {
+    public Timestamp getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
+    public void setFechaCreacion(Timestamp fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Date getFechaActualizacion() {
+    public Timestamp getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(Date fechaActualizacion) {
+    public void setFechaActualizacion(Timestamp fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(idDireccion);
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        DireccionCliente that = (DireccionCliente) o;
+        return idDireccion != null && idDireccion.equals(that.idDireccion);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof DireccionCliente)) return false;
-        DireccionCliente other = (DireccionCliente) obj;
-        return Objects.equals(idDireccion, other.idDireccion);
+    public int hashCode() {
+        return 31;
     }
 
     @Override
     public String toString() {
-        return "DireccionCliente{idDireccion=" + idDireccion + "}";
+        return "DireccionCliente{" +
+                "idDireccion=" + idDireccion +
+                ", tipo='" + tipo + '\'' +
+                ", estado='" + estado + '\'' +
+                ", linea1='" + linea1 + '\'' +
+                ", linea2='" + linea2 + '\'' +
+                ", codigoPostal='" + codigoPostal + '\'' +
+                '}';
     }
-}
 
+}

@@ -1,11 +1,9 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.util.Objects;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
-import com.banquito.core.aplicacion.general.modelo.Pais;
 import com.banquito.core.aplicacion.general.modelo.Sucursal;
 
 @Entity
@@ -15,20 +13,19 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdCliente", nullable = false)
-    private Integer idCliente;
+    private Integer id;
 
-    @Column(name = "TipoEntidad", nullable = false, length = 10)
+    @Column(name = "TipoEntidad", length = 10, nullable = false)
     private String tipoEntidad;
 
     @Column(name = "IdEntidad", nullable = false)
     private Integer idEntidad;
 
-    @ManyToOne
-    @JoinColumn(name = "id_pais", referencedColumnName = "IdPais", nullable = false)
-    private Pais pais;
+    @Column(name = "Nacionalidad", length = 2)
+    private String nacionalidad;
 
     @ManyToOne
-    @JoinColumn(name = "IdSucursal", referencedColumnName = "IdSucursal", nullable = false)
+    @JoinColumn(name = "IdSucursal", nullable = false)
     private Sucursal sucursal;
 
     @Column(name = "TipoIdentificacion", length = 10)
@@ -50,45 +47,38 @@ public class Cliente {
     private String nombre;
 
     @Column(name = "FechaCreacion")
-    private Date fechaCreacion;
+    private Timestamp fechaCreacion;
 
     @Column(name = "FechaActivacion")
-    private Date fechaActivacion;
+    private Timestamp fechaActivacion;
 
     @Column(name = "Estado", length = 15)
     private String estado;
 
     @Column(name = "FechaCierre")
-    private Date fechaCierre;
+    private Timestamp fechaCierre;
 
     @Column(name = "FechaActualizacion")
-    private Date fechaActualizacion;
+    private Timestamp fechaActualizacion;
 
     @Column(name = "Comentarios", length = 100)
     private String comentarios;
 
-    @OneToMany(mappedBy = "cliente")
-    private List<TelefonoCliente> telefonos;
-
-    @OneToMany(mappedBy = "cliente")
-    private List<DireccionCliente> direcciones;
-
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private ContactoTransaccionCliente contacto;
 
-    public Cliente() {
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<TelefonoCliente> telefonos;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<DireccionCliente> direcciones;
+
+    public Integer getId() {
+        return id;
     }
 
-    public Cliente(Integer idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public Integer getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Integer idCliente) {
-        this.idCliente = idCliente;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTipoEntidad() {
@@ -107,12 +97,12 @@ public class Cliente {
         this.idEntidad = idEntidad;
     }
 
-    public Pais getPais() {
-        return pais;
+    public String getNacionalidad() {
+        return nacionalidad;
     }
 
-    public void setPais(Pais pais) {
-        this.pais = pais;
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
 
     public Sucursal getSucursal() {
@@ -171,19 +161,19 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public Date getFechaCreacion() {
+    public Timestamp getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Date fechaCreacion) {
+    public void setFechaCreacion(Timestamp fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Date getFechaActivacion() {
+    public Timestamp getFechaActivacion() {
         return fechaActivacion;
     }
 
-    public void setFechaActivacion(Date fechaActivacion) {
+    public void setFechaActivacion(Timestamp fechaActivacion) {
         this.fechaActivacion = fechaActivacion;
     }
 
@@ -195,19 +185,19 @@ public class Cliente {
         this.estado = estado;
     }
 
-    public Date getFechaCierre() {
+    public Timestamp getFechaCierre() {
         return fechaCierre;
     }
 
-    public void setFechaCierre(Date fechaCierre) {
+    public void setFechaCierre(Timestamp fechaCierre) {
         this.fechaCierre = fechaCierre;
     }
 
-    public Date getFechaActualizacion() {
+    public Timestamp getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(Date fechaActualizacion) {
+    public void setFechaActualizacion(Timestamp fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
@@ -219,12 +209,12 @@ public class Cliente {
         this.comentarios = comentarios;
     }
 
-    public List<DireccionCliente> getDirecciones() {
-        return direcciones;
+    public ContactoTransaccionCliente getContacto() {
+        return contacto;
     }
 
-    public void setDirecciones(List<DireccionCliente> direcciones) {
-        this.direcciones = direcciones;
+    public void setContacto(ContactoTransaccionCliente contacto) {
+        this.contacto = contacto;
     }
 
     public List<TelefonoCliente> getTelefonos() {
@@ -235,23 +225,45 @@ public class Cliente {
         this.telefonos = telefonos;
     }
 
+    public List<DireccionCliente> getDirecciones() {
+        return direcciones;
+    }
+
+    public void setDirecciones(List<DireccionCliente> direcciones) {
+        this.direcciones = direcciones;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Cliente cliente = (Cliente) o;
+        return id != null && id.equals(cliente.id);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(idCliente);
+        return 31;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Cliente))
-            return false;
-        Cliente other = (Cliente) obj;
-        return Objects.equals(idCliente, other.idCliente);
-    }
-
+    // toString
     @Override
     public String toString() {
-        return "Cliente{idCliente=" + idCliente + ", tipoEntidad='" + tipoEntidad + "'}";
+        return "Cliente{" +
+                "id=" + id +
+                ", tipoEntidad='" + tipoEntidad + '\'' +
+                ", idEntidad=" + idEntidad +
+                ", nacionalidad='" + nacionalidad + '\'' +
+                ", tipoIdentificacion='" + tipoIdentificacion + '\'' +
+                ", numeroIdentificacion='" + numeroIdentificacion + '\'' +
+                ", tipoCliente='" + tipoCliente + '\'' +
+                ", segmento='" + segmento + '\'' +
+                ", canalAfilicacion='" + canalAfilicacion + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", estado='" + estado + '\'' +
+                '}';
     }
+
 }

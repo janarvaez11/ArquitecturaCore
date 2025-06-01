@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/telefonos")
+@RequestMapping("/api/telefonos")
 public class TelefonoClienteControlador {
 
     private final TelefonoClienteServicio servicio;
@@ -19,13 +19,13 @@ public class TelefonoClienteControlador {
         this.servicio = servicio;
     }
 
-    @GetMapping
-    public ResponseEntity<List<TelefonoCliente>> obtenerTodos() {
-        return ResponseEntity.ok(servicio.buscarTodos());
+    @PostMapping("/{idCliente}")
+    public ResponseEntity<TelefonoCliente> crear(@PathVariable Integer idCliente, @RequestBody TelefonoCliente telefono) {
+        return ResponseEntity.ok(servicio.crear(idCliente, telefono));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TelefonoCliente> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<TelefonoCliente> obtener(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(servicio.buscarPorId(id));
         } catch (TelefonoNoEncontradoExcepcion e) {
@@ -33,14 +33,19 @@ public class TelefonoClienteControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<TelefonoCliente> crear(@RequestBody TelefonoCliente telefono) {
-        return ResponseEntity.ok(servicio.crear(telefono));
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<List<TelefonoCliente>> listarPorCliente(@PathVariable Integer idCliente) {
+        return ResponseEntity.ok(servicio.obtenerPorCliente(idCliente));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TelefonoCliente> actualizar(@PathVariable Integer id, @RequestBody TelefonoCliente telefono) {
-        telefono.setIdTelefonoCliente(id);
-        return ResponseEntity.ok(servicio.modificar(telefono));
+    @PatchMapping
+    public ResponseEntity<TelefonoCliente> actualizar(@RequestBody TelefonoCliente telefono) {
+        return ResponseEntity.ok(servicio.actualizar(telefono));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        servicio.eliminarLogico(id);
+        return ResponseEntity.ok().build();
     }
 }
