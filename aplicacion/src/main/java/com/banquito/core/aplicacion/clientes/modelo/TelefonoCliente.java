@@ -1,7 +1,8 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "TelefonoCliente")
@@ -9,11 +10,11 @@ public class TelefonoCliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdTelefonoCliente")
-    private Integer id;
+    @Column(name = "IdTelefonoCliente", nullable = false)
+    private Integer idTelefonoCliente;
 
     @ManyToOne
-    @JoinColumn(name = "IdCliente")
+    @JoinColumn(name = "IdCliente", nullable = false)
     private Cliente cliente;
 
     @Column(name = "TipoTelefono", length = 10)
@@ -26,17 +27,24 @@ public class TelefonoCliente {
     private String estado;
 
     @Column(name = "FechaCreacion")
-    private Timestamp fechaCreacion;
+    private Date fechaCreacion;
 
     @Column(name = "FechaActualizacion")
-    private Timestamp fechaActualizacion;
+    private Date fechaActualizacion;
 
-    public Integer getId() {
-        return id;
+    public TelefonoCliente() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public TelefonoCliente(Integer idTelefonoCliente) {
+        this.idTelefonoCliente = idTelefonoCliente;
+    }
+
+    public Integer getIdTelefonoCliente() {
+        return idTelefonoCliente;
+    }
+
+    public void setIdTelefonoCliente(Integer idTelefonoCliente) {
+        this.idTelefonoCliente = idTelefonoCliente;
     }
 
     public Cliente getCliente() {
@@ -71,19 +79,19 @@ public class TelefonoCliente {
         this.estado = estado;
     }
 
-    public Timestamp getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Timestamp fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Timestamp getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(Timestamp fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
@@ -91,25 +99,24 @@ public class TelefonoCliente {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof TelefonoCliente))
             return false;
         TelefonoCliente that = (TelefonoCliente) o;
-        return id != null && id.equals(that.id);
+        return Objects.equals(idTelefonoCliente, that.idTelefonoCliente);
     }
 
     @Override
     public int hashCode() {
-        return 31;
+        return Objects.hash(idTelefonoCliente);
     }
 
     @Override
     public String toString() {
         return "TelefonoCliente{" +
-                "id=" + id +
+                "idTelefonoCliente=" + idTelefonoCliente +
                 ", tipoTelefono='" + tipoTelefono + '\'' +
                 ", numeroTelefono='" + numeroTelefono + '\'' +
                 ", estado='" + estado + '\'' +
                 '}';
     }
-
 }
