@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.TasaInteresNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.TasaInteres;
 import com.banquito.core.aplicacion.cuentas.repositorio.TasaInteresRepositorio;
 
@@ -19,7 +18,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class TasaInteresServicio {
 
-    public static final String ESTADO_VIGENTE = "VIGENTE";
+    private static final String ESTADO_ACTIVO = "ACT";
+    private static final String ESTADO_INACTIVO = "INA";
 
     private final TasaInteresRepositorio tasaInteresRepositorio;
 
@@ -27,71 +27,117 @@ public class TasaInteresServicio {
         this.tasaInteresRepositorio = tasaInteresRepositorio;
     }
 
-    public Page<TasaInteres> listarTodos(Pageable pageable) {
-        return this.tasaInteresRepositorio.findAll(pageable);
+    public List<TasaInteres> listarTodos() {
+        List<TasaInteres> tasas = this.tasaInteresRepositorio.findAll();
+        if (tasas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TasaInteres", 
+                "No existen tasas de interés registradas");
+        }
+        return tasas;
     }
 
-    public TasaInteres obtenerPorId(Integer id) {
-        Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(id);
-        if (tasaInteresOptional.isPresent()) {
-            return tasaInteresOptional.get();
-        } else {
-            throw new TasaInteresNoEncontradaExcepcion("TasaInteres", "No se encontró la tasa de interés con ID: " + id);
+    public Page<TasaInteres> listarTodosPaginado(Pageable pageable) {
+        Page<TasaInteres> page = this.tasaInteresRepositorio.findAll(pageable);
+        if (page.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TasaInteres", 
+                "No existen tasas de interés registradas");
         }
+        return page;
+    }
+
+    public TasaInteres buscarPorId(Integer id) {
+        return this.tasaInteresRepositorio.findById(id)
+            .orElseThrow(() -> new EntidadNoEncontradaExcepcion("TasaInteres", 
+                "No se encontró la tasa de interés con id: " + id));
     }
 
     @Transactional
     public TasaInteres crear(TasaInteres tasaInteres) {
         try {
+            validarTasaInteres(tasaInteres);
+            tasaInteres.setEstado(ESTADO_ACTIVO);
             return this.tasaInteresRepositorio.save(tasaInteres);
-        } catch (Exception e) {
-            throw new CrearEntidadExcepcion("TasaInteres", "Error al crear la tasa de interés. Error: " + e.getMessage());
+        } catch (RuntimeException e) {
+            throw new CrearEntidadExcepcion("TasaInteres", 
+                "Error al crear la tasa de interés: " + e.getMessage());
         }
     }
 
     @Transactional
-    public TasaInteres actualizar(TasaInteres tasaInteres) {
+    public TasaInteres actualizar(Integer id, TasaInteres tasaInteres) {
         try {
-            Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(tasaInteres.getIdTasaInteres());
-            if (tasaInteresOptional.isPresent()) {
-                TasaInteres tasaInteresDB = tasaInteresOptional.get();
-                tasaInteresDB.setBaseCalculo(tasaInteres.getBaseCalculo());
-                tasaInteresDB.setMetodoCalculo(tasaInteres.getMetodoCalculo());
-                tasaInteresDB.setEstado(tasaInteres.getEstado());
-                tasaInteresDB.setFrecuenciaCapitalizacion(tasaInteres.getFrecuenciaCapitalizacion());
-                tasaInteresDB.setFechaInicioVigencia(tasaInteres.getFechaInicioVigencia());
-                return this.tasaInteresRepositorio.save(tasaInteresDB);
-            } else {
-                throw new TasaInteresNoEncontradaExcepcion("TasaInteres", "No se encontró la tasa de interés con ID: " + tasaInteres.getIdTasaInteres());
-            }
-        } catch (Exception e) {
-            throw new ActualizarEntidadExcepcion("TasaInteres", "Error al actualizar la tasa de interés. Error: " + e.getMessage());
+            TasaInteres tasaExistente = buscarPorId(id);
+            validarTasaInteres(tasaInteres);
+            
+            tasaExistente.setBaseCalculo(tasaInteres.getBaseCalculo());
+            tasaExistente.setMetodoCalculo(tasaInteres.getMetodoCalculo());
+            tasaExistente.setFrecuenciaCapitalizacion(tasaInteres.getFrecuenciaCapitalizacion());
+            tasaExistente.setEstado(tasaInteres.getEstado());
+            tasaExistente.setFechaInicioVigencia(tasaInteres.getFechaInicioVigencia());
+            tasaExistente.setFechaFinVigencia(tasaInteres.getFechaFinVigencia());
+            
+            return this.tasaInteresRepositorio.save(tasaExistente);
+        } catch (RuntimeException e) {
+            throw new ActualizarEntidadExcepcion("TasaInteres", 
+                "Error al actualizar la tasa de interés: " + e.getMessage());
         }
     }
 
     @Transactional
     public void eliminar(Integer id) {
         try {
-            Optional<TasaInteres> tasaInteresOptional = this.tasaInteresRepositorio.findById(id);
-            if (tasaInteresOptional.isPresent()) {
-                this.tasaInteresRepositorio.delete(tasaInteresOptional.get());
-            } else {
-                throw new TasaInteresNoEncontradaExcepcion("TasaInteres", "No se encontró la tasa de interés con ID: " + id);
+            TasaInteres tasaInteres = buscarPorId(id);
+            if (ESTADO_ACTIVO.equals(tasaInteres.getEstado())) {
+                throw new EliminarEntidadExcepcion("TasaInteres", 
+                    "No se puede eliminar una tasa de interés activa");
             }
-        } catch (Exception e) {
-            throw new EliminarEntidadExcepcion("TasaInteres", "Error al eliminar la tasa de interés. Error: " + e.getMessage());
+            this.tasaInteresRepositorio.delete(tasaInteres);
+        } catch (RuntimeException e) {
+            throw new EliminarEntidadExcepcion("TasaInteres", 
+                "Error al eliminar la tasa de interés: " + e.getMessage());
         }
     }
 
-    public List<TasaInteres> buscarPorTipoCuenta(Integer idTipoCuenta) {
-        return this.tasaInteresRepositorio.findByTipoCuentaId(idTipoCuenta);
-    }
-
-    public List<TasaInteres> buscarPorRangoSaldo(Double saldoMinimo, Double saldoMaximo) {
-        return this.tasaInteresRepositorio.findByRangoSaldo(saldoMinimo, saldoMaximo);
-    }
-
     public List<TasaInteres> buscarTasasVigentes() {
-        return this.tasaInteresRepositorio.findByEstado(ESTADO_VIGENTE);
+        List<TasaInteres> tasas = this.tasaInteresRepositorio.findByEstado(ESTADO_ACTIVO);
+        if (tasas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TasaInteres", 
+                "No existen tasas de interés vigentes");
+        }
+        return tasas;
+    }
+
+    private void validarTasaInteres(TasaInteres tasaInteres) {
+        if (tasaInteres.getBaseCalculo() == null || tasaInteres.getBaseCalculo().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TasaInteres", "La base de cálculo es obligatoria");
+        }
+        if (tasaInteres.getMetodoCalculo() == null || tasaInteres.getMetodoCalculo().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TasaInteres", "El método de cálculo es obligatorio");
+        }
+        if (tasaInteres.getFrecuenciaCapitalizacion() == null || 
+            tasaInteres.getFrecuenciaCapitalizacion().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TasaInteres", "La frecuencia de capitalización es obligatoria");
+        }
+        if (tasaInteres.getEstado() == null || tasaInteres.getEstado().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TasaInteres", "El estado es obligatorio");
+        }
+        validarEstado(tasaInteres.getEstado());
+        if (tasaInteres.getFechaInicioVigencia() == null) {
+            throw new CrearEntidadExcepcion("TasaInteres", "La fecha de inicio de vigencia es obligatoria");
+        }
+        if (tasaInteres.getFechaFinVigencia() == null) {
+            throw new CrearEntidadExcepcion("TasaInteres", "La fecha de fin de vigencia es obligatoria");
+        }
+        if (tasaInteres.getFechaInicioVigencia().after(tasaInteres.getFechaFinVigencia())) {
+            throw new CrearEntidadExcepcion("TasaInteres", 
+                "La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
+    }
+
+    private void validarEstado(String estado) {
+        if (!ESTADO_ACTIVO.equals(estado) && !ESTADO_INACTIVO.equals(estado)) {
+            throw new CrearEntidadExcepcion("TasaInteres", 
+                "El estado debe ser: " + ESTADO_ACTIVO + " o " + ESTADO_INACTIVO);
+        }
     }
 }
