@@ -2,55 +2,60 @@ package com.banquito.core.aplicacion.clientes.servicio;
 
 import com.banquito.core.aplicacion.clientes.modelo.DireccionCliente;
 import com.banquito.core.aplicacion.clientes.repositorio.DireccionClienteRepositorio;
-import com.banquito.core.aplicacion.clientes.repositorio.ClienteRepositorio;
-import com.banquito.core.aplicacion.clientes.modelo.Cliente;
-import com.banquito.core.aplicacion.clientes.excepcion.DireccionNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.CrearDireccionExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.ActualizarDireccionExcepcion;
-import org.springframework.stereotype.Service;
-
+import com.banquito.core.aplicacion.clientes.excepcion.DireccionNoEncontradaExcepcion;
+import java.util.Date;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class DireccionClienteServicio {
 
-    private final DireccionClienteRepositorio direccionRepo;
-    private final ClienteRepositorio clienteRepo;
+    private final DireccionClienteRepositorio direccionRepositorio;
 
-    public DireccionClienteServicio(DireccionClienteRepositorio direccionRepo, ClienteRepositorio clienteRepo) {
-        this.direccionRepo = direccionRepo;
-        this.clienteRepo = clienteRepo;
-    }
-
-    public DireccionCliente crear(Integer idCliente, DireccionCliente direccion) {
-        Cliente cliente = clienteRepo.findById(idCliente)
-                .orElseThrow(() -> new CrearDireccionExcepcion("Cliente no existe"));
-        direccion.setCliente(cliente);
-        return direccionRepo.save(direccion);
+    public DireccionClienteServicio(DireccionClienteRepositorio direccionRepositorio) {
+        this.direccionRepositorio = direccionRepositorio;
     }
 
     public DireccionCliente buscarPorId(Integer id) {
-        return direccionRepo.findById(id)
+        return direccionRepositorio.findById(id)
                 .orElseThrow(() -> new DireccionNoEncontradaExcepcion(id));
     }
 
-    public DireccionCliente actualizar(DireccionCliente actualizada) {
-        DireccionCliente direccion = buscarPorId(actualizada.getidDireccion());
-        direccion.setLinea1(actualizada.getLinea1());
-        direccion.setLinea2(actualizada.getLinea2());
-        direccion.setCodigoPostal(actualizada.getCodigoPostal());
-        direccion.setEstado(actualizada.getEstado());
-        direccion.setFechaActualizacion(actualizada.getFechaActualizacion());
-        return direccionRepo.save(direccion);
+    public List<DireccionCliente> buscarTodos() {
+        return direccionRepositorio.findAll();
     }
 
-    public void eliminarLogica(Integer id) {
+    public DireccionCliente crear(DireccionCliente direccion) {
+        try {
+            direccion.setFechaCreacion(new Date());
+            return direccionRepositorio.save(direccion);
+        } catch (Exception e) {
+            throw new CrearDireccionExcepcion("Error al crear dirección");
+        }
+    }
+
+    public DireccionCliente modificar(DireccionCliente direccion) {
+        if (!direccionRepositorio.existsById(direccion.getIdDireccion())) {
+            throw new DireccionNoEncontradaExcepcion(direccion.getIdDireccion());
+        }
+        try {
+            direccion.setFechaActualizacion(new Date());
+            return direccionRepositorio.save(direccion);
+        } catch (Exception e) {
+            throw new ActualizarDireccionExcepcion("Error al actualizar dirección");
+        }
+    }
+
+    @Transactional
+    public void eliminarLogicamente(Integer id) {
         DireccionCliente direccion = buscarPorId(id);
         direccion.setEstado("INACTIVO");
-        direccionRepo.save(direccion);
+        direccion.setFechaActualizacion(new Date());
+        direccionRepositorio.save(direccion);
     }
 
-    public List<DireccionCliente> obtenerPorCliente(Integer idCliente) {
-        return direccionRepo.findByCliente_Id(idCliente);
-    }
 }

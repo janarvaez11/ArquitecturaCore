@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/telefonos")
+@RequestMapping("/v1/telefonos")
 public class TelefonoClienteControlador {
 
     private final TelefonoClienteServicio servicio;
@@ -19,13 +19,13 @@ public class TelefonoClienteControlador {
         this.servicio = servicio;
     }
 
-    @PostMapping("/{idCliente}")
-    public ResponseEntity<TelefonoCliente> crear(@PathVariable Integer idCliente, @RequestBody TelefonoCliente telefono) {
-        return ResponseEntity.ok(servicio.crear(idCliente, telefono));
+    @GetMapping
+    public ResponseEntity<List<TelefonoCliente>> obtenerTodos() {
+        return ResponseEntity.ok(servicio.buscarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TelefonoCliente> obtener(@PathVariable Integer id) {
+    public ResponseEntity<TelefonoCliente> obtenerPorId(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(servicio.buscarPorId(id));
         } catch (TelefonoNoEncontradoExcepcion e) {
@@ -33,19 +33,14 @@ public class TelefonoClienteControlador {
         }
     }
 
-    @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<TelefonoCliente>> listarPorCliente(@PathVariable Integer idCliente) {
-        return ResponseEntity.ok(servicio.obtenerPorCliente(idCliente));
+    @PostMapping
+    public ResponseEntity<TelefonoCliente> crear(@RequestBody TelefonoCliente telefono) {
+        return ResponseEntity.ok(servicio.crear(telefono));
     }
 
-    @PatchMapping
-    public ResponseEntity<TelefonoCliente> actualizar(@RequestBody TelefonoCliente telefono) {
-        return ResponseEntity.ok(servicio.actualizar(telefono));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        servicio.eliminarLogico(id);
-        return ResponseEntity.ok().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<TelefonoCliente> actualizar(@PathVariable Integer id, @RequestBody TelefonoCliente telefono) {
+        telefono.setIdTelefonoCliente(id);
+        return ResponseEntity.ok(servicio.modificar(telefono));
     }
 }

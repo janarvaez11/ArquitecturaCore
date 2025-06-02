@@ -1,15 +1,15 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.util.Objects;
+import java.util.Date;
 
 @Entity
 @Table(name = "ContactoTransaccionCliente")
 public class ContactoTransaccionCliente {
 
     @Id
-    @Column(name = "IdCliente")
-    private Integer id;
+    private Integer idCliente;
 
     @OneToOne
     @MapsId
@@ -23,17 +23,22 @@ public class ContactoTransaccionCliente {
     private String correoElectronico;
 
     @Column(name = "FechaCreacion")
-    private Timestamp fechaCreacion;
+    private Date fechaCreacion;
 
     @Column(name = "FechaActualizacion")
-    private Timestamp fechaActualizacion;
+    private Date fechaActualizacion;
+    public ContactoTransaccionCliente() {}
 
-    public Integer getId() {
-        return id;
+    public ContactoTransaccionCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
     public Cliente getCliente() {
@@ -60,44 +65,38 @@ public class ContactoTransaccionCliente {
         this.correoElectronico = correoElectronico;
     }
 
-    public Timestamp getFechaCreacion() {
+    public Date getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(Timestamp fechaCreacion) {
+    public void setFechaCreacion(Date fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Timestamp getFechaActualizacion() {
+    public Date getFechaActualizacion() {
         return fechaActualizacion;
     }
 
-    public void setFechaActualizacion(Timestamp fechaActualizacion) {
+    public void setFechaActualizacion(Date fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ContactoTransaccionCliente that = (ContactoTransaccionCliente) o;
-        return id != null && id.equals(that.id);
+    public int hashCode() {
+        return Objects.hash(idCliente);
     }
 
     @Override
-    public int hashCode() {
-        return 31;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ContactoTransaccionCliente)) return false;
+        ContactoTransaccionCliente other = (ContactoTransaccionCliente) obj;
+        return Objects.equals(idCliente, other.idCliente);
     }
 
     @Override
     public String toString() {
-        return "ContactoTransaccionCliente{" +
-                "id=" + id +
-                ", telefono='" + telefono + '\'' +
-                ", correoElectronico='" + correoElectronico + '\'' +
-                '}';
+        return "ContactoTransaccionCliente{idCliente=" + idCliente + "}";
     }
-
 }
+
