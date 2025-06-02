@@ -18,8 +18,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class TasaInteresServicio {
 
-    private static final String ESTADO_ACTIVO = "ACT";
-    private static final String ESTADO_INACTIVO = "INA";
+    private static final String ESTADO_ACTIVO = "ACTIVA";
+    private static final String ESTADO_INACTIVO = "INACTIVA";
 
     private final TasaInteresRepositorio tasaInteresRepositorio;
 

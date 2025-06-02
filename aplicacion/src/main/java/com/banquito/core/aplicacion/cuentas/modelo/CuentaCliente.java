@@ -23,23 +23,23 @@ public class CuentaCliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdCuentaCliente", nullable = false)
-    private Integer IdCuentaCliente;
+    private Integer idCuentaCliente;
 
     @Column(name = "NumeroCuenta", length = 10, nullable = false)
-    private String NumeroCuenta;
+    private String numeroCuenta;
 
     @Column(name = "Estado", length = 20, nullable = false)
-    private String Estado;
+    private String estado;
 
     @Column(name = "SaldoDisponible", precision = 100, scale = 2)
-    private BigDecimal SaldoDisponible;
+    private BigDecimal saldoDisponible;
 
     @Column(name = "SaldoContable", precision = 100, scale = 2)
-    private BigDecimal SaldoContable;
+    private BigDecimal saldoContable;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaApertura", nullable = false)
-    private Date FechaApertura;
+    private Date fechaApertura;
 
     // Relacion a la tabla Cuentas
     @ManyToOne
@@ -56,58 +56,58 @@ public class CuentaCliente {
     public CuentaCliente() {
     }
 
-    public CuentaCliente(Integer idCuentaCliente) {
-        IdCuentaCliente = idCuentaCliente;
-    }
-
     // Getters y Setters
 
+    public CuentaCliente(Integer idCuentaCliente) {
+        this.idCuentaCliente = idCuentaCliente;
+    }
+
     public Integer getIdCuentaCliente() {
-        return IdCuentaCliente;
+        return idCuentaCliente;
     }
 
     public void setIdCuentaCliente(Integer idCuentaCliente) {
-        IdCuentaCliente = idCuentaCliente;
+        this.idCuentaCliente = idCuentaCliente;
     }
 
     public String getNumeroCuenta() {
-        return NumeroCuenta;
+        return numeroCuenta;
     }
 
     public void setNumeroCuenta(String numeroCuenta) {
-        NumeroCuenta = numeroCuenta;
+        this.numeroCuenta = numeroCuenta;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     public BigDecimal getSaldoDisponible() {
-        return SaldoDisponible;
+        return saldoDisponible;
     }
 
     public void setSaldoDisponible(BigDecimal saldoDisponible) {
-        SaldoDisponible = saldoDisponible;
+        this.saldoDisponible = saldoDisponible;
     }
 
     public BigDecimal getSaldoContable() {
-        return SaldoContable;
+        return saldoContable;
     }
 
     public void setSaldoContable(BigDecimal saldoContable) {
-        SaldoContable = saldoContable;
+        this.saldoContable = saldoContable;
     }
 
     public Date getFechaApertura() {
-        return FechaApertura;
+        return fechaApertura;
     }
 
     public void setFechaApertura(Date fechaApertura) {
-        FechaApertura = fechaApertura;
+        this.fechaApertura = fechaApertura;
     }
 
     public Cuenta getCuenta() {
@@ -127,11 +127,12 @@ public class CuentaCliente {
     }
 
     // HashCode y Equals
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdCuentaCliente == null) ? 0 : IdCuentaCliente.hashCode());
+        result = prime * result + ((idCuentaCliente == null) ? 0 : idCuentaCliente.hashCode());
         return result;
     }
 
@@ -144,20 +145,21 @@ public class CuentaCliente {
         if (getClass() != obj.getClass())
             return false;
         CuentaCliente other = (CuentaCliente) obj;
-        if (IdCuentaCliente == null) {
-            if (other.IdCuentaCliente != null)
+        if (idCuentaCliente == null) {
+            if (other.idCuentaCliente != null)
                 return false;
-        } else if (!IdCuentaCliente.equals(other.IdCuentaCliente))
+        } else if (!idCuentaCliente.equals(other.idCuentaCliente))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "CuentaCliente [IdCuentaCliente=" + IdCuentaCliente + ", NumeroCuenta=" + NumeroCuenta + ", Estado="
-                + Estado
-                + ", SaldoDisponible=" + SaldoDisponible + ", SaldoContable=" + SaldoContable + ", FechaApertura="
-                + FechaApertura + ", cuenta=" + cuenta + ", cliente=" + cliente + "]";
+        return "CuentaCliente [idCuentaCliente=" + idCuentaCliente + ", numeroCuenta=" + numeroCuenta + ", estado="
+                + estado + ", saldoDisponible=" + saldoDisponible + ", saldoContable=" + saldoContable
+                + ", fechaApertura=" + fechaApertura + ", cuenta=" + cuenta + ", cliente=" + cliente + "]";
     }
+
+    
 
 }

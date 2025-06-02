@@ -8,7 +8,8 @@ import com.banquito.core.aplicacion.cuentas.modelo.CuentaCliente;
 
 @Repository
 public interface CuentaClienteRepositorio extends JpaRepository<CuentaCliente, Integer> {
-    List<CuentaCliente> findByClienteId(Integer clienteId);
+    //List<CuentaCliente> findByClienteId(Integer clienteId);
+    List<CuentaCliente> findByCliente_idCliente(Integer clienteId);
     List<CuentaCliente> findByEstado(String estado);
     List<CuentaCliente> findBySaldoDisponibleGreaterThan(BigDecimal saldoMinimo);
     CuentaCliente findByNumeroCuenta(String numeroCuenta);

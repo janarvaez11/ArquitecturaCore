@@ -127,15 +127,7 @@ public class ServicioAsociadoServicio {
         return servicios;
     }
 
-    public List<ServicioAsociado> buscarPorCuenta(Integer idCuenta) {
-        List<ServicioAsociado> servicios = this.servicioAsociadoRepositorio
-            .findByServicioTipoCuentas_Cuenta_IdCuenta(idCuenta);
-        if (servicios.isEmpty()) {
-            throw new EntidadNoEncontradaExcepcion("ServicioAsociado", 
-                "No se encontraron servicios asociados para la cuenta: " + idCuenta);
-        }
-        return servicios;
-    }
+
 
     @Transactional
     public ServicioTipoCuenta asignarServicioACuenta(Integer idServicio, Integer idCuenta) {
@@ -160,11 +152,7 @@ public class ServicioAsociadoServicio {
                 " porque no está activa. Estado actual: " + cuenta.getEstado());
         }
 
-        // Verificar que el servicio no esté ya asignado a la cuenta
-        if (this.servicioAsociadoRepositorio.existsByServicioTipoCuentas_Cuenta_IdCuentaAndIdServicio(idCuenta, idServicio)) {
-            throw new CrearEntidadExcepcion("ServicioAsociado", 
-                "El servicio con ID " + idServicio + " ya está asignado a la cuenta " + idCuenta);
-        }
+
 
         // Crear la asignación
         ServicioTipoCuentaId id = new ServicioTipoCuentaId(idServicio, idCuenta);

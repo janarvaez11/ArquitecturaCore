@@ -117,16 +117,7 @@ public class ServicioAsociadoControlador {
         }
     }
 
-    @GetMapping("/cuenta/{idCuenta}")
-    public ResponseEntity<List<ServicioAsociado>> buscarPorCuenta(
-            @PathVariable Integer idCuenta) {
-        try {
-            List<ServicioAsociado> servicios = servicioAsociadoServicio.buscarPorCuenta(idCuenta);
-            return ResponseEntity.ok(servicios);
-        } catch (EntidadNoEncontradaExcepcion e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 
     @PostMapping("/{idServicio}/cuenta/{idCuenta}")
     public ResponseEntity<ServicioTipoCuenta> asignarServicioACuenta(

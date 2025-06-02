@@ -3,6 +3,8 @@ package com.banquito.core.aplicacion.general.modelo;
 import jakarta.persistence.*;
 import java.util.List;
 
+
+
 @Entity
 @Table(name = "LocacionGeografica")
 public class LocacionGeografica {
@@ -15,6 +17,7 @@ public class LocacionGeografica {
     @ManyToOne
     @JoinColumn(name = "IdLocacionPadreId", referencedColumnName = "IdLocacion")
     private LocacionGeografica locacionPadre;
+
 
     @ManyToOne
     @JoinColumn(name = "IdPais", referencedColumnName = "IdPais")

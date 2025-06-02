@@ -3,7 +3,6 @@ package com.banquito.core.aplicacion.clientes.servicio;
 import com.banquito.core.aplicacion.clientes.modelo.TelefonoCliente;
 import com.banquito.core.aplicacion.clientes.repositorio.TelefonoClienteRepositorio;
 import com.banquito.core.aplicacion.clientes.excepcion.CrearTelefonoExcepcion;
-import com.banquito.core.aplicacion.clientes.excepcion.ActualizarTelefonoExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.TelefonoNoEncontradoExcepcion;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
@@ -39,7 +38,7 @@ public class TelefonoClienteServicio {
     }
 
     public List<TelefonoCliente> obtenerPorCliente(Integer idCliente) {
-        return telefonoRepo.findByCliente_idCliente(idCliente);
+        return telefonoRepositorio.findByCliente_idCliente(idCliente);
     }
 
     @Transactional

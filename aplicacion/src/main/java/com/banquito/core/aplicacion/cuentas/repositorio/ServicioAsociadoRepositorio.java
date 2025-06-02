@@ -11,6 +11,6 @@ import com.banquito.core.aplicacion.cuentas.modelo.ServicioAsociado;
 public interface ServicioAsociadoRepositorio extends JpaRepository<ServicioAsociado, Integer> {
     List<ServicioAsociado> findByNombreContaining(String nombre);
     List<ServicioAsociado> findByEstado(String estado);
-    List<ServicioAsociado> findByServicioTipoCuentas_Cuenta_IdCuenta(Integer idCuenta);
-    boolean existsByServicioTipoCuentas_Cuenta_IdCuentaAndIdServicio(Integer idCuenta, Integer idServicio);
+    //List<ServicioAsociado> findByServicioTipoCuentas_IdCuenta(Integer idCuenta);
+    //boolean existsByServicioTipoCuentas_Cuenta_IdCuentaAndIdServicio(Integer idCuenta, Integer idServicio);
 }

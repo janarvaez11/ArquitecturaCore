@@ -1,7 +1,6 @@
 package com.banquito.core.aplicacion.clientes.modelo;
 
 import jakarta.persistence.*;
-import java.util.Objects;
 import java.util.Date;
 
 @Entity
@@ -28,18 +27,20 @@ public class ContactoTransaccionCliente {
 
     @Column(name = "FechaActualizacion")
     private Date fechaActualizacion;
-    public ContactoTransaccionCliente() {}
 
-    public ContactoTransaccionCliente(Integer idCliente) {
-        this.idCliente = idCliente;
+    public ContactoTransaccionCliente() {
     }
 
-    public Integer getIdCliente() {
-        return idCliente;
+    public ContactoTransaccionCliente(Integer idContactoTransaccionCliente) {
+        this.idContactoTransaccionCliente = idContactoTransaccionCliente;
     }
 
-    public void setIdCliente(Integer idCliente) {
-        this.idCliente = idCliente;
+    public Integer getIdContactoTransaccionCliente() {
+        return idContactoTransaccionCliente;
+    }
+
+    public void setIdContactoTransaccionCliente(Integer idContactoTransaccionCliente) {
+        this.idContactoTransaccionCliente = idContactoTransaccionCliente;
     }
 
     public Cliente getCliente() {
@@ -83,30 +84,43 @@ public class ContactoTransaccionCliente {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ContactoTransaccionCliente that = (ContactoTransaccionCliente) o;
-        return id != null && id.equals(that.id);
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((idContactoTransaccionCliente == null) ? 0 : idContactoTransaccionCliente.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ContactoTransaccionCliente)) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         ContactoTransaccionCliente other = (ContactoTransaccionCliente) obj;
-        return Objects.equals(idCliente, other.idCliente);
+        if (idContactoTransaccionCliente == null) {
+            if (other.idContactoTransaccionCliente != null)
+                return false;
+        } else if (!idContactoTransaccionCliente.equals(other.idContactoTransaccionCliente))
+            return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        return "ContactoTransaccionCliente{" +
-                "id=" + id +
-                ", telefono='" + telefono + '\'' +
-                ", correoElectronico='" + correoElectronico + '\'' +
-                '}';
+        return "ContactoTransaccionCliente [idContactoTransaccionCliente=" + idContactoTransaccionCliente + ", cliente="
+                + cliente + ", telefono=" + telefono + ", correoElectronico=" + correoElectronico + ", fechaCreacion="
+                + fechaCreacion + ", fechaActualizacion=" + fechaActualizacion + "]";
     }
+
+
+    
+
+    
+
+
 }
 

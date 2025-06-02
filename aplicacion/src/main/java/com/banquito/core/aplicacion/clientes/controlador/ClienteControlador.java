@@ -8,7 +8,6 @@ import com.banquito.core.aplicacion.clientes.excepcion.CrearClienteExcepcion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -22,11 +21,6 @@ public class ClienteControlador {
         this.servicio = servicio;
     }
 
-    // Obtener los primeros 10 clientes
-    @GetMapping("/primeros10")
-    public ResponseEntity<List<Cliente>> obtenerPrimeros10() {
-        return ResponseEntity.ok(servicio.buscarPrimeros10());
-    }
 
     // Obtener un cliente por ID
     @GetMapping("/{id}")

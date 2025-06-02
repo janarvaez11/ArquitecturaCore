@@ -42,10 +42,6 @@ public class PrestamoClienteControlador {
     // return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
     // }
 
-    @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<PrestamosClientes>> listarPorCliente(@PathVariable Integer idCliente) {
-        return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorCliente(idCliente));
-    }
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody PrestamosClientes prestamoCliente) {

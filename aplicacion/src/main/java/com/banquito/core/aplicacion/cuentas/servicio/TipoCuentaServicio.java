@@ -55,7 +55,7 @@ public class TipoCuentaServicio {
     @Transactional
     public TipoCuenta crear(TipoCuenta tipoCuenta) {
         try {
-            validarTipoCuenta(tipoCuenta);
+            //validarTipoCuenta(tipoCuenta);
             validarTasaInteresPorDefecto(tipoCuenta.getTasaInteresPorDefecto());
             return this.tipoCuentaRepositorio.save(tipoCuenta);
         } catch (RuntimeException e) {

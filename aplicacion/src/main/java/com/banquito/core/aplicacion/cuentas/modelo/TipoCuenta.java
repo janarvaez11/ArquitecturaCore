@@ -42,26 +42,23 @@ public class TipoCuenta {
     @Column(name = "Estado", length = 20, nullable = false)
     private String estado;
 
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaCreacion", nullable = false)
     private Date fechaCreacion;
 
-
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion")
-     private Date fechaModificacion;
+    private Date fechaModificacion;
 
-    //relacion a la tabla TasaInteres
+    // relacion a la tabla TasaInteres
     @ManyToOne
     @JoinColumn(name = "IdTasaInteresPorDefecto", referencedColumnName = "IdTasaInteres")
     private TasaInteres tasaInteresPorDefecto;
 
-    //relacion a la tabla Monedas
+    // relacion a la tabla Monedas
     @ManyToOne
     @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
     private Moneda moneda;
-
-
 
     // Constructores
     public TipoCuenta() {
@@ -70,7 +67,6 @@ public class TipoCuenta {
     public TipoCuenta(Integer idTipoCuenta) {
         this.idTipoCuenta = idTipoCuenta;
     }
-
 
     // Getters y Setters
 
@@ -146,7 +142,6 @@ public class TipoCuenta {
         this.fechaModificacion = fechaModificacion;
     }
 
-
     public TasaInteres getTasaInteresPorDefecto() {
         return tasaInteresPorDefecto;
     }
@@ -194,12 +189,11 @@ public class TipoCuenta {
         return "TipoCuenta [idTipoCuenta=" + idTipoCuenta + ", nombre=" + nombre + ", descripcion=" + descripcion
                 + ", requisitosApertura=" + requisitosApertura + ", tipoCliente=" + tipoCliente
                 + ", cuentasContablesAsociadas=" + cuentasContablesAsociadas + ", estado=" + estado + ", fechaCreacion="
-                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", tasaInteresPorDefecto=" + tasaInteresPorDefecto 
+                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", tasaInteresPorDefecto="
+                + tasaInteresPorDefecto
                 + ", moneda=" + moneda + "]";
     }
 
-    
     // ToString
-
 
 }

@@ -31,9 +31,4 @@ public class ContactoTransaccionClienteControlador {
         return ResponseEntity.ok(servicio.crear(contacto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ContactoTransaccionCliente> actualizar(@PathVariable Integer id, @RequestBody ContactoTransaccionCliente contacto) {
-        contacto.setIdCliente(id);
-        return ResponseEntity.ok(servicio.modificar(contacto));
-    }
 }

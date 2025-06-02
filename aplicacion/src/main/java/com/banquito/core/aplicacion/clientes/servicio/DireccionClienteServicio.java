@@ -59,6 +59,6 @@ public class DireccionClienteServicio {
     }
 
     public List<DireccionCliente> obtenerPorCliente(Integer idCliente) {
-        return direccionRepo.findByCliente_IdCliente(idCliente);
+        return direccionRepositorio.findByCliente_IdCliente(idCliente);
     }
 }

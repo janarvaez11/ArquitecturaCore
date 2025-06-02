@@ -65,15 +65,15 @@ public class CuentaServicio {
     @Transactional
     public Cuenta crear(Cuenta cuenta) {
         try {
-            validarCuenta(cuenta);
-            if (existeCuentaConCodigo(cuenta.getCodigoCuenta())) {
-                throw new CrearEntidadExcepcion("Cuenta", 
-                    "Ya existe una cuenta con el código: " + cuenta.getCodigoCuenta());
-            }
-            validarTipoCuentaExiste(cuenta.getTipoCuenta());
+            //validarCuenta(cuenta);
+            //if (existeCuentaConCodigo(cuenta.getCodigoCuenta())) {
+              //  throw new CrearEntidadExcepcion("Cuenta", 
+               //     "Ya existe una cuenta con el código: " + cuenta.getCodigoCuenta());
+            //}
+            //validarTipoCuentaExiste(cuenta.getTipoCuenta());
             
             // Validar que la tasa de interés exista y esté vigente
-            validarTasaInteresExisteYVigente(cuenta.getTasaInteres());
+            //validarTasaInteresExisteYVigente(cuenta.getTasaInteres());
             
             cuenta.setEstado(ESTADO_ACTIVA);
             return this.cuentaRepositorio.save(cuenta);

@@ -92,7 +92,7 @@ public class CuentaClienteServicio {
     }
 
     public List<CuentaCliente> buscarPorCliente(Integer clienteId) {
-        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findByClienteId(clienteId);
+        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findByCliente_idCliente(clienteId);
         if (cuentas.isEmpty()) {
             throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
                 "No se encontraron cuentas para el cliente: " + clienteId);

@@ -34,7 +34,7 @@ public class Prestamo {
     @Column(name = "Estado", length = 20, nullable = false)
     private String estado;
 
-    @Column(name = "FechaModificacion", nullable = false)
+    @Column(name = "FechaModificacion")
     private LocalDate fechaModificacion;
 
     @Column(name = "BaseCalculo", length = 30, nullable = false)

@@ -15,6 +15,7 @@ import com.banquito.core.aplicacion.general.modelo.Sucursal;
 import com.banquito.core.aplicacion.general.modelo.Pais;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Service
 public class ClienteServicio {
@@ -85,7 +86,7 @@ public class ClienteServicio {
     }
 
     public Cliente buscarPorId(Integer id) {
-        return clienteRepositorio.findById(id)
+        return clienteRepo.findById(id)
                 .orElseThrow(() -> new ClienteNoEncontradoExcepcion(id));
     }
 
@@ -96,7 +97,7 @@ public class ClienteServicio {
             
             cliente.setFechaCreacion(new Date());
             cliente.setEstado("ACTIVO");
-            return clienteRepositorio.save(cliente);
+            return clienteRepo.save(cliente);
         } catch (Exception e) {
             throw new CrearClienteExcepcion("Error al crear cliente: " + e.getMessage());
         }
@@ -107,7 +108,7 @@ public class ClienteServicio {
         if (cliente.getPais() == null || cliente.getPais().getId() == null) {
             throw new CrearClienteExcepcion("El país es requerido");
         }
-        Pais pais = paisRepositorio.findById(cliente.getPais().getId())
+        Pais pais = paisRepo.findById(cliente.getPais().getId())
                 .orElseThrow(() -> new CrearClienteExcepcion("País no encontrado con ID: " + cliente.getPais().getId()));
         cliente.setPais(pais);
 
@@ -115,18 +116,18 @@ public class ClienteServicio {
         if (cliente.getSucursal() == null || cliente.getSucursal().getIdSucursal() == null) {
             throw new CrearClienteExcepcion("La sucursal es requerida");
         }
-        Sucursal sucursal = sucursalRepositorio.findById(cliente.getSucursal().getIdSucursal())
+        Sucursal sucursal = sucursalRepo.findById(cliente.getSucursal().getIdSucursal())
                 .orElseThrow(() -> new CrearClienteExcepcion("Sucursal no encontrada con ID: " + cliente.getSucursal().getIdSucursal()));
         cliente.setSucursal(sucursal);
     }
 
     public Cliente modificar(Cliente cliente) {
-        if (!clienteRepositorio.existsById(cliente.getIdCliente())) {
+        if (!clienteRepo.existsById(cliente.getIdCliente())) {
             throw new ClienteNoEncontradoExcepcion(cliente.getIdCliente());
         }
         try {
             cliente.setFechaActualizacion(new Date());
-            return clienteRepositorio.save(cliente);
+            return clienteRepo.save(cliente);
         } catch (Exception e) {
             throw new ActualizarClienteExcepcion("Error al actualizar cliente");
         }
@@ -138,11 +139,11 @@ public class ClienteServicio {
         }
 
         if (cliente.getTipoEntidad().equalsIgnoreCase("PERSONA")) {
-            if (!personaRepositorio.existsById(cliente.getIdEntidad())) {
+            if (!personaRepo.existsById(cliente.getIdEntidad())) {
                 throw new CrearClienteExcepcion("No existe Persona con ID: " + cliente.getIdEntidad());
             }
         } else if (cliente.getTipoEntidad().equalsIgnoreCase("EMPRESA")) {
-            if (!empresaRepositorio.existsById(cliente.getIdEntidad())) {
+            if (!empresaRepo.existsById(cliente.getIdEntidad())) {
                 throw new CrearClienteExcepcion("No existe Empresa con ID: " + cliente.getIdEntidad());
             }
         } else {
