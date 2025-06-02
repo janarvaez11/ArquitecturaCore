@@ -58,4 +58,7 @@ public class DireccionClienteServicio {
         direccionRepositorio.save(direccion);
     }
 
+    public List<DireccionCliente> obtenerPorCliente(Integer idCliente) {
+        return direccionRepo.findByCliente_IdCliente(idCliente);
+    }
 }

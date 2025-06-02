@@ -38,16 +38,8 @@ public class TelefonoClienteServicio {
         }
     }
 
-    public TelefonoCliente modificar(TelefonoCliente telefono) {
-        if (!telefonoRepositorio.existsById(telefono.getIdTelefonoCliente())) {
-            throw new TelefonoNoEncontradoExcepcion(telefono.getIdTelefonoCliente());
-        }
-        try {
-            telefono.setFechaActualizacion(new Date());
-            return telefonoRepositorio.save(telefono);
-        } catch (Exception e) {
-            throw new ActualizarTelefonoExcepcion("Error al actualizar teléfono");
-        }
+    public List<TelefonoCliente> obtenerPorCliente(Integer idCliente) {
+        return telefonoRepo.findByCliente_idCliente(idCliente);
     }
 
     @Transactional

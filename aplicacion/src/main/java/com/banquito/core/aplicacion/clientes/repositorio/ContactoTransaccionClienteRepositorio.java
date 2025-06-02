@@ -4,5 +4,6 @@ import com.banquito.core.aplicacion.clientes.modelo.ContactoTransaccionCliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContactoTransaccionClienteRepositorio extends JpaRepository<ContactoTransaccionCliente, Integer> {
+    Optional<ContactoTransaccionCliente> findByCliente_idCliente(Integer idCliente);
 }
 

@@ -1,45 +1,87 @@
 package com.banquito.core.aplicacion.clientes.servicio;
 
-import com.banquito.core.aplicacion.clientes.modelo.Cliente;
+import com.banquito.core.aplicacion.general.repositorio.SucursalRepositorio;
+import com.banquito.core.aplicacion.clientes.repositorio.PersonaRepositorio;
 import com.banquito.core.aplicacion.clientes.repositorio.ClienteRepositorio;
+import com.banquito.core.aplicacion.clientes.repositorio.EmpresaRepositorio;
+import com.banquito.core.aplicacion.general.repositorio.PaisRepositorio;
+import com.banquito.core.aplicacion.clientes.excepcion.ActualizarClienteExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.ClienteNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.CrearClienteExcepcion;
-import com.banquito.core.aplicacion.clientes.excepcion.ActualizarClienteExcepcion;
-import com.banquito.core.aplicacion.clientes.repositorio.EmpresaRepositorio;
-import com.banquito.core.aplicacion.clientes.repositorio.PersonaRepositorio;
-import com.banquito.core.aplicacion.general.modelo.Pais;
+import com.banquito.core.aplicacion.clientes.modelo.Persona;
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
+import com.banquito.core.aplicacion.clientes.modelo.Empresa;
 import com.banquito.core.aplicacion.general.modelo.Sucursal;
-import com.banquito.core.aplicacion.general.repositorio.PaisRepositorio;
-import com.banquito.core.aplicacion.general.repositorio.SucursalRepositorio;
-import org.springframework.data.domain.PageRequest;
-import java.util.Date;
-import java.util.List;
-
+import com.banquito.core.aplicacion.general.modelo.Pais;
 import org.springframework.stereotype.Service;
+import java.sql.Timestamp;
 
 @Service
 public class ClienteServicio {
 
-    private final ClienteRepositorio clienteRepositorio;
-    private final PersonaRepositorio personaRepositorio;
-    private final EmpresaRepositorio empresaRepositorio;
-    private final PaisRepositorio paisRepositorio;
-    private final SucursalRepositorio sucursalRepositorio;
+    private final ClienteRepositorio clienteRepo;
+    private final SucursalRepositorio sucursalRepo;
+    private final PersonaRepositorio personaRepo;
+    private final EmpresaRepositorio empresaRepo;
+    private final PaisRepositorio paisRepo;
 
-    public ClienteServicio(ClienteRepositorio clienteRepositorio,
-            PersonaRepositorio personaRepositorio,
-            EmpresaRepositorio empresaRepositorio,
-            PaisRepositorio paisRepositorio,
-            SucursalRepositorio sucursalRepositorio) {
-        this.clienteRepositorio = clienteRepositorio;
-        this.personaRepositorio = personaRepositorio;
-        this.empresaRepositorio = empresaRepositorio;
-        this.paisRepositorio = paisRepositorio;
-        this.sucursalRepositorio = sucursalRepositorio;
+
+    public ClienteServicio(ClienteRepositorio clienteRepo,
+            SucursalRepositorio sucursalRepo,
+            PersonaRepositorio personaRepo,
+            EmpresaRepositorio empresaRepo,
+            PaisRepositorio paisRepo) {
+        this.paisRepo = paisRepo;
+        this.clienteRepo = clienteRepo;
+        this.sucursalRepo = sucursalRepo;
+        this.personaRepo = personaRepo;
+        this.empresaRepo = empresaRepo;
     }
 
-    public List<Cliente> buscarPrimeros10() {
-        return clienteRepositorio.findAll(PageRequest.of(0, 10)).getContent();
+    public Cliente crearCliente(Cliente cliente) {
+        try {
+            Sucursal sucursal = sucursalRepo.findById(cliente.getSucursal().getIdSucursal())
+                    .orElseThrow(() -> new CrearClienteExcepcion(
+                            "Sucursal no encontrada con ID: " + cliente.getSucursal().getIdSucursal()));
+            cliente.setSucursal(sucursal);
+
+            if ("PERSONA".equalsIgnoreCase(cliente.getTipoEntidad())) {
+                Persona persona = personaRepo.findById(cliente.getIdEntidad())
+                        .orElseThrow(() -> new CrearClienteExcepcion(
+                                "Persona no encontrada con ID: " + cliente.getIdEntidad()));
+
+                cliente.setNombre(persona.getNombres());
+                cliente.setTipoIdentificacion(persona.getTipoIdentificacion());
+                cliente.setNumeroIdentificacion(persona.getNumeroIdentificacion());
+
+                if (persona.getNacionalidad() != null) {
+                    Pais pais = paisRepo.findById(persona.getNacionalidad())
+                            .orElseThrow(() -> new CrearClienteExcepcion(
+                                    "País no encontrado con código: " + persona.getNacionalidad()));
+                    cliente.setPais(pais);
+                }
+
+            } else if ("EMPRESA".equalsIgnoreCase(cliente.getTipoEntidad())) {
+                Empresa empresa = empresaRepo.findById(cliente.getIdEntidad())
+                        .orElseThrow(() -> new CrearClienteExcepcion(
+                                "Empresa no encontrada con ID: " + cliente.getIdEntidad()));
+
+                cliente.setNombre(empresa.getRazonSocial());
+                cliente.setTipoIdentificacion(empresa.getTipoIdentificacion());
+                cliente.setNumeroIdentificacion(empresa.getNumeroIdentificacion());
+
+            } else {
+                throw new CrearClienteExcepcion("TipoEntidad inválido: " + cliente.getTipoEntidad());
+            }
+
+            cliente.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            cliente.setEstado("ACTIVO");
+
+            return clienteRepo.save(cliente);
+
+        } catch (Exception e) {
+            throw new CrearClienteExcepcion("Error al crear cliente: " + e.getMessage());
+        }
     }
 
     public Cliente buscarPorId(Integer id) {

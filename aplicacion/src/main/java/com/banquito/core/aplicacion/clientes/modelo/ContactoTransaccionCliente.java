@@ -9,7 +9,8 @@ import java.util.Date;
 public class ContactoTransaccionCliente {
 
     @Id
-    private Integer idCliente;
+    @Column(name = "idContactoTransaccionCliente")
+    private Integer idContactoTransaccionCliente;
 
     @OneToOne
     @MapsId
@@ -82,8 +83,13 @@ public class ContactoTransaccionCliente {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(idCliente);
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ContactoTransaccionCliente that = (ContactoTransaccionCliente) o;
+        return id != null && id.equals(that.id);
     }
 
     @Override
@@ -96,7 +102,11 @@ public class ContactoTransaccionCliente {
 
     @Override
     public String toString() {
-        return "ContactoTransaccionCliente{idCliente=" + idCliente + "}";
+        return "ContactoTransaccionCliente{" +
+                "id=" + id +
+                ", telefono='" + telefono + '\'' +
+                ", correoElectronico='" + correoElectronico + '\'' +
+                '}';
     }
 }
 

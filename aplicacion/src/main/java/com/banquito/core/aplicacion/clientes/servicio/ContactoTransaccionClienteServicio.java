@@ -30,6 +30,9 @@ public class ContactoTransaccionClienteServicio {
         } catch (Exception e) {
             throw new CrearContactoExcepcion("Error al crear contacto transaccional");
         }
+    public ContactoTransaccionCliente obtenerPorCliente(Integer idCliente) {
+        return contactoRepo.findByCliente_idCliente(idCliente)
+                .orElseThrow(() -> new ContactoNoEncontradoExcepcion(idCliente));
     }
 
     public ContactoTransaccionCliente modificar(ContactoTransaccionCliente contacto) {

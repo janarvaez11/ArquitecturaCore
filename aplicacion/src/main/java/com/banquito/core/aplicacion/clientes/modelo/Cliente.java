@@ -115,6 +115,14 @@ public class Cliente {
         this.pais = pais;
     }
 
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
+    }
+
     public Sucursal getSucursal() {
         return sucursal;
     }
