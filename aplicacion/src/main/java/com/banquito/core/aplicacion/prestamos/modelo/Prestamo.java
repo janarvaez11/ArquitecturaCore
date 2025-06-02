@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.modelo;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +35,7 @@ public class Prestamo {
     private String estado;
 
     @Column(name = "FechaModificacion", nullable = false)
-    private Date fechaModificacion;
+    private LocalDate fechaModificacion;
 
     @Column(name = "BaseCalculo", length = 30, nullable = false)
     private String baseCalculo;
@@ -90,11 +90,11 @@ public class Prestamo {
         this.estado = estado;
     }
 
-    public Date getFechaModificacion() {
+    public LocalDate getFechaModificacion() {
         return fechaModificacion;
     }
 
-    public void setFechaModificacion(Date fechaModificacion) {
+    public void setFechaModificacion(LocalDate fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
 

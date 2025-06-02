@@ -14,7 +14,7 @@ import com.banquito.core.aplicacion.prestamos.servicio.TipoPrestamosServicio;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/tiposPrestamos")
+@RequestMapping("/api/tipos-prestamos")
 public class TipoPrestamoControlador {
 
     private final TipoPrestamosServicio tipoPrestamosServicio;
@@ -89,4 +89,4 @@ public class TipoPrestamoControlador {
                     .body("Error al eliminar: " + e.getMessage());
         }
     }
-} 
+}

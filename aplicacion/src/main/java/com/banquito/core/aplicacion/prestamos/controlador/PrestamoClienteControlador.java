@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.controlador;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
+import com.banquito.core.aplicacion.prestamos.modelo.Seguro;
 import com.banquito.core.aplicacion.prestamos.servicio.PrestamosClientesServicio;
 
 @RestController
@@ -30,20 +32,15 @@ public class PrestamoClienteControlador {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorId(id));
     }
 
-    @GetMapping("/prestamo/{prestamoId}")
-    public ResponseEntity<List<PrestamosClientes>> listarPorPrestamo(@PathVariable Integer prestamoId) {
-        return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorPrestamo(prestamoId));
-    }
-
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<PrestamosClientes>> listarPorEstado(@PathVariable String estado) {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorEstado(estado));
     }
 
-    //@GetMapping
-    //public ResponseEntity<List<PrestamosClientes>> listarTodos() {
-    //    return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
-    //}
+    // @GetMapping
+    // public ResponseEntity<List<PrestamosClientes>> listarTodos() {
+    // return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
+    // }
 
     @PostMapping
     public ResponseEntity<Void> crear(@RequestBody PrestamosClientes prestamoCliente) {
@@ -73,5 +70,14 @@ public class PrestamoClienteControlador {
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         this.prestamosClientesServicio.eliminar(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<Seguro> obtenerSeguroPorCliente(@PathVariable Integer idCliente) {
+        Optional<Seguro> seguroOpt = prestamosClientesServicio.obtenerSeguroDeCliente(idCliente);
+
+        return seguroOpt
+                .map(ResponseEntity::ok) // Si existe, responde 200 con el seguro
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Si no existe, responde 404
     }
 }

@@ -46,7 +46,7 @@ public class PrestamoControlador {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> crear(@RequestBody Prestamo prestamo) {
         try {
             prestamoServicio.create(prestamo);
@@ -86,4 +86,4 @@ public class PrestamoControlador {
                     .body("Error: " + e.getMessage());
         }
     }
-} 
+}

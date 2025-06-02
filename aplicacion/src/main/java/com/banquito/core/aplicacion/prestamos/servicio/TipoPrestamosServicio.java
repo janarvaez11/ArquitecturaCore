@@ -72,6 +72,7 @@ public class TipoPrestamosServicio {
         }
     }
 
+    // Buscar tipos de préstamo por TIPO de cliente
     public List<TipoPrestamo> findByTipoCliente(String tipoCliente) {
         try {
             if (tipoCliente == null || tipoCliente.trim().isEmpty()) {
@@ -103,11 +104,11 @@ public class TipoPrestamosServicio {
 
             // Buscar la moneda por su ID y asignarla
             Moneda moneda = monedaRepositorio.findById(tipoPrestamo.getMoneda().getId())
-                .orElseThrow(() -> new CrearEntidadExcepcion("Tipo Prestamos", "La moneda especificada no existe"));
+                    .orElseThrow(() -> new CrearEntidadExcepcion("Tipo Prestamos", "La moneda especificada no existe"));
             tipoPrestamo.setMoneda(moneda);
 
             tipoPrestamo.setFechaCreacion(LocalDate.now());
-            tipoPrestamo.setFechaModificacion(LocalDate.now());
+            tipoPrestamo.setFechaModificacion(null);
             tipoPrestamo.setEstado("ACTIVO");
             this.repositorio.save(tipoPrestamo);
         } catch (CrearEntidadExcepcion rte) {
@@ -162,6 +163,7 @@ public class TipoPrestamosServicio {
         }
     }
 
+    // Método para eliminar un tipo de préstamo pero marcándolo como inactivo
     @Transactional
     public void delete(Integer id) {
         try {
