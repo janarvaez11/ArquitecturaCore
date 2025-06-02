@@ -5,6 +5,8 @@ import com.banquito.core.aplicacion.transacciones.modelo.TransferenciaId;
 import com.banquito.core.aplicacion.transacciones.servicio.TransferenciaServicio;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -39,6 +41,16 @@ public class TransferenciaControlador {
     public ResponseEntity<Transferencia> createTransferencia(@RequestBody Transferencia transferencia) {
         Transferencia nuevaTransferencia = transferenciaServicio.create(transferencia);
         return ResponseEntity.ok(nuevaTransferencia);
+    }
+
+    @PostMapping("/procesar")
+    public ResponseEntity<Transferencia> procesarTransferencia(
+            @RequestParam Integer cuentaOrigenId,
+            @RequestParam Integer cuentaDestinoId,
+            @RequestParam BigDecimal monto,
+            @RequestParam String descripcion) {
+        Transferencia transferencia = transferenciaServicio.procesarTransferencia(cuentaOrigenId, cuentaDestinoId, monto, descripcion);
+        return ResponseEntity.ok(transferencia);
     }
 
     @PutMapping("/id")

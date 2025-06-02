@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.banquito.core.aplicacion.transacciones.excepcion.EstadoTransaccionInvalidaExcepcion;
 import com.banquito.core.aplicacion.transacciones.excepcion.EstadoTransaccionNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.transacciones.modelo.EstadoTransaccion;
 import com.banquito.core.aplicacion.transacciones.repositorio.EstadoTransaccionRepositorio;
@@ -20,15 +21,20 @@ public class EstadoTransaccionServicio {
     private static final String ESTADO_COMPLETADO = "COM";
     private static final String ESTADO_CANCELADO = "CAN";
     private static final String ESTADO_FALLIDO = "FAL";
+    private static final String ESTADO_PROCESANDO = "PRO";
+    private static final String ESTADO_REVERTIDO = "REV";
+
+    // Estados que no se pueden eliminar (críticos para el sistema)
+    private static final List<String> ESTADOS_SISTEMA = List.of(
+        ESTADO_PENDIENTE, ESTADO_COMPLETADO, ESTADO_CANCELADO, ESTADO_FALLIDO);
 
     public EstadoTransaccionServicio(EstadoTransaccionRepositorio estadoTransaccionRepositorio) {
         this.estadoTransaccionRepositorio = estadoTransaccionRepositorio;
     }
 
+    @Transactional(readOnly = true)
     public EstadoTransaccion findById(String estadoId) {
-        if (estadoId == null || estadoId.trim().isEmpty()) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("El ID del estado de transacción no puede ser nulo o vacío");
-        }
+        this.validarIdEstado(estadoId);
         
         Optional<EstadoTransaccion> estadoOptional = this.estadoTransaccionRepositorio.findById(estadoId);
         if (estadoOptional.isPresent()) {
@@ -38,6 +44,7 @@ public class EstadoTransaccionServicio {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<EstadoTransaccion> findAll() {
         List<EstadoTransaccion> estados = this.estadoTransaccionRepositorio.findAll();
         if (estados.isEmpty()) {
@@ -46,77 +53,237 @@ public class EstadoTransaccionServicio {
         return estados;
     }
 
+    @Transactional(readOnly = true)
+    public List<EstadoTransaccion> findEstadosDisponibles() {
+        List<EstadoTransaccion> estadosDisponibles = this.estadoTransaccionRepositorio
+            .findByEstadoIdIn(List.of(ESTADO_PENDIENTE, ESTADO_COMPLETADO, ESTADO_CANCELADO));
+        
+        if (estadosDisponibles.isEmpty()) {
+            throw new EstadoTransaccionNoEncontradaExcepcion("No se encontraron estados disponibles para transacciones");
+        }
+        return estadosDisponibles;
+    }
+
+    @Transactional(readOnly = true)
+    public List<EstadoTransaccion> findEstadosFinales() {
+        List<EstadoTransaccion> estadosFinales = this.estadoTransaccionRepositorio
+            .findByEstadoIdIn(List.of(ESTADO_COMPLETADO, ESTADO_CANCELADO, ESTADO_FALLIDO, ESTADO_REVERTIDO));
+        
+        return estadosFinales;
+    }
+
     @Transactional
     public EstadoTransaccion create(EstadoTransaccion estadoTransaccion) {
-        if (estadoTransaccion == null) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("El estado de transacción no puede ser nulo");
-        }
+        this.validarEstadoParaCreacion(estadoTransaccion);
+        
+        this.validarIdUnico(estadoTransaccion.getEstadoId());
+        
+        this.validarNombreUnico(estadoTransaccion.getNombre(), null);
 
-        // Validaciones de reglas de negocio
-        if (estadoTransaccion.getEstadoId() == null || estadoTransaccion.getEstadoId().trim().isEmpty()) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("El ID del estado es obligatorio");
-        }
-
-        if (estadoTransaccion.getEstadoId().length() > 3) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("El ID del estado no puede tener más de 3 caracteres");
-        }
-
-        // Verificar que no exista un estado con el mismo ID
-        if (this.estadoTransaccionRepositorio.existsById(estadoTransaccion.getEstadoId())) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("Ya existe un estado con el ID: " + estadoTransaccion.getEstadoId());
-        }
-
-        if (estadoTransaccion.getNombre() == null || estadoTransaccion.getNombre().trim().isEmpty()) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("El nombre del estado es obligatorio");
-        }
-
-        if (estadoTransaccion.getDescripcion() == null || estadoTransaccion.getDescripcion().trim().isEmpty()) {
-            throw new EstadoTransaccionNoEncontradaExcepcion("La descripción del estado es obligatoria");
-        }
-
-        // Establecer fecha de creación
         estadoTransaccion.setCreadoEn(new java.sql.Timestamp(System.currentTimeMillis()));
         
-        return this.estadoTransaccionRepositorio.save(estadoTransaccion);
+        try {
+            return this.estadoTransaccionRepositorio.save(estadoTransaccion);
+        } catch (Exception e) {
+            throw new EstadoTransaccionInvalidaExcepcion("Error al crear el estado de transacción: " + e.getMessage());
+        }
     }
 
     @Transactional
     public EstadoTransaccion update(String estadoId, EstadoTransaccion estadoTransaccion) {
+        this.validarIdEstado(estadoId);
         EstadoTransaccion estadoExistente = this.findById(estadoId);
         
+        if (ESTADOS_SISTEMA.contains(estadoId)) {
+            throw new EstadoTransaccionInvalidaExcepcion("No se puede modificar un estado crítico del sistema: " + estadoId);
+        }
+        
+        if (estadoTransaccion == null) {
+            throw new EstadoTransaccionInvalidaExcepcion("Los datos del estado no pueden ser nulos");
+        }
+        
         if (estadoTransaccion.getNombre() != null && !estadoTransaccion.getNombre().trim().isEmpty()) {
-            estadoExistente.setNombre(estadoTransaccion.getNombre());
+            String nuevoNombre = estadoTransaccion.getNombre().trim();
+            this.validarLongitudNombre(nuevoNombre);
+            this.validarNombreUnico(nuevoNombre, estadoId);
+            estadoExistente.setNombre(nuevoNombre);
         }
         
         if (estadoTransaccion.getDescripcion() != null && !estadoTransaccion.getDescripcion().trim().isEmpty()) {
-            estadoExistente.setDescripcion(estadoTransaccion.getDescripcion());
+            String nuevaDescripcion = estadoTransaccion.getDescripcion().trim();
+            this.validarLongitudDescripcion(nuevaDescripcion);
+            estadoExistente.setDescripcion(nuevaDescripcion);
         }
 
-        return this.estadoTransaccionRepositorio.save(estadoExistente);
+        try {
+            return this.estadoTransaccionRepositorio.save(estadoExistente);
+        } catch (Exception e) {
+            throw new EstadoTransaccionInvalidaExcepcion("Error al actualizar el estado de transacción: " + e.getMessage());
+        }
     }
 
+    @Transactional(readOnly = true)
     public boolean esEstadoValido(String estadoId) {
-        return estadoId != null && 
-               (ESTADO_PENDIENTE.equals(estadoId) || 
-                ESTADO_COMPLETADO.equals(estadoId) || 
-                ESTADO_CANCELADO.equals(estadoId) || 
-                ESTADO_FALLIDO.equals(estadoId));
-    }
-
-    public boolean puedeTransicionarA(String estadoActual, String nuevoEstado) {
-        if (ESTADO_PENDIENTE.equals(estadoActual)) {
-            return ESTADO_COMPLETADO.equals(nuevoEstado) || 
-                   ESTADO_CANCELADO.equals(nuevoEstado) || 
-                   ESTADO_FALLIDO.equals(nuevoEstado);
+        if (estadoId == null || estadoId.trim().isEmpty()) {
+            return false;
         }
         
-        // Los estados finales no pueden cambiar
-        return false;
+        return this.estadoTransaccionRepositorio.existsById(estadoId.trim().toUpperCase());
+    }
+
+    @Transactional(readOnly = true)
+    public boolean esEstadoFinal(String estadoId) {
+        return ESTADO_COMPLETADO.equals(estadoId) || 
+               ESTADO_CANCELADO.equals(estadoId) || 
+               ESTADO_FALLIDO.equals(estadoId) ||
+               ESTADO_REVERTIDO.equals(estadoId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean puedeTransicionarA(String estadoActual, String nuevoEstado) {
+        if (estadoActual == null || nuevoEstado == null) {
+            return false;
+        }
+        
+        if (!this.esEstadoValido(estadoActual) || !this.esEstadoValido(nuevoEstado)) {
+            return false;
+        }
+        
+        switch (estadoActual) {
+            case ESTADO_PENDIENTE:
+                return ESTADO_PROCESANDO.equals(nuevoEstado) || 
+                       ESTADO_COMPLETADO.equals(nuevoEstado) || 
+                       ESTADO_CANCELADO.equals(nuevoEstado) || 
+                       ESTADO_FALLIDO.equals(nuevoEstado);
+                       
+            case ESTADO_PROCESANDO:
+                return ESTADO_COMPLETADO.equals(nuevoEstado) || 
+                       ESTADO_FALLIDO.equals(nuevoEstado);
+                       
+            case ESTADO_COMPLETADO:
+                return ESTADO_REVERTIDO.equals(nuevoEstado);
+                
+            case ESTADO_CANCELADO:
+            case ESTADO_FALLIDO:
+            case ESTADO_REVERTIDO:
+                return false;
+                
+            default:
+                return false;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public String obtenerEstadoSiguienteRecomendado(String estadoActual) {
+        switch (estadoActual) {
+            case ESTADO_PENDIENTE:
+                return ESTADO_PROCESANDO;
+            case ESTADO_PROCESANDO:
+                return ESTADO_COMPLETADO;
+            default:
+                throw new EstadoTransaccionInvalidaExcepcion("No hay estado siguiente recomendado para: " + estadoActual);
+        }
     }
 
     @Transactional
     public void delete(String estadoId) {
+        this.validarIdEstado(estadoId);
+        
+        if (ESTADOS_SISTEMA.contains(estadoId)) {
+            throw new EstadoTransaccionInvalidaExcepcion("No se puede eliminar un estado crítico del sistema: " + estadoId);
+        }
+        
         EstadoTransaccion estadoTransaccion = this.findById(estadoId);
-        this.estadoTransaccionRepositorio.delete(estadoTransaccion);
+        
+        this.validarPuedeBorrarse(estadoId);
+        
+        try {
+            this.estadoTransaccionRepositorio.delete(estadoTransaccion);
+        } catch (Exception e) {
+            throw new EstadoTransaccionInvalidaExcepcion("Error al eliminar el estado de transacción: " + e.getMessage());
+        }
+    }
+
+    // Métodos privados de validación
+
+    private void validarIdEstado(String estadoId) {
+        if (estadoId == null || estadoId.trim().isEmpty()) {
+            throw new EstadoTransaccionInvalidaExcepcion("El ID del estado de transacción no puede ser nulo o vacío");
+        }
+        
+        if (estadoId.length() > 3) {
+            throw new EstadoTransaccionInvalidaExcepcion("El ID del estado no puede tener más de 3 caracteres");
+        }
+    }
+
+    private void validarEstadoParaCreacion(EstadoTransaccion estadoTransaccion) {
+        if (estadoTransaccion == null) {
+            throw new EstadoTransaccionInvalidaExcepcion("El estado de transacción no puede ser nulo");
+        }
+
+        if (estadoTransaccion.getEstadoId() == null || estadoTransaccion.getEstadoId().trim().isEmpty()) {
+            throw new EstadoTransaccionInvalidaExcepcion("El ID del estado es obligatorio");
+        }
+        
+        String estadoId = estadoTransaccion.getEstadoId().trim().toUpperCase();
+        this.validarIdEstado(estadoId);
+        estadoTransaccion.setEstadoId(estadoId);
+
+        if (estadoTransaccion.getNombre() == null || estadoTransaccion.getNombre().trim().isEmpty()) {
+            throw new EstadoTransaccionInvalidaExcepcion("El nombre del estado es obligatorio");
+        }
+        this.validarLongitudNombre(estadoTransaccion.getNombre().trim());
+
+        if (estadoTransaccion.getDescripcion() == null || estadoTransaccion.getDescripcion().trim().isEmpty()) {
+            throw new EstadoTransaccionInvalidaExcepcion("La descripción del estado es obligatoria");
+        }
+        this.validarLongitudDescripcion(estadoTransaccion.getDescripcion().trim());
+    }
+
+    private void validarLongitudNombre(String nombre) {
+        if (nombre.length() > 50) {
+            throw new EstadoTransaccionInvalidaExcepcion("El nombre del estado no puede exceder 50 caracteres");
+        }
+        if (nombre.length() < 3) {
+            throw new EstadoTransaccionInvalidaExcepcion("El nombre del estado debe tener al menos 3 caracteres");
+        }
+    }
+
+    private void validarLongitudDescripcion(String descripcion) {
+        if (descripcion.length() > 200) {
+            throw new EstadoTransaccionInvalidaExcepcion("La descripción del estado no puede exceder 200 caracteres");
+        }
+        if (descripcion.length() < 10) {
+            throw new EstadoTransaccionInvalidaExcepcion("La descripción del estado debe tener al menos 10 caracteres");
+        }
+    }
+
+    private void validarIdUnico(String estadoId) {
+        if (this.estadoTransaccionRepositorio.existsById(estadoId)) {
+            throw new EstadoTransaccionInvalidaExcepcion("Ya existe un estado con el ID: " + estadoId);
+        }
+    }
+
+    private void validarNombreUnico(String nombre, String idExcluir) {
+        List<EstadoTransaccion> estadosExistentes = this.estadoTransaccionRepositorio.findByNombreIgnoreCase(nombre);
+        
+        if (!estadosExistentes.isEmpty()) {
+            if (idExcluir != null) {
+                estadosExistentes = estadosExistentes.stream()
+                    .filter(estado -> !estado.getEstadoId().equals(idExcluir))
+                    .toList();
+            }
+            
+            if (!estadosExistentes.isEmpty()) {
+                throw new EstadoTransaccionInvalidaExcepcion("Ya existe un estado con el nombre: " + nombre);
+            }
+        }
+    }
+
+    private void validarPuedeBorrarse(String estadoId) {
+        boolean tieneTransaccionesAsociadas = this.estadoTransaccionRepositorio.existsTransaccionesByEstadoId(estadoId);
+        if (tieneTransaccionesAsociadas) {
+            throw new EstadoTransaccionInvalidaExcepcion("No se puede eliminar el estado porque tiene transacciones asociadas");
+        }
     }
 } 

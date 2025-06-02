@@ -1,6 +1,8 @@
 package com.banquito.core.aplicacion.transacciones.servicio;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.banquito.core.aplicacion.transacciones.excepcion.CuentaInvalidaExcepcion;
 import com.banquito.core.aplicacion.transacciones.excepcion.MontoInvalidoExcepcion;
-import com.banquito.core.aplicacion.transacciones.excepcion.TransaccionNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.transacciones.excepcion.RetiroInvalidoExcepcion;
+import com.banquito.core.aplicacion.transacciones.excepcion.RetiroNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.transacciones.modelo.Retiro;
+import com.banquito.core.aplicacion.transacciones.modelo.Transaccion;
 import com.banquito.core.aplicacion.transacciones.repositorio.RetiroRepositorio;
 
 @Service
@@ -18,38 +22,35 @@ public class RetiroServicio {
 
     private final RetiroRepositorio retiroRepositorio;
     private final TransaccionServicio transaccionServicio;
-    private final TipoTransaccionServicio tipoTransaccionServicio;
 
-    // Límites y comisiones para retiros
+    private static final BigDecimal COMISION_RETIRO = new BigDecimal("2.50");
     private static final BigDecimal MONTO_MINIMO_RETIRO = new BigDecimal("10.00");
-    private static final BigDecimal MONTO_MAXIMO_RETIRO_DIARIO = new BigDecimal("5000.00");
-    private static final BigDecimal COMISION_RETIRO = new BigDecimal("1.00");
+    private static final BigDecimal MONTO_MAXIMO_RETIRO = new BigDecimal("5000.00");
 
-    public RetiroServicio(RetiroRepositorio retiroRepositorio,
-                         TransaccionServicio transaccionServicio,
-                         TipoTransaccionServicio tipoTransaccionServicio) {
+    public RetiroServicio(RetiroRepositorio retiroRepositorio, TransaccionServicio transaccionServicio) {
         this.retiroRepositorio = retiroRepositorio;
         this.transaccionServicio = transaccionServicio;
-        this.tipoTransaccionServicio = tipoTransaccionServicio;
     }
 
+    @Transactional(readOnly = true)
     public Retiro findById(Integer id) {
         if (id == null || id <= 0) {
-            throw new TransaccionNoEncontradaExcepcion("El ID del retiro no puede ser nulo o menor a 1");
+            throw new RetiroInvalidoExcepcion("El ID del retiro debe ser un número entero positivo");
         }
         
         Optional<Retiro> retiroOptional = this.retiroRepositorio.findById(id);
         if (retiroOptional.isPresent()) {
             return retiroOptional.get();
         } else {
-            throw new TransaccionNoEncontradaExcepcion("El retiro con ID: " + id + " no existe");
+            throw new RetiroNoEncontradoExcepcion("El retiro con ID: " + id + " no existe");
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Retiro> findAll() {
         List<Retiro> retiros = this.retiroRepositorio.findAll();
         if (retiros.isEmpty()) {
-            throw new TransaccionNoEncontradaExcepcion("No existen retiros registrados");
+            throw new RetiroNoEncontradoExcepcion("No existen retiros registrados");
         }
         return retiros;
     }
@@ -57,44 +58,42 @@ public class RetiroServicio {
     @Transactional
     public Retiro create(Retiro retiro) {
         if (retiro == null) {
-            throw new TransaccionNoEncontradaExcepcion("El retiro no puede ser nulo");
+            throw new RetiroInvalidoExcepcion("El retiro no puede ser nulo");
         }
 
-        // Validaciones específicas para retiros
-        this.validarRetiro(retiro);
+        this.validarRetiroParaCreacion(retiro);
         
-        // Verificar que la transacción existe
         this.transaccionServicio.findById(retiro.getTransaccionId());
         
-        // Verificar que el tipo de transacción existe
-        this.tipoTransaccionServicio.findById(retiro.getTipoTransaccionId());
-
-        // Establecer comisión
+        this.validarTipoTransaccion(retiro.getTipoTransaccionId());
+        
         retiro.setComision(COMISION_RETIRO);
-
-        return this.retiroRepositorio.save(retiro);
+        
+        try {
+            return this.retiroRepositorio.save(retiro);
+        } catch (Exception e) {
+            throw new RetiroInvalidoExcepcion("Error al crear el retiro: " + e.getMessage());
+        }
     }
 
     @Transactional
-    public Retiro procesarRetiro(Integer cuentaId, BigDecimal monto, String descripcion) {
+    public Retiro createRetiroCompleto(BigDecimal monto, Integer cuentaId, String descripcion) {
+        this.validarDatosEntrada(monto, cuentaId, descripcion);
         
-        // Validar datos de entrada
-        this.validarDatosRetiro(cuentaId, monto, descripcion);
-        
-        // Crear la transacción principal
-        com.banquito.core.aplicacion.transacciones.modelo.Transaccion transaccion = 
-            new com.banquito.core.aplicacion.transacciones.modelo.Transaccion();
-        transaccion.setTipoTransaccionId(2); // Asumir que 2 es retiro
-        transaccion.setCuentaId(cuentaId);
+        Transaccion transaccion = new Transaccion();
         transaccion.setMonto(monto);
+        transaccion.setCuentaId(cuentaId);
+        transaccion.setTipoTransaccionId(2);
         transaccion.setDescripcion(descripcion);
+        transaccion.setFechaTransaccion(new Date(System.currentTimeMillis()));
+        transaccion.setFechaContable(new Date(System.currentTimeMillis()));
+        transaccion.setCreadoEn(new Timestamp(System.currentTimeMillis()));
         
         transaccion = this.transaccionServicio.create(transaccion);
         
-        // Crear el retiro
         Retiro retiro = new Retiro();
-        retiro.setTipoTransaccionId(transaccion.getTipoTransaccionId());
         retiro.setTransaccionId(transaccion.getTransaccionId());
+        retiro.setTipoTransaccionId(transaccion.getTipoTransaccionId());
         retiro.setCuentaOrigenId(cuentaId);
         retiro.setComision(COMISION_RETIRO);
         
@@ -105,48 +104,52 @@ public class RetiroServicio {
     public Retiro update(Integer id, Retiro retiro) {
         Retiro retiroExistente = this.findById(id);
         
-        // Solo permitir actualizar la comisión
-        if (retiro.getComision() != null && retiro.getComision().compareTo(BigDecimal.ZERO) >= 0) {
+        if (retiro.getComision() != null && retiro.getComision().compareTo(BigDecimal.ZERO) > 0) {
             retiroExistente.setComision(retiro.getComision());
         }
-
+        
         return this.retiroRepositorio.save(retiroExistente);
     }
 
-    // Métodos de validación privados
-    private void validarRetiro(Retiro retiro) {
+    private void validarRetiroParaCreacion(Retiro retiro) {
+        if (retiro.getTransaccionId() == null || retiro.getTransaccionId() <= 0) {
+            throw new RetiroInvalidoExcepcion("El ID de la transacción debe ser válido");
+        }
+        
+        if (retiro.getTipoTransaccionId() == null || retiro.getTipoTransaccionId() <= 0) {
+            throw new RetiroInvalidoExcepcion("El ID del tipo de transacción debe ser válido");
+        }
+        
         if (retiro.getCuentaOrigenId() == null || retiro.getCuentaOrigenId() <= 0) {
-            throw new CuentaInvalidaExcepcion("La cuenta de origen debe ser válida");
-        }
-        
-        if (retiro.getTipoTransaccionId() == null) {
-            throw new TransaccionNoEncontradaExcepcion("El tipo de transacción es obligatorio");
-        }
-        
-        if (retiro.getTransaccionId() == null) {
-            throw new TransaccionNoEncontradaExcepcion("La transacción es obligatoria");
+            throw new RetiroInvalidoExcepcion("El ID de la cuenta origen debe ser válido");
         }
     }
 
-    private void validarDatosRetiro(Integer cuentaId, BigDecimal monto, String descripcion) {
-        if (cuentaId == null || cuentaId <= 0) {
-            throw new CuentaInvalidaExcepcion("La cuenta debe ser válida");
-        }
-        
+    private void validarDatosEntrada(BigDecimal monto, Integer cuentaId, String descripcion) {
         if (monto == null) {
             throw new MontoInvalidoExcepcion("El monto del retiro es obligatorio");
         }
         
         if (monto.compareTo(MONTO_MINIMO_RETIRO) < 0) {
-            throw new MontoInvalidoExcepcion("El monto mínimo para retiros es: " + MONTO_MINIMO_RETIRO);
+            throw new MontoInvalidoExcepcion("El monto mínimo para retiro es: " + MONTO_MINIMO_RETIRO);
         }
         
-        if (monto.compareTo(MONTO_MAXIMO_RETIRO_DIARIO) > 0) {
-            throw new MontoInvalidoExcepcion("El monto máximo para retiros es: " + MONTO_MAXIMO_RETIRO_DIARIO);
+        if (monto.compareTo(MONTO_MAXIMO_RETIRO) > 0) {
+            throw new MontoInvalidoExcepcion("El monto máximo para retiro es: " + MONTO_MAXIMO_RETIRO);
+        }
+        
+        if (cuentaId == null || cuentaId <= 0) {
+            throw new CuentaInvalidaExcepcion("El ID de la cuenta debe ser válido");
         }
         
         if (descripcion == null || descripcion.trim().isEmpty()) {
-            throw new TransaccionNoEncontradaExcepcion("La descripción del retiro es obligatoria");
+            throw new RetiroInvalidoExcepcion("La descripción del retiro es obligatoria");
+        }
+    }
+
+    private void validarTipoTransaccion(Integer tipoTransaccionId) {
+        if (!Integer.valueOf(2).equals(tipoTransaccionId)) {
+            throw new RetiroInvalidoExcepcion("El tipo de transacción debe corresponder a retiro");
         }
     }
 

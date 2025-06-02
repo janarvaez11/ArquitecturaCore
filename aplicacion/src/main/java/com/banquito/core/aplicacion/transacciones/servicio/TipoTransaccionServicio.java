@@ -65,13 +65,10 @@ public class TipoTransaccionServicio {
     public TipoTransaccion create(TipoTransaccion tipoTransaccion) {
         this.validarTipoTransaccionParaCreacion(tipoTransaccion);
         
-        // Validar que la comisión existe
         this.validarComisionExistente(tipoTransaccion.getComisionId());
         
-        // Validar que no existe un tipo de transacción con el mismo nombre
         this.validarNombreUnico(tipoTransaccion.getNombre(), null);
         
-        // Establecer fecha de creación
         tipoTransaccion.setCreadoEn(new java.sql.Timestamp(System.currentTimeMillis()));
         
         try {
@@ -86,12 +83,10 @@ public class TipoTransaccionServicio {
         this.validarIdTipoTransaccion(id);
         TipoTransaccion tipoExistente = this.findById(id);
         
-        // Validar datos de actualización
         if (tipoTransaccion == null) {
             throw new TipoTransaccionInvalidaExcepcion("Los datos del tipo de transacción no pueden ser nulos");
         }
         
-        // Actualizar nombre si se proporciona
         if (tipoTransaccion.getNombre() != null && !tipoTransaccion.getNombre().trim().isEmpty()) {
             String nuevoNombre = tipoTransaccion.getNombre().trim();
             this.validarLongitudNombre(nuevoNombre);
@@ -99,14 +94,12 @@ public class TipoTransaccionServicio {
             tipoExistente.setNombre(nuevoNombre);
         }
         
-        // Actualizar descripción si se proporciona
         if (tipoTransaccion.getDescripcion() != null && !tipoTransaccion.getDescripcion().trim().isEmpty()) {
             String nuevaDescripcion = tipoTransaccion.getDescripcion().trim();
             this.validarLongitudDescripcion(nuevaDescripcion);
             tipoExistente.setDescripcion(nuevaDescripcion);
         }
         
-        // Actualizar comisión si se proporciona
         if (tipoTransaccion.getComisionId() != null && tipoTransaccion.getComisionId() > 0) {
             this.validarComisionExistente(tipoTransaccion.getComisionId());
             tipoExistente.setComisionId(tipoTransaccion.getComisionId());
@@ -124,7 +117,6 @@ public class TipoTransaccionServicio {
         this.validarIdTipoTransaccion(id);
         TipoTransaccion tipoTransaccion = this.findById(id);
         
-        // Validar que no hay transacciones asociadas (regla de negocio)
         this.validarPuedeBorrarse(id);
         
         try {
@@ -133,8 +125,6 @@ public class TipoTransaccionServicio {
             throw new TipoTransaccionInvalidaExcepcion("Error al eliminar el tipo de transacción: " + e.getMessage());
         }
     }
-
-    // Métodos privados de validación de reglas de negocio
 
     private void validarIdTipoTransaccion(Integer id) {
         if (id == null || id <= 0) {
@@ -147,19 +137,16 @@ public class TipoTransaccionServicio {
             throw new TipoTransaccionInvalidaExcepcion("El tipo de transacción no puede ser nulo");
         }
 
-        // Validar nombre
         if (tipoTransaccion.getNombre() == null || tipoTransaccion.getNombre().trim().isEmpty()) {
             throw new TipoTransaccionInvalidaExcepcion("El nombre del tipo de transacción es obligatorio");
         }
         this.validarLongitudNombre(tipoTransaccion.getNombre().trim());
 
-        // Validar descripción
         if (tipoTransaccion.getDescripcion() == null || tipoTransaccion.getDescripcion().trim().isEmpty()) {
             throw new TipoTransaccionInvalidaExcepcion("La descripción del tipo de transacción es obligatoria");
         }
         this.validarLongitudDescripcion(tipoTransaccion.getDescripcion().trim());
 
-        // Validar comisión ID
         if (tipoTransaccion.getComisionId() == null || tipoTransaccion.getComisionId() <= 0) {
             throw new TipoTransaccionInvalidaExcepcion("El ID de comisión debe ser un número entero positivo mayor a 0");
         }
@@ -194,7 +181,6 @@ public class TipoTransaccionServicio {
         List<TipoTransaccion> tiposExistentes = this.tipoTransaccionRepositorio.findByNombreIgnoreCase(nombre);
         
         if (!tiposExistentes.isEmpty()) {
-            // Si se está actualizando, excluir el registro actual de la validación
             if (idExcluir != null) {
                 tiposExistentes = tiposExistentes.stream()
                     .filter(tipo -> !tipo.getTipoTransaccionId().equals(idExcluir))
@@ -208,7 +194,6 @@ public class TipoTransaccionServicio {
     }
 
     private void validarPuedeBorrarse(Integer id) {
-        // Verificar si hay transacciones asociadas a este tipo de transacción
         boolean tieneTransaccionesAsociadas = this.tipoTransaccionRepositorio.existsTransaccionesByTipoTransaccionId(id);
         if (tieneTransaccionesAsociadas) {
             throw new TipoTransaccionInvalidaExcepcion("No se puede eliminar el tipo de transacción porque tiene transacciones asociadas");

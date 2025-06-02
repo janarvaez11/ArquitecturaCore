@@ -24,10 +24,9 @@ public class TransaccionServicio {
     private final TipoTransaccionServicio tipoTransaccionServicio;
     private final EstadoTransaccionServicio estadoTransaccionServicio;
 
-    // Límites de transacciones
     private static final BigDecimal MONTO_MINIMO = new BigDecimal("0.01");
     private static final BigDecimal MONTO_MAXIMO_DIARIO = new BigDecimal("10000.00");
-    private static final String ESTADO_INICIAL = "PEN"; // Pendiente
+    private static final String ESTADO_INICIAL = "PEN";
 
     public TransaccionServicio(TransaccionRepositorio transaccionRepositorio,
                               TipoTransaccionServicio tipoTransaccionServicio,
@@ -64,14 +63,12 @@ public class TransaccionServicio {
             throw new TransaccionNoEncontradaExcepcion("La transacción no puede ser nula");
         }
 
-        // Validaciones de reglas de negocio
         this.validarDatosBasicos(transaccion);
         this.validarMonto(transaccion.getMonto());
         this.validarCuenta(transaccion.getCuentaId());
         this.validarTipoTransaccion(transaccion.getTipoTransaccionId());
         this.validarFechas(transaccion);
 
-        // Establecer valores por defecto
         transaccion.setEstadoId(ESTADO_INICIAL);
         transaccion.setCreadoEn(new Timestamp(System.currentTimeMillis()));
         
@@ -94,7 +91,6 @@ public class TransaccionServicio {
             transaccionExistente.setDescripcion(transaccion.getDescripcion());
         }
 
-        // Solo permitir actualizar el estado si la transición es válida
         if (transaccion.getEstadoId() != null) {
             this.validarCambioEstado(transaccionExistente.getEstadoId(), transaccion.getEstadoId());
             transaccionExistente.setEstadoId(transaccion.getEstadoId());
@@ -127,7 +123,6 @@ public class TransaccionServicio {
         return this.transaccionRepositorio.save(transaccion);
     }
 
-    // Métodos de validación privados
     private void validarDatosBasicos(Transaccion transaccion) {
         if (transaccion.getDescripcion() == null || transaccion.getDescripcion().trim().isEmpty()) {
             throw new TransaccionNoEncontradaExcepcion("La descripción de la transacción es obligatoria");
@@ -152,7 +147,6 @@ public class TransaccionServicio {
         if (cuentaId == null || cuentaId <= 0) {
             throw new CuentaInvalidaExcepcion("El ID de la cuenta debe ser válido");
         }
-        // Aquí podrías agregar validación con el servicio de cuentas
     }
 
     private void validarTipoTransaccion(Integer tipoTransaccionId) {
@@ -160,7 +154,6 @@ public class TransaccionServicio {
             throw new TipoTransaccionNoEncontradaExcepcion("El tipo de transacción es obligatorio");
         }
         
-        // Verificar que el tipo de transacción existe
         this.tipoTransaccionServicio.findById(tipoTransaccionId);
     }
 
