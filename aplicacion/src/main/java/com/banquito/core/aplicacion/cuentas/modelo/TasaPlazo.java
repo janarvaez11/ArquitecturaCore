@@ -1,70 +1,75 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.math.BigDecimal;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "TasaPlazos")
-
 public class TasaPlazo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdPlazo", nullable = false)
-    private Integer IdPlazo;
+    private Integer idPlazo;
 
     @Column(name = "PlazoMinimo", nullable = false)
-    private Integer PlazoMinimo;
+    private Integer plazoMinimo;
 
     @Column(name = "PlazoMaximo", nullable = false)
-    private Integer PlazoMaximo;
+    private Integer plazoMaximo;
 
-    @Column(name = "Tasa", precision = 5, scale = 2)
-    private BigDecimal Tasa;
+    @Column(name = "Tasa", precision = 5, scale = 2, nullable = false)
+    private BigDecimal tasa;
 
-    //Relacion a la tabla TasaInteres
     @ManyToOne
     @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
     private TasaInteres tasaInteres;
 
-    //Constructores
-    public TasaPlazo() {
+    @Version
+    @Column(name = "Version")
+    private Long version;
+
+    // Constructores
+    protected TasaPlazo() {
+        // Constructor protegido para JPA
     }
 
     public TasaPlazo(Integer idPlazo) {
-        IdPlazo = idPlazo;
+        this.idPlazo = idPlazo;
     }
 
-    //Getters y Setters
+    // Getters y Setters
+
     public Integer getIdPlazo() {
-        return IdPlazo;
+        return idPlazo;
     }
 
     public void setIdPlazo(Integer idPlazo) {
-        IdPlazo = idPlazo;
+        this.idPlazo = idPlazo;
     }
 
     public Integer getPlazoMinimo() {
-        return PlazoMinimo;
+        return plazoMinimo;
     }
 
     public void setPlazoMinimo(Integer plazoMinimo) {
-        PlazoMinimo = plazoMinimo;
+        this.plazoMinimo = plazoMinimo;
     }
 
     public Integer getPlazoMaximo() {
-        return PlazoMaximo;
+        return plazoMaximo;
     }
 
     public void setPlazoMaximo(Integer plazoMaximo) {
-        PlazoMaximo = plazoMaximo;
+        this.plazoMaximo = plazoMaximo;
+    }
+
+    public BigDecimal getTasa() {
+        return tasa;
+    }
+
+    public void setTasa(BigDecimal tasa) {
+        this.tasa = tasa;
     }
 
     public TasaInteres getTasaInteres() {
@@ -75,20 +80,21 @@ public class TasaPlazo {
         this.tasaInteres = tasaInteres;
     }
 
-    public BigDecimal getTasa() {
-        return Tasa;
+    public Long getVersion() {
+        return version;
     }
 
-    public void setTasa(BigDecimal tasa) {
-        Tasa = tasa;
+    protected void setVersion(Long version) {
+        this.version = version;
     }
 
-    //HashCode y Equals
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdPlazo == null) ? 0 : IdPlazo.hashCode());
+        result = prime * result + ((idPlazo == null) ? 0 : idPlazo.hashCode());
         return result;
     }
 
@@ -101,21 +107,18 @@ public class TasaPlazo {
         if (getClass() != obj.getClass())
             return false;
         TasaPlazo other = (TasaPlazo) obj;
-        if (IdPlazo == null) {
-            if (other.IdPlazo != null)
+        if (idPlazo == null) {
+            if (other.idPlazo != null)
                 return false;
-        } else if (!IdPlazo.equals(other.IdPlazo))
+        } else if (!idPlazo.equals(other.idPlazo))
             return false;
         return true;
     }
 
+    // Método toString
     @Override
     public String toString() {
-        return "TasaPlazo [IdPlazo=" + IdPlazo + ", PlazoMinimo=" + PlazoMinimo + ", PlazoMaximo=" + PlazoMaximo
-                + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
+        return "TasaPlazo [idPlazo=" + idPlazo + ", plazoMinimo=" + plazoMinimo + ", plazoMaximo=" + plazoMaximo
+                + ", tasa=" + tasa + ", tasaInteres=" + tasaInteres + ", version=" + version + "]";
     }
-
-    //toString
-
-
 }

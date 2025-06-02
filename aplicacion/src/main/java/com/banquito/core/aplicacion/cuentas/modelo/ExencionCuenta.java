@@ -8,22 +8,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "ExencionesCuentas")
-
-
 public class ExencionCuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdExencion", nullable = false)
-    private Integer IdExencion;
+    private Integer idExencion;
+
+    @Version
+    @Column(name = "version")
+    private Long version;
 
     @Column(name = "Nombre", length = 100, nullable = false)
-    private String Nombre;
+    private String nombre;
 
     @Column(name = "Descripcion", length = 100, nullable = false)
-    private String Descripcion;
+    private String descripcion;
 
     //Relación con la tabla Comisiones
     @ManyToOne
@@ -34,28 +37,28 @@ public class ExencionCuenta {
     public ExencionCuenta() {
     }
     public ExencionCuenta(Integer idExencion) {
-        IdExencion = idExencion;
+        this.idExencion = idExencion;
     }
 
     //Getters y Setters
     public Integer getIdExencion() {
-        return IdExencion;
+        return idExencion;
     }
     public void setIdExencion(Integer idExencion) {
-        IdExencion = idExencion;
+        this.idExencion = idExencion;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
     public ComisionCargo getComision() {
         return comision;
@@ -69,7 +72,7 @@ public class ExencionCuenta {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdExencion == null) ? 0 : IdExencion.hashCode());
+        result = prime * result + ((idExencion == null) ? 0 : idExencion.hashCode());
         return result;
     }
     @Override
@@ -81,21 +84,19 @@ public class ExencionCuenta {
         if (getClass() != obj.getClass())
             return false;
         ExencionCuenta other = (ExencionCuenta) obj;
-        if (IdExencion == null) {
-            if (other.IdExencion != null)
+        if (idExencion == null) {
+            if (other.idExencion != null)
                 return false;
-        } else if (!IdExencion.equals(other.IdExencion))
+        } else if (!idExencion.equals(other.idExencion))
             return false;
         return true;
     }
+
+    //Método toString
     @Override
     public String toString() {
-        return "ExencionCuenta [IdExencion=" + IdExencion + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
+        return "ExencionCuenta [idExencion=" + idExencion + ", nombre=" + nombre + ", descripcion=" + descripcion
                 + ", comision=" + comision + "]";
     }
-
-     //ToString
-
-
 
 }
