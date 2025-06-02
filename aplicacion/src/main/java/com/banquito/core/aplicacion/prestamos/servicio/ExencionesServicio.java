@@ -3,6 +3,7 @@ package com.banquito.core.aplicacion.prestamos.servicio;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,9 @@ import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion
 import com.banquito.core.aplicacion.prestamos.excepcion.ExencionesPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.ComisionPrestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.ExencionesPrestamo;
+import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargo;
 import com.banquito.core.aplicacion.prestamos.repositorio.ExencionesPrestamoRepositorio;
+import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoComisionCargoRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -21,13 +24,17 @@ import jakarta.transaction.Transactional;
 public class ExencionesServicio {
     
     private final ExencionesPrestamoRepositorio repositorio;
+    private final PrestamoComisionCargoRepositorio prestamoComisionCargoRepositorio;
 
     private static final List<String> TIPOS_EXENCION_VALIDOS = Arrays.asList(
         "CLIENTE PREFERENCIAL", "CAMPAÑA", "MANUAL"
     );
 
-    public ExencionesServicio(ExencionesPrestamoRepositorio repositorio) {
+    public ExencionesServicio(
+            ExencionesPrestamoRepositorio repositorio,
+            PrestamoComisionCargoRepositorio prestamoComisionCargoRepositorio) {
         this.repositorio = repositorio;
+        this.prestamoComisionCargoRepositorio = prestamoComisionCargoRepositorio;
     }
 
     public boolean existeExencionParaComision(ComisionPrestamo comisionPrestamo, String tipoExencion) {
@@ -105,5 +112,24 @@ public class ExencionesServicio {
         } catch (Exception rte) {
             throw new EliminarEntidadExcepcion("Exenciones Prestamo", "Error al eliminar la ExencionesPrestamo. Texto del error: "+rte.getMessage());
         }
+    }
+
+    public List<ExencionesPrestamo> findByPrestamo(Integer idPrestamo) {
+        // Obtener todas las comisiones asignadas al préstamo
+        List<PrestamoComisionCargo> comisiones = prestamoComisionCargoRepositorio.findById_IdPrestamo(idPrestamo);
+        
+        if (comisiones.isEmpty()) {
+            throw new BusquedaExcepcion("ExencionesPrestamo", 
+                "No se encontraron comisiones para el préstamo con ID: " + idPrestamo);
+        }
+        
+        // Obtener las exenciones para cada comisión
+        List<ExencionesPrestamo> exenciones = new ArrayList<>();
+        for (PrestamoComisionCargo comision : comisiones) {
+            List<ExencionesPrestamo> exencionesComision = repositorio.findByIdComisionPrestamo(comision.getComisionPrestamo());
+            exenciones.addAll(exencionesComision);
+        }
+        
+        return exenciones;
     }
 }
