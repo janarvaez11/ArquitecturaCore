@@ -2,20 +2,24 @@ package com.banquito.core.aplicacion.cuentas.controlador;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.TipoCuentaNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.TipoCuenta;
 import com.banquito.core.aplicacion.cuentas.servicio.TipoCuentaServicio;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 
-@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/tipos-cuenta")
+@CrossOrigin(maxAge = 3600)
 public class TipoCuentaControlador {
+
     private final TipoCuentaServicio tipoCuentaServicio;
 
     public TipoCuentaControlador(TipoCuentaServicio tipoCuentaServicio) {
@@ -23,36 +27,56 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<TipoCuenta>> obtenerTodos() {
-        return ResponseEntity.ok(tipoCuentaServicio.findAll());
+    public ResponseEntity<List<TipoCuenta>> listarTodos() {
+        try {
+            List<TipoCuenta> tipos = tipoCuentaServicio.listarTodos();
+            return ResponseEntity.ok(tipos);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<TipoCuenta>> listarTodosPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio) {
+        try {
+            Page<TipoCuenta> tipos = tipoCuentaServicio.listarTodosPaginado(PageRequest.of(pagina, tamanio));
+            return ResponseEntity.ok(tipos);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TipoCuenta> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<TipoCuenta> buscarPorId(@PathVariable Integer id) {
         try {
-            TipoCuenta tipoCuenta = tipoCuentaServicio.findById(id);
-            return ResponseEntity.ok(tipoCuenta);
-        } catch (TipoCuentaNoEncontradaExcepcion e) {
+            TipoCuenta tipo = tipoCuentaServicio.buscarPorId(id);
+            return ResponseEntity.ok(tipo);
+        } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody TipoCuenta tipoCuenta) {
+    public ResponseEntity<TipoCuenta> crear(@RequestBody TipoCuenta tipoCuenta) {
         try {
-            tipoCuentaServicio.create(tipoCuenta);
-            return ResponseEntity.ok().build();
+            TipoCuenta nuevoTipo = tipoCuentaServicio.crear(tipoCuenta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTipo);
         } catch (CrearEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody TipoCuenta tipoCuenta) {
+    public ResponseEntity<TipoCuenta> actualizar(
+            @PathVariable Integer id, 
+            @RequestBody TipoCuenta tipoCuenta) {
         try {
-            tipoCuenta.setIdTipoCuenta(id);
-            tipoCuentaServicio.update(tipoCuenta);
-            return ResponseEntity.ok().build();
+            TipoCuenta tipoActualizado = tipoCuentaServicio.actualizar(id, tipoCuenta);
+            return ResponseEntity.ok(tipoActualizado);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (ActualizarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
@@ -61,37 +85,42 @@ public class TipoCuentaControlador {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
-            tipoCuentaServicio.delete(id);
-            return ResponseEntity.ok().build();
+            tipoCuentaServicio.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (EliminarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/buscar")
-    public ResponseEntity<List<TipoCuenta>> buscarPorNombre(@RequestParam String nombre) {
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<List<TipoCuenta>> buscarPorNombre(@PathVariable String nombre) {
         try {
-            return ResponseEntity.ok(tipoCuentaServicio.buscarPorNombre(nombre));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorNombre(nombre);
+            return ResponseEntity.ok(tipos);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/moneda/{idMoneda}")
     public ResponseEntity<List<TipoCuenta>> buscarPorMoneda(@PathVariable String idMoneda) {
         try {
-            return ResponseEntity.ok(tipoCuentaServicio.buscarPorMoneda(idMoneda));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorMoneda(idMoneda);
+            return ResponseEntity.ok(tipos);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/tipo-cliente/{tipoCliente}")
     public ResponseEntity<List<TipoCuenta>> buscarPorTipoCliente(@PathVariable String tipoCliente) {
         try {
-            return ResponseEntity.ok(tipoCuentaServicio.buscarPorTipoCliente(tipoCliente));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorTipoCliente(tipoCliente);
+            return ResponseEntity.ok(tipos);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 } 

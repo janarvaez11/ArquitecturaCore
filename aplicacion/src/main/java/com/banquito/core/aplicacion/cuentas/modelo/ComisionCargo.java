@@ -20,22 +20,25 @@ public class ComisionCargo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdComisionCargo", nullable = false)
-    private Integer IdComisionCargo;
+    private Integer idComisionCargo;
 
     @Column(name = "TipoComision", length = 30, nullable = false)
-    private String TipoComision;
+    private String tipoComision;
 
     @Column(name = "Nombre", length = 30, nullable = false)
-    private String Nombre;
+    private String nombre;
 
     @Column(name = "BaseCalculo", length = 20, nullable = false)
-    private String BaseCalculo;
+    private String baseCalculo;
 
     @Column(name = "Monto", precision = 15, scale = 2)
-    private BigDecimal Monto;
+    private BigDecimal monto;
 
     @Column(name = "Frecuencia", length = 30, nullable = false)
-    private String Frecuencia;
+    private String frecuencia;
+
+    @Column(name = "Estado", length = 20, nullable = false)
+    private String estado;
 
 
     //Relacion a la tabla ServiciosAsociados
@@ -56,46 +59,46 @@ public class ComisionCargo {
     public ComisionCargo() {
     }
     public ComisionCargo(Integer idComisionCargo) {
-        IdComisionCargo = idComisionCargo;
+        this.idComisionCargo = idComisionCargo;
     }
 
     //Getters y Setters
     public Integer getIdComisionCargo() {
-        return IdComisionCargo;
+        return idComisionCargo;
     }
     public void setIdComisionCargo(Integer idComisionCargo) {
-        IdComisionCargo = idComisionCargo;
+        this.idComisionCargo = idComisionCargo;
     }
     public String getTipoComision() {
-        return TipoComision;
+        return tipoComision;
     }
     public void setTipoComision(String tipoComision) {
-        TipoComision = tipoComision;
+        this.tipoComision = tipoComision;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
     public String getBaseCalculo() {
-        return BaseCalculo;
+        return baseCalculo;
     }
     public void setBaseCalculo(String baseCalculo) {
-        BaseCalculo = baseCalculo;
+        this.baseCalculo = baseCalculo;
     }
     public BigDecimal getMonto() {
-        return Monto;
+        return monto;
     }
     public void setMonto(BigDecimal monto) {
-        Monto = monto;
+        this.monto = monto;
     }
     public String getFrecuencia() {
-        return Frecuencia;
+        return frecuencia;
     }
     public void setFrecuencia(String frecuencia) {
-        Frecuencia = frecuencia;
+        this.frecuencia = frecuencia;
     }
     public List<ExencionCuenta> getExenciones() {
         return exenciones;
@@ -110,12 +113,26 @@ public class ComisionCargo {
         this.cuentaComisionCargos = cuentaComisionCargos;
     }
 
+    
+
+    public String getEstado() {
+        return estado;
+    }
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    public ServicioAsociado getServicioAsociado() {
+        return servicioAsociado;
+    }
+    public void setServicioAsociado(ServicioAsociado servicioAsociado) {
+        this.servicioAsociado = servicioAsociado;
+    }
     //HashCode y Equals
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdComisionCargo == null) ? 0 : IdComisionCargo.hashCode());
+        result = prime * result + ((idComisionCargo == null) ? 0 : idComisionCargo.hashCode());
         return result;
     }
     @Override
@@ -127,19 +144,21 @@ public class ComisionCargo {
         if (getClass() != obj.getClass())
             return false;
         ComisionCargo other = (ComisionCargo) obj;
-        if (IdComisionCargo == null) {
-            if (other.IdComisionCargo != null)
+        if (idComisionCargo == null) {
+            if (other.idComisionCargo != null)
                 return false;
-        } else if (!IdComisionCargo.equals(other.IdComisionCargo))
+        } else if (!idComisionCargo.equals(other.idComisionCargo))
             return false;
         return true;
     }
     @Override
     public String toString() {
-        return "ComisionCargo [IdComisionCargo=" + IdComisionCargo + ", TipoComision=" + TipoComision + ", Nombre="
-                + Nombre + ", BaseCalculo=" + BaseCalculo + ", Monto=" + Monto + ", Frecuencia=" + Frecuencia
-                + ", servicioAsociado=" + servicioAsociado + ", exenciones=" + exenciones + ", cuentaComisionCargos="
-                + cuentaComisionCargos + "]";
+        return "ComisionCargo [idComisionCargo=" + idComisionCargo + ", tipoComision=" + tipoComision + ", nombre="
+                + nombre + ", baseCalculo=" + baseCalculo + ", monto=" + monto + ", frecuencia=" + frecuencia
+                + ", estado=" + estado + ", servicioAsociado=" + servicioAsociado + ", exenciones=" + exenciones
+                + ", cuentaComisionCargos=" + cuentaComisionCargos + "]";
     }
+
+    
 
 }

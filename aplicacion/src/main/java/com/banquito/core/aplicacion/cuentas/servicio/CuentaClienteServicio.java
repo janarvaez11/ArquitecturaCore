@@ -2,16 +2,16 @@ package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CuentaClienteNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.CuentaCliente;
-import com.banquito.core.aplicacion.cuentas.modelo.TipoCuenta;
 import com.banquito.core.aplicacion.cuentas.repositorio.CuentaClienteRepositorio;
 
 import jakarta.transaction.Transactional;
@@ -25,95 +25,109 @@ public class CuentaClienteServicio {
         this.cuentaClienteRepositorio = cuentaClienteRepositorio;
     }
 
-    public List<CuentaCliente> findAll() {
-        return this.cuentaClienteRepositorio.findAll();
-    }
-
-    public CuentaCliente findById(Integer id) {
-        Optional<CuentaCliente> cuentaClienteOptional = this.cuentaClienteRepositorio.findById(id);
-        if (cuentaClienteOptional.isPresent()) {
-            return cuentaClienteOptional.get();
-        } else {
-            throw new CuentaClienteNoEncontradaExcepcion("CuentaCliente", "No se encontró la cuenta del cliente con ID: " + id);
+    @Transactional
+    public CuentaCliente crear(CuentaCliente cuentaCliente) {
+        try {
+            validarCuentaCliente(cuentaCliente);
+            return this.cuentaClienteRepositorio.save(cuentaCliente);
+        } catch (RuntimeException e) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "Error al crear la cuenta del cliente: " + e.getMessage());
         }
     }
 
-    @Transactional
-    public void create(CuentaCliente cuentaCliente) {
-        try {
-            this.cuentaClienteRepositorio.save(cuentaCliente);
-        } catch (Exception e) {
-            throw new CrearEntidadExcepcion("CuentaCliente", "Error al crear la cuenta del cliente. Error: " + e.getMessage());
-        }
+    public CuentaCliente buscarPorId(Integer id) {
+        return this.cuentaClienteRepositorio.findById(id)
+            .orElseThrow(() -> new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No se encontró la cuenta del cliente con id: " + id));
     }
 
     @Transactional
-    public void update(CuentaCliente cuentaCliente) {
+    public CuentaCliente actualizar(Integer id, CuentaCliente cuentaCliente) {
         try {
-            Optional<CuentaCliente> cuentaClienteOptional = this.cuentaClienteRepositorio.findById(cuentaCliente.getIdCuentaCliente());
-            if (cuentaClienteOptional.isPresent()) {
-                CuentaCliente cuentaClienteDB = cuentaClienteOptional.get();
-                
-                // Validación de saldo usando el tipo de cuenta
-                if (cuentaCliente.getSaldoDisponible() != null && 
-                    cuentaCliente.getCuenta() != null &&
-                    cuentaCliente.getCuenta().getTipoCuenta() != null) {
-                    TipoCuenta tipoCuenta = cuentaCliente.getCuenta().getTipoCuenta();
-                    if (tipoCuenta.getTasaInteres() != null && 
-                        tipoCuenta.getTasaInteres().getBaseCalculo() != null) {
-                        // Si el tipo de cuenta tiene un saldo mínimo definido en su base de cálculo
-                        if (cuentaCliente.getSaldoDisponible().compareTo(BigDecimal.ZERO) < 0) {
-                            throw new ActualizarEntidadExcepcion("CuentaCliente", 
-                                "El saldo disponible no puede ser negativo");
-                        }
-                    }
-                }
-                
-                // Actualización con manejo de concurrencia usando @Version
-                cuentaClienteDB.setCliente(cuentaCliente.getCliente());
-                cuentaClienteDB.setCuenta(cuentaCliente.getCuenta());
-                cuentaClienteDB.setEstado(cuentaCliente.getEstado());
-                cuentaClienteDB.setFechaApertura(cuentaCliente.getFechaApertura());
-                cuentaClienteDB.setSaldoDisponible(cuentaCliente.getSaldoDisponible());
-                cuentaClienteDB.setSaldoContable(cuentaCliente.getSaldoContable());
-                this.cuentaClienteRepositorio.save(cuentaClienteDB);
-            } else {
-                throw new CuentaClienteNoEncontradaExcepcion("CuentaCliente", 
-                    "No se encontró la cuenta del cliente con ID: " + cuentaCliente.getIdCuentaCliente());
-            }
-        } catch (Exception e) {
+            CuentaCliente existente = buscarPorId(id);
+            validarCuentaCliente(cuentaCliente);
+            cuentaCliente.setIdCuentaCliente(existente.getIdCuentaCliente());
+            return this.cuentaClienteRepositorio.save(cuentaCliente);
+        } catch (RuntimeException e) {
             throw new ActualizarEntidadExcepcion("CuentaCliente", 
-                "Error al actualizar la cuenta del cliente. Error: " + e.getMessage());
+                "Error al actualizar la cuenta del cliente: " + e.getMessage());
         }
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void eliminar(Integer id) {
         try {
-            Optional<CuentaCliente> cuentaClienteOptional = this.cuentaClienteRepositorio.findById(id);
-            if (cuentaClienteOptional.isPresent()) {
-                this.cuentaClienteRepositorio.delete(cuentaClienteOptional.get());
-            } else {
-                throw new CuentaClienteNoEncontradaExcepcion("CuentaCliente", "No se encontró la cuenta del cliente con ID: " + id);
-            }
-        } catch (Exception e) {
-            throw new EliminarEntidadExcepcion("CuentaCliente", "Error al eliminar la cuenta del cliente. Error: " + e.getMessage());
+            CuentaCliente cuentaCliente = buscarPorId(id);
+            this.cuentaClienteRepositorio.delete(cuentaCliente);
+        } catch (RuntimeException e) {
+            throw new EliminarEntidadExcepcion("CuentaCliente", 
+                "Error al eliminar la cuenta del cliente: " + e.getMessage());
         }
     }
 
-    public List<CuentaCliente> findByClienteId(Integer idCliente) {
-        return this.cuentaClienteRepositorio.findByClienteId(idCliente);
+    public List<CuentaCliente> listarTodos() {
+        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findAll();
+        if (cuentas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No existen cuentas de clientes registradas");
+        }
+        return cuentas;
     }
 
-    public List<CuentaCliente> findByEstado(String estado) {
-        return this.cuentaClienteRepositorio.findByEstado(estado);
+    public Page<CuentaCliente> listarTodosPaginado(Pageable pageable) {
+        Page<CuentaCliente> page = this.cuentaClienteRepositorio.findAll(pageable);
+        if (page.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No existen cuentas de clientes registradas");
+        }
+        return page;
     }
 
-    public List<CuentaCliente> findBySaldoDisponibleGreaterThan(BigDecimal saldoMinimo) {
-        return this.cuentaClienteRepositorio.findBySaldoDisponibleGreaterThan(saldoMinimo);
+    public List<CuentaCliente> buscarPorCliente(Integer clienteId) {
+        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findByClienteId(clienteId);
+        if (cuentas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No se encontraron cuentas para el cliente: " + clienteId);
+        }
+        return cuentas;
     }
 
-    public CuentaCliente findByNumeroCuenta(String numeroCuenta) {
-        return this.cuentaClienteRepositorio.findByNumeroCuenta(numeroCuenta);
+    public List<CuentaCliente> buscarPorEstado(String estado) {
+        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findByEstado(estado);
+        if (cuentas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No se encontraron cuentas en estado: " + estado);
+        }
+        return cuentas;
+    }
+
+    public List<CuentaCliente> buscarPorSaldoDisponibleMayorQue(BigDecimal saldoMinimo) {
+        List<CuentaCliente> cuentas = this.cuentaClienteRepositorio.findBySaldoDisponibleGreaterThan(saldoMinimo);
+        if (cuentas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No se encontraron cuentas con saldo mayor a: " + saldoMinimo);
+        }
+        return cuentas;
+    }
+
+    public CuentaCliente buscarPorNumeroCuenta(String numeroCuenta) {
+        CuentaCliente cuenta = this.cuentaClienteRepositorio.findByNumeroCuenta(numeroCuenta);
+        if (cuenta == null) {
+            throw new EntidadNoEncontradaExcepcion("CuentaCliente", 
+                "No se encontró la cuenta con número: " + numeroCuenta);
+        }
+        return cuenta;
+    }
+
+    private void validarCuentaCliente(CuentaCliente cuentaCliente) {
+        if (cuentaCliente.getNumeroCuenta() == null || cuentaCliente.getNumeroCuenta().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "El número de cuenta es obligatorio");
+        }
+        if (cuentaCliente.getSaldoDisponible() != null && cuentaCliente.getSaldoDisponible().compareTo(BigDecimal.ZERO) < 0) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "El saldo disponible no puede ser negativo");
+        }
     }
 }

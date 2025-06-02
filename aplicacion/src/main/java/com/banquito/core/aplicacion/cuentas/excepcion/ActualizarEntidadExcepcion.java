@@ -1,21 +1,25 @@
 package com.banquito.core.aplicacion.cuentas.excepcion;
 
 public class ActualizarEntidadExcepcion extends RuntimeException {
+    private final Integer errorCode;
+    private final String entidad;
 
-    private Integer errorCode;
-    private String entityName;
-
-    public ActualizarEntidadExcepcion(String entityName, String message){
-        super(message);
-        this.errorCode = 2;
-        this.entityName = entityName;
+    public ActualizarEntidadExcepcion(String entidad, String mensaje) {
+        super(mensaje);
+        this.errorCode = 3;
+        this.entidad = entidad;
     }
 
     @Override
     public String getMessage() {
-        return "errorCode=" + errorCode + ", entityName=" + entityName + ", message=" + super.getMessage();
+        return "Error code: " + this.errorCode + ", Entidad: " + this.entidad + ", Mensaje: " + super.getMessage();
     }
 
+    public Integer getErrorCode() {
+        return errorCode;
+    }
     
-
+    public String getEntidad() {
+        return entidad;
+    }
 }

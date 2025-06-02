@@ -2,19 +2,22 @@ package com.banquito.core.aplicacion.cuentas.controlador;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.ServicioAsociadoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.ServicioAsociado;
 import com.banquito.core.aplicacion.cuentas.servicio.ServicioAsociadoServicio;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 
-@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/serviciosAsociados")
+@RequestMapping("/api/servicios-asociados")
+@CrossOrigin(maxAge = 3600)
 public class ServicioAsociadoControlador {
 
     private final ServicioAsociadoServicio servicioAsociadoServicio;
@@ -24,36 +27,56 @@ public class ServicioAsociadoControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<ServicioAsociado>> obtenerTodos() {
-        return ResponseEntity.ok(servicioAsociadoServicio.findAll());
+    public ResponseEntity<List<ServicioAsociado>> listarTodos() {
+        try {
+            List<ServicioAsociado> servicios = servicioAsociadoServicio.listarTodos();
+            return ResponseEntity.ok(servicios);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<ServicioAsociado>> listarTodosPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio) {
+        try {
+            Page<ServicioAsociado> servicios = servicioAsociadoServicio.listarTodosPaginado(PageRequest.of(pagina, tamanio));
+            return ResponseEntity.ok(servicios);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ServicioAsociado> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<ServicioAsociado> buscarPorId(@PathVariable Integer id) {
         try {
-            ServicioAsociado servicioAsociado = servicioAsociadoServicio.findById(id);
-            return ResponseEntity.ok(servicioAsociado);
-        } catch (ServicioAsociadoNoEncontradoExcepcion e) {
+            ServicioAsociado servicio = servicioAsociadoServicio.buscarPorId(id);
+            return ResponseEntity.ok(servicio);
+        } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody ServicioAsociado servicioAsociado) {
+    public ResponseEntity<ServicioAsociado> crear(@RequestBody ServicioAsociado servicioAsociado) {
         try {
-            servicioAsociadoServicio.create(servicioAsociado);
-            return ResponseEntity.ok().build();
+            ServicioAsociado nuevoServicio = servicioAsociadoServicio.crear(servicioAsociado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoServicio);
         } catch (CrearEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody ServicioAsociado servicioAsociado) {
+    public ResponseEntity<ServicioAsociado> actualizar(
+            @PathVariable Integer id,
+            @RequestBody ServicioAsociado servicioAsociado) {
         try {
-            servicioAsociado.setIdServicio(id);
-            servicioAsociadoServicio.update(servicioAsociado);
-            return ResponseEntity.ok().build();
+            ServicioAsociado servicioActualizado = servicioAsociadoServicio.actualizar(id, servicioAsociado);
+            return ResponseEntity.ok(servicioActualizado);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (ActualizarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
@@ -62,10 +85,45 @@ public class ServicioAsociadoControlador {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
-            servicioAsociadoServicio.delete(id);
-            return ResponseEntity.ok().build();
+            servicioAsociadoServicio.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (EliminarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ServicioAsociado>> buscarPorNombre(
+            @RequestParam String nombre) {
+        try {
+            List<ServicioAsociado> servicios = servicioAsociadoServicio.buscarPorNombre(nombre);
+            return ResponseEntity.ok(servicios);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<ServicioAsociado>> buscarPorEstado(
+            @PathVariable String estado) {
+        try {
+            List<ServicioAsociado> servicios = servicioAsociadoServicio.buscarPorEstado(estado);
+            return ResponseEntity.ok(servicios);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/cuenta/{idCuenta}")
+    public ResponseEntity<List<ServicioAsociado>> buscarPorCuenta(
+            @PathVariable Integer idCuenta) {
+        try {
+            List<ServicioAsociado> servicios = servicioAsociadoServicio.buscarPorCuenta(idCuenta);
+            return ResponseEntity.ok(servicios);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
