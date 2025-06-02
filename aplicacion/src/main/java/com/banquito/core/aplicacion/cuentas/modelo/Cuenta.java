@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
-//import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-//import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -22,24 +22,27 @@ public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdCuenta", nullable = false)
-    private Integer IdCuenta;
+    private Integer idCuenta;
+
+    @Column(name = "CodigoCuenta", length = 20, nullable = false, unique = true)
+    private String codigoCuenta;
 
     @Column(name = "Nombre", length = 50, nullable = false)
-    private String Nombre;
+    private String nombre;
 
     @Column(name = "Descripcion", length = 50, nullable = false)
-    private String Descripcion;
+    private String descripcion;
 
     @Column(name = "Estado", length = 10, nullable = false)
-    private String Estado;
+    private String estado;
 
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaCreacion", nullable = false)
-    private Date FechaCreacion;
+    private Date fechaCreacion;
 
-    @Temporal (TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion", nullable = false)
-    private Date FechaModificacion;
+    private Date fechaModificacion;
 
     // Relación con la tabla TasasInteres
     @ManyToOne
@@ -52,65 +55,76 @@ public class Cuenta {
     private TipoCuenta tipoCuenta;
 
     // Relación inversa con CuentasClientes
-    // @OneToMany(mappedBy = "cuenta")
-    // private List<CuentaCliente> cuentasClientes;
+    @OneToMany(mappedBy = "cuenta")
+    private List<CuentaCliente> cuentasClientes;
+
+    // Relación inversa con ServicioTipoCuenta
+    @OneToMany(mappedBy = "cuenta")
+    private List<ServicioTipoCuenta> servicioTipoCuentas;
 
     // Constructores
     public Cuenta() {
     }
 
     public Cuenta(Integer idCuenta) {
-        IdCuenta = idCuenta;
+        this.idCuenta = idCuenta;
     }
 
     // Getters y Setters
     public Integer getIdCuenta() {
-        return IdCuenta;
+        return idCuenta;
     }
 
     public void setIdCuenta(Integer idCuenta) {
-        IdCuenta = idCuenta;
+        this.idCuenta = idCuenta;
+    }
+
+    public String getCodigoCuenta() {
+        return codigoCuenta;
+    }
+
+    public void setCodigoCuenta(String codigoCuenta) {
+        this.codigoCuenta = codigoCuenta;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
-
     public Date getFechaCreacion() {
-        return FechaCreacion;
+        return fechaCreacion;
     }
 
     public void setFechaCreacion(Date fechaCreacion) {
-        FechaCreacion = fechaCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Date getFechaModificacion() {
-        return FechaModificacion;
+        return fechaModificacion;
     }
 
     public void setFechaModificacion(Date fechaModificacion) {
-        FechaModificacion = fechaModificacion;
+        this.fechaModificacion = fechaModificacion;
     }
 
     public TasaInteres getTasaInteres() {
@@ -129,13 +143,29 @@ public class Cuenta {
         this.tipoCuenta = tipoCuenta;
     }
 
+    public List<CuentaCliente> getCuentasClientes() {
+        return cuentasClientes;
+    }
 
-    //Metodo hashCode y equals
+    public void setCuentasClientes(List<CuentaCliente> cuentasClientes) {
+        this.cuentasClientes = cuentasClientes;
+    }
+
+    public List<ServicioTipoCuenta> getServicioTipoCuentas() {
+        return servicioTipoCuentas;
+    }
+
+    public void setServicioTipoCuentas(List<ServicioTipoCuenta> servicioTipoCuentas) {
+        this.servicioTipoCuentas = servicioTipoCuentas;
+    }
+
+    // Metodo hashCode y equals
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdCuenta == null) ? 0 : IdCuenta.hashCode());
+        result = prime * result + ((idCuenta == null) ? 0 : idCuenta.hashCode());
+        result = prime * result + ((codigoCuenta == null) ? 0 : codigoCuenta.hashCode());
         return result;
     }
 
@@ -148,24 +178,26 @@ public class Cuenta {
         if (getClass() != obj.getClass())
             return false;
         Cuenta other = (Cuenta) obj;
-        if (IdCuenta == null) {
-            if (other.IdCuenta != null)
+        if (idCuenta == null) {
+            if (other.idCuenta != null)
                 return false;
-        } else if (!IdCuenta.equals(other.IdCuenta))
+        } else if (!idCuenta.equals(other.idCuenta))
+            return false;
+        if (codigoCuenta == null) {
+            if (other.codigoCuenta != null)
+                return false;
+        } else if (!codigoCuenta.equals(other.codigoCuenta))
             return false;
         return true;
     }
 
+    // Método toString
     @Override
     public String toString() {
-        return "Cuenta [IdCuenta=" + IdCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", Estado="
-                + Estado + ", FechaCreacion=" + FechaCreacion + ", FechaModificacion=" + FechaModificacion
+        return "Cuenta [idCuenta=" + idCuenta + ", codigoCuenta=" + codigoCuenta + ", nombre=" + nombre
+                + ", descripcion=" + descripcion + ", estado="
+                + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
                 + ", tasaInteres=" + tasaInteres + ", tipoCuenta=" + tipoCuenta + "]";
     }
-
-    
-    // Método toString
-
-    
 
 }
