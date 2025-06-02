@@ -56,15 +56,13 @@ public class TipoPrestamo {
     @Column(name = "FechaCreacion", nullable = false)
     private LocalDate fechaCreacion;
 
-    @Column(name = "FechaModificacion", nullable = false)
+    @Column(name = "FechaModificacion")
     private LocalDate fechaModificacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdMoneda", referencedColumnName = "IdMoneda", nullable = false)
-    @JsonIgnoreProperties({"pais", "hibernateLazyInitializer"})
+    @JsonIgnoreProperties({ "pais", "hibernateLazyInitializer" })
     private Moneda moneda;
-
-    
 
     // Constructor
     public TipoPrestamo() {
