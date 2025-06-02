@@ -1,12 +1,14 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -40,6 +42,11 @@ public class TasaInteres {
     @Column(name = "FechaFinVigencia", nullable = false)
     private Date fechaFinVigencia;
 
+    @OneToMany(mappedBy = "tasaInteres")
+    private List<Cuenta> cuentas;
+
+    @OneToMany(mappedBy = "tasaInteres")
+    private List<TasaPlazo> tasasPlazos;
 
     // Constructores
     public TasaInteres() {
@@ -106,6 +113,22 @@ public class TasaInteres {
         this.fechaFinVigencia = fechaFinVigencia;
     }
 
+    public List<Cuenta> getCuentas() {
+        return cuentas;
+    }
+
+    public void setCuentas(List<Cuenta> cuentas) {
+        this.cuentas = cuentas;
+    }
+
+    public List<TasaPlazo> getTasasPlazos() {
+        return tasasPlazos;
+    }
+
+    public void setTasasPlazos(List<TasaPlazo> tasasPlazos) {
+        this.tasasPlazos = tasasPlazos;
+    }
+
     // Métodos hashCode y equals
     @Override
     public int hashCode() {
@@ -132,12 +155,13 @@ public class TasaInteres {
         return true;
     }
 
+    
     // Método toString
     @Override
     public String toString() {
         return "TasaInteres [idTasaInteres=" + idTasaInteres + ", baseCalculo=" + baseCalculo + ", metodoCalculo="
                 + metodoCalculo + ", frecuenciaCapitalizacion=" + frecuenciaCapitalizacion + ", estado=" + estado
-                + ", fechaInicioVigencia=" + fechaInicioVigencia + ", fechaFinVigencia=" + fechaFinVigencia + "]";
+                + ", fechaInicioVigencia=" + fechaInicioVigencia + ", fechaFinVigencia=" + fechaFinVigencia
+                + ", cuentas=" + cuentas + ", tasasPlazos=" + tasasPlazos + "]";
     }
-
 }
