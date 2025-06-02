@@ -1,4 +1,9 @@
 package com.banquito.core.aplicacion.transacciones.repositorio;
 
-public interface TransaccionRepositorio {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.banquito.core.aplicacion.transacciones.modelo.Transaccion;
+
+public interface TransaccionRepositorio extends JpaRepository<Transaccion, Integer> {
+
 }

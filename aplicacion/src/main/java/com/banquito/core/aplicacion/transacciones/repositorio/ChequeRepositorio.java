@@ -1,4 +1,9 @@
 package com.banquito.core.aplicacion.transacciones.repositorio;
 
-public interface ChequeRepositorio {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.banquito.core.aplicacion.transacciones.modelo.Cheque;
+
+public interface ChequeRepositorio extends JpaRepository<Cheque, Integer> {
+
 }
