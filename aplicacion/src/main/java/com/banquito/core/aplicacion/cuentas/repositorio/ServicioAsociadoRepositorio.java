@@ -12,4 +12,5 @@ public interface ServicioAsociadoRepositorio extends JpaRepository<ServicioAsoci
     List<ServicioAsociado> findByNombreContaining(String nombre);
     List<ServicioAsociado> findByEstado(String estado);
     List<ServicioAsociado> findByServicioTipoCuentas_Cuenta_IdCuenta(Integer idCuenta);
+    boolean existsByServicioTipoCuentas_Cuenta_IdCuentaAndIdServicio(Integer idCuenta, Integer idServicio);
 }

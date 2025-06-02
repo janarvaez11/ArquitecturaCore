@@ -54,7 +54,7 @@ public class TipoCuenta {
     //relacion a la tabla TasaInteres
     @ManyToOne
     @JoinColumn(name = "IdTasaInteresPorDefecto", referencedColumnName = "IdTasaInteres")
-    private TasaInteres tasaInteres;
+    private TasaInteres tasaInteresPorDefecto;
 
     //relacion a la tabla Monedas
     @ManyToOne
@@ -147,12 +147,12 @@ public class TipoCuenta {
     }
 
 
-    public TasaInteres getTasaInteres() {
-        return tasaInteres;
+    public TasaInteres getTasaInteresPorDefecto() {
+        return tasaInteresPorDefecto;
     }
 
-    public void setTasaInteres(TasaInteres tasaInteres) {
-        this.tasaInteres = tasaInteres;
+    public void setTasaInteresPorDefecto(TasaInteres tasaInteresPorDefecto) {
+        this.tasaInteresPorDefecto = tasaInteresPorDefecto;
     }
 
     public Moneda getMoneda() {
@@ -194,7 +194,7 @@ public class TipoCuenta {
         return "TipoCuenta [idTipoCuenta=" + idTipoCuenta + ", nombre=" + nombre + ", descripcion=" + descripcion
                 + ", requisitosApertura=" + requisitosApertura + ", tipoCliente=" + tipoCliente
                 + ", cuentasContablesAsociadas=" + cuentasContablesAsociadas + ", estado=" + estado + ", fechaCreacion="
-                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", tasaInteres=" + tasaInteres 
+                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", tasaInteresPorDefecto=" + tasaInteresPorDefecto 
                 + ", moneda=" + moneda + "]";
     }
 

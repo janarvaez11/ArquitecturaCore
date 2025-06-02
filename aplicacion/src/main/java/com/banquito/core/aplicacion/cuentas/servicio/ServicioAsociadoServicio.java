@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.util.List;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,12 @@ import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.ServicioAsociado;
+import com.banquito.core.aplicacion.cuentas.modelo.ServicioTipoCuenta;
+import com.banquito.core.aplicacion.cuentas.modelo.ServicioTipoCuentaId;
+import com.banquito.core.aplicacion.cuentas.modelo.Cuenta;
 import com.banquito.core.aplicacion.cuentas.repositorio.ServicioAsociadoRepositorio;
+import com.banquito.core.aplicacion.cuentas.repositorio.ServicioTipoCuentaRepositorio;
+import com.banquito.core.aplicacion.cuentas.repositorio.CuentaRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -22,9 +28,15 @@ public class ServicioAsociadoServicio {
     private static final String ESTADO_INACTIVO = "INACTIVO";
 
     private final ServicioAsociadoRepositorio servicioAsociadoRepositorio;
+    private final ServicioTipoCuentaRepositorio servicioTipoCuentaRepositorio;
+    private final CuentaRepositorio cuentaRepositorio;
 
-    public ServicioAsociadoServicio(ServicioAsociadoRepositorio servicioAsociadoRepositorio) {
+    public ServicioAsociadoServicio(ServicioAsociadoRepositorio servicioAsociadoRepositorio,
+                                   ServicioTipoCuentaRepositorio servicioTipoCuentaRepositorio,
+                                   CuentaRepositorio cuentaRepositorio) {
         this.servicioAsociadoRepositorio = servicioAsociadoRepositorio;
+        this.servicioTipoCuentaRepositorio = servicioTipoCuentaRepositorio;
+        this.cuentaRepositorio = cuentaRepositorio;
     }
 
     public List<ServicioAsociado> listarTodos() {
@@ -123,6 +135,46 @@ public class ServicioAsociadoServicio {
                 "No se encontraron servicios asociados para la cuenta: " + idCuenta);
         }
         return servicios;
+    }
+
+    @Transactional
+    public ServicioTipoCuenta asignarServicioACuenta(Integer idServicio, Integer idCuenta) {
+        // Verificar que el servicio exista y esté activo
+        ServicioAsociado servicio = this.servicioAsociadoRepositorio.findById(idServicio)
+            .orElseThrow(() -> new CrearEntidadExcepcion("ServicioAsociado", 
+                "El servicio con ID " + idServicio + " no existe"));
+
+        if (!ESTADO_ACTIVO.equals(servicio.getEstado())) {
+            throw new CrearEntidadExcepcion("ServicioAsociado", 
+                "El servicio con ID " + idServicio + " no está activo");
+        }
+
+        // Verificar que la cuenta exista y esté activa
+        Cuenta cuenta = this.cuentaRepositorio.findById(idCuenta)
+            .orElseThrow(() -> new CrearEntidadExcepcion("ServicioAsociado", 
+                "La cuenta con ID " + idCuenta + " no existe"));
+
+        if (!"ACTIVA".equals(cuenta.getEstado())) {
+            throw new CrearEntidadExcepcion("ServicioAsociado", 
+                "No se puede asignar servicios a la cuenta " + idCuenta + 
+                " porque no está activa. Estado actual: " + cuenta.getEstado());
+        }
+
+        // Verificar que el servicio no esté ya asignado a la cuenta
+        if (this.servicioAsociadoRepositorio.existsByServicioTipoCuentas_Cuenta_IdCuentaAndIdServicio(idCuenta, idServicio)) {
+            throw new CrearEntidadExcepcion("ServicioAsociado", 
+                "El servicio con ID " + idServicio + " ya está asignado a la cuenta " + idCuenta);
+        }
+
+        // Crear la asignación
+        ServicioTipoCuentaId id = new ServicioTipoCuentaId(idServicio, idCuenta);
+        ServicioTipoCuenta servicioTipoCuenta = new ServicioTipoCuenta();
+        servicioTipoCuenta.setId(id);
+        servicioTipoCuenta.setFechaAsignacion(new Date());
+        servicioTipoCuenta.setServicioAsociado(servicio);
+        servicioTipoCuenta.setCuenta(cuenta);
+
+        return this.servicioTipoCuentaRepositorio.save(servicioTipoCuenta);
     }
 
     private void validarServicioAsociado(ServicioAsociado servicioAsociado) {

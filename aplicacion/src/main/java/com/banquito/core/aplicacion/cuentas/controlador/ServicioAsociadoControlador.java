@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.banquito.core.aplicacion.cuentas.modelo.ServicioAsociado;
+import com.banquito.core.aplicacion.cuentas.modelo.ServicioTipoCuenta;
 import com.banquito.core.aplicacion.cuentas.servicio.ServicioAsociadoServicio;
 import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
@@ -124,6 +125,18 @@ public class ServicioAsociadoControlador {
             return ResponseEntity.ok(servicios);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{idServicio}/cuenta/{idCuenta}")
+    public ResponseEntity<ServicioTipoCuenta> asignarServicioACuenta(
+            @PathVariable Integer idServicio,
+            @PathVariable Integer idCuenta) {
+        try {
+            ServicioTipoCuenta servicioTipoCuenta = servicioAsociadoServicio.asignarServicioACuenta(idServicio, idCuenta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(servicioTipoCuenta);
+        } catch (CrearEntidadExcepcion | EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
