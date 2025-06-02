@@ -2,9 +2,14 @@ package com.banquito.core.aplicacion.cuentas.controlador;
 
 import com.banquito.core.aplicacion.cuentas.modelo.TasaInteres;
 import com.banquito.core.aplicacion.cuentas.servicio.TasaInteresServicio;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,57 +17,90 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasas-interes")
+@CrossOrigin(maxAge = 3600)
 public class TasaInteresControlador {
 
-    @Autowired
-    private TasaInteresServicio tasaInteresServicio;
+    private final TasaInteresServicio tasaInteresServicio;
+
+    public TasaInteresControlador(TasaInteresServicio tasaInteresServicio) {
+        this.tasaInteresServicio = tasaInteresServicio;
+    }
 
     @GetMapping
-    public ResponseEntity<Page<TasaInteres>> listarTasasInteres(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        PageRequest pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(tasaInteresServicio.listarTodos(pageable));
+    public ResponseEntity<List<TasaInteres>> listarTodos() {
+        try {
+            List<TasaInteres> tasas = tasaInteresServicio.listarTodos();
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<TasaInteres>> listarTodosPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio) {
+        try {
+            Page<TasaInteres> tasas = tasaInteresServicio.listarTodosPaginado(PageRequest.of(pagina, tamanio));
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TasaInteres> obtenerTasaInteres(@PathVariable Integer id) {
-        return ResponseEntity.ok(tasaInteresServicio.obtenerPorId(id));
+    public ResponseEntity<TasaInteres> buscarPorId(@PathVariable Integer id) {
+        try {
+            TasaInteres tasa = tasaInteresServicio.buscarPorId(id);
+            return ResponseEntity.ok(tasa);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
-    public ResponseEntity<TasaInteres> crearTasaInteres(@RequestBody TasaInteres tasaInteres) {
-        return ResponseEntity.ok(tasaInteresServicio.crear(tasaInteres));
+    public ResponseEntity<TasaInteres> crear(@RequestBody TasaInteres tasaInteres) {
+        try {
+            TasaInteres nuevaTasa = tasaInteresServicio.crear(tasaInteres);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaTasa);
+        } catch (CrearEntidadExcepcion e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TasaInteres> actualizarTasaInteres(
-            @PathVariable Integer id,
+    public ResponseEntity<TasaInteres> actualizar(
+            @PathVariable Integer id, 
             @RequestBody TasaInteres tasaInteres) {
-        tasaInteres.setIdTasaInteres(id);
-        return ResponseEntity.ok(tasaInteresServicio.actualizar(tasaInteres));
+        try {
+            TasaInteres tasaActualizada = tasaInteresServicio.actualizar(id, tasaInteres);
+            return ResponseEntity.ok(tasaActualizada);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        } catch (ActualizarEntidadExcepcion e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarTasaInteres(@PathVariable Integer id) {
-        tasaInteresServicio.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/tipo-cuenta/{idTipoCuenta}")
-    public ResponseEntity<List<TasaInteres>> buscarPorTipoCuenta(@PathVariable Integer idTipoCuenta) {
-        return ResponseEntity.ok(tasaInteresServicio.buscarPorTipoCuenta(idTipoCuenta));
-    }
-
-    @GetMapping("/rango-saldo")
-    public ResponseEntity<List<TasaInteres>> buscarPorRangoSaldo(
-            @RequestParam Double saldoMinimo,
-            @RequestParam Double saldoMaximo) {
-        return ResponseEntity.ok(tasaInteresServicio.buscarPorRangoSaldo(saldoMinimo, saldoMaximo));
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        try {
+            tasaInteresServicio.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        } catch (EliminarEntidadExcepcion e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/vigentes")
     public ResponseEntity<List<TasaInteres>> buscarTasasVigentes() {
-        return ResponseEntity.ok(tasaInteresServicio.buscarTasasVigentes());
+        try {
+            List<TasaInteres> tasas = tasaInteresServicio.buscarTasasVigentes();
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
-} 
+}

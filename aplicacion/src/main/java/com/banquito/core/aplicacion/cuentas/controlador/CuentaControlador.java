@@ -1,29 +1,24 @@
 package com.banquito.core.aplicacion.cuentas.controlador;
 
 import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CuentaNoEncontradaExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.Cuenta;
 import com.banquito.core.aplicacion.cuentas.servicio.CuentaServicio;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 
-@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/cuentas")
+@CrossOrigin(maxAge = 3600)
 public class CuentaControlador {
+
     private final CuentaServicio cuentaServicio;
 
     public CuentaControlador(CuentaServicio cuentaServicio) {
@@ -31,36 +26,56 @@ public class CuentaControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cuenta>> obtenerTodos() {
-        return ResponseEntity.ok(cuentaServicio.findAll());
+    public ResponseEntity<List<Cuenta>> listarTodos() {
+        try {
+            List<Cuenta> cuentas = cuentaServicio.listarTodos();
+            return ResponseEntity.ok(cuentas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<Cuenta>> listarTodosPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio) {
+        try {
+            Page<Cuenta> cuentas = cuentaServicio.listarTodosPaginado(PageRequest.of(pagina, tamanio));
+            return ResponseEntity.ok(cuentas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cuenta> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<Cuenta> buscarPorId(@PathVariable Integer id) {
         try {
-            Cuenta cuenta = cuentaServicio.findById(id);
+            Cuenta cuenta = cuentaServicio.buscarPorId(id);
             return ResponseEntity.ok(cuenta);
-        } catch (CuentaNoEncontradaExcepcion e) {
+        } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody Cuenta cuenta) {
+    public ResponseEntity<Cuenta> crear(@RequestBody Cuenta cuenta) {
         try {
-            cuentaServicio.create(cuenta);
-            return ResponseEntity.ok().build();
+            Cuenta nuevaCuenta = cuentaServicio.crear(cuenta);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaCuenta);
         } catch (CrearEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody Cuenta cuenta) {
+    public ResponseEntity<Cuenta> actualizar(
+            @PathVariable Integer id,
+            @RequestBody Cuenta cuenta) {
         try {
-            cuenta.setIdCuenta(id);
-            cuentaServicio.update(cuenta);
-            return ResponseEntity.ok().build();
+            Cuenta cuentaActualizada = cuentaServicio.actualizar(id, cuenta);
+            return ResponseEntity.ok(cuentaActualizada);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (ActualizarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
@@ -69,8 +84,10 @@ public class CuentaControlador {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
-            cuentaServicio.delete(id);
-            return ResponseEntity.ok().build();
+            cuentaServicio.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (EliminarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,18 +96,42 @@ public class CuentaControlador {
     @GetMapping("/tipo-cuenta/{idTipoCuenta}")
     public ResponseEntity<List<Cuenta>> buscarPorTipoCuenta(@PathVariable Integer idTipoCuenta) {
         try {
-            return ResponseEntity.ok(cuentaServicio.findByTipoCuentaId(idTipoCuenta));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            List<Cuenta> cuentas = cuentaServicio.buscarPorTipoCuenta(idTipoCuenta);
+            return ResponseEntity.ok(cuentas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<Cuenta>> buscarPorEstado(@PathVariable String estado) {
         try {
-            return ResponseEntity.ok(cuentaServicio.findByEstado(estado));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            List<Cuenta> cuentas = cuentaServicio.buscarPorEstado(estado.toUpperCase());
+            return ResponseEntity.ok(cuentas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/tipo-cuenta/{idTipoCuenta}/estado/{estado}")
+    public ResponseEntity<List<Cuenta>> buscarPorTipoCuentaYEstado(
+            @PathVariable Integer idTipoCuenta,
+            @PathVariable String estado) {
+        try {
+            List<Cuenta> cuentas = cuentaServicio.buscarPorTipoCuentaYEstado(idTipoCuenta, estado.toUpperCase());
+            return ResponseEntity.ok(cuentas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/codigo/{codigoCuenta}")
+    public ResponseEntity<Cuenta> buscarPorCodigoCuenta(@PathVariable String codigoCuenta) {
+        try {
+            Cuenta cuenta = cuentaServicio.buscarPorCodigoCuenta(codigoCuenta);
+            return ResponseEntity.ok(cuenta);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
