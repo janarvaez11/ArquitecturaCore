@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "TasaSaldos")
@@ -18,95 +19,103 @@ public class TasaSaldo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdSaldo", nullable = false)
-    private Integer IdSaldo;
+    private Integer idSaldo;
 
     @Column(name = "Nombre", length = 20, nullable = false)
-    private String Nombre;
+    private String nombre;
 
     @Column(name = "SaldoMinimo", precision = 15, scale = 2)
-    private BigDecimal SaldoMinimo;
+    private BigDecimal saldoMinimo;
 
     @Column(name = "SaldoMaximo", precision = 15, scale = 2)
-    private BigDecimal SaldoMaximo;
+    private BigDecimal saldoMaximo;
 
     @Column(name = "Tasa", precision = 5, scale = 2)
-    private BigDecimal Tasa;
+    private BigDecimal tasa;
 
+    @Version
+    @Column(name = "Version")
+    private Long version;
 
-    //Relacion a la tabla TasaInteres
+    // Relacion a la tabla TasaInteres
     @ManyToOne
     @JoinColumn(name = "IdTasaInteres", referencedColumnName = "IdTasaInteres", nullable = false)
     private TasaInteres tasaInteres;
 
-
     // Constructores
     public TasaSaldo() {
     }
-    public TasaSaldo(Integer idSaldo) {
-        IdSaldo = idSaldo;
-    }
 
+    public TasaSaldo(Integer idSaldo) {
+        this.idSaldo = idSaldo;
+    }
 
     // Getters y Setters
 
-
     public Integer getIdSaldo() {
-        return IdSaldo;
+        return idSaldo;
     }
 
-
     public void setIdSaldo(Integer idSaldo) {
-        IdSaldo = idSaldo;
+        this.idSaldo = idSaldo;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public BigDecimal getSaldoMinimo() {
-        return SaldoMinimo;
+        return saldoMinimo;
     }
 
     public void setSaldoMinimo(BigDecimal saldoMinimo) {
-        SaldoMinimo = saldoMinimo;
+        this.saldoMinimo = saldoMinimo;
     }
 
     public BigDecimal getSaldoMaximo() {
-        return SaldoMaximo;
+        return saldoMaximo;
     }
 
     public void setSaldoMaximo(BigDecimal saldoMaximo) {
-        SaldoMaximo = saldoMaximo;
+        this.saldoMaximo = saldoMaximo;
     }
 
     public BigDecimal getTasa() {
-        return Tasa;
+        return tasa;
     }
 
     public void setTasa(BigDecimal tasa) {
-        Tasa = tasa;
+        this.tasa = tasa;
     }
 
     public TasaInteres getTasaInteres() {
         return tasaInteres;
     }
+
     public void setTasaInteres(TasaInteres tasaInteres) {
         this.tasaInteres = tasaInteres;
     }
 
+    public Long getVersion() {
+        return version;
+    }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdSaldo == null) ? 0 : IdSaldo.hashCode());
+        result = prime * result + ((idSaldo == null) ? 0 : idSaldo.hashCode());
         return result;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -116,30 +125,19 @@ public class TasaSaldo {
         if (getClass() != obj.getClass())
             return false;
         TasaSaldo other = (TasaSaldo) obj;
-        if (IdSaldo == null) {
-            if (other.IdSaldo != null)
+        if (idSaldo == null) {
+            if (other.idSaldo != null)
                 return false;
-        } else if (!IdSaldo.equals(other.IdSaldo))
+        } else if (!idSaldo.equals(other.idSaldo))
             return false;
         return true;
     }
+
+    // Método ToString
     @Override
     public String toString() {
-        return "TasaSaldo [IdSaldo=" + IdSaldo + ", Nombre=" + Nombre + ", SaldoMinimo=" + SaldoMinimo
-                + ", SaldoMaximo=" + SaldoMaximo + ", Tasa=" + Tasa + ", tasaInteres=" + tasaInteres + "]";
+        return "TasaSaldo [idSaldo=" + idSaldo + ", nombre=" + nombre + ", saldoMinimo=" + saldoMinimo
+                + ", saldoMaximo=" + saldoMaximo + ", tasa=" + tasa + ", tasaInteres=" + tasaInteres + "]";
     }
-
-    //ToString
- 
-
-    
-
-    
-
-    
-    
-
-
-
 
 }
