@@ -1,6 +1,5 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -8,9 +7,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.SeguroNoEncontradoExcepcion;
-import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.Seguro;
 import com.banquito.core.aplicacion.prestamos.repositorio.SeguroRepositorio;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
