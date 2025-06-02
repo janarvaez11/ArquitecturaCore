@@ -1,7 +1,11 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.banquito.core.aplicacion.general.modelo.Moneda;
+import com.banquito.core.aplicacion.general.repositorio.MonedaRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,17 +23,19 @@ import jakarta.transaction.Transactional;
 public class TipoCuentaServicio {
     
     private final TipoCuentaRepositorio tipoCuentaRepositorio;
+    private final MonedaRepositorio monedaRepositorio;
 
-    public TipoCuentaServicio(TipoCuentaRepositorio tipoCuentaRepositorio) {
+    public TipoCuentaServicio(TipoCuentaRepositorio tipoCuentaRepositorio, MonedaRepositorio monedaRepositorio) {
         this.tipoCuentaRepositorio = tipoCuentaRepositorio;
+        this.monedaRepositorio = monedaRepositorio;
     }
 
-    public List<TipoCuenta> listarTodos() {
+    public List<Map<String, Object>> listarTodos() {
         List<TipoCuenta> tipos = tipoCuentaRepositorio.findAll();
         if (tipos.isEmpty()) {
             throw new EntidadNoEncontradaExcepcion("TipoCuenta", "No existen tipos de cuenta registrados");
         }
-        return tipos;
+        return tipos.stream().map(this::mapTipoCuenta).toList();
     }
 
     public Page<TipoCuenta> listarTodosPaginado(Pageable pageable) {
@@ -42,15 +48,32 @@ public class TipoCuentaServicio {
 
     public TipoCuenta buscarPorId(Integer id) {
         return tipoCuentaRepositorio.findById(id)
-                .orElseThrow(() -> new EntidadNoEncontradaExcepcion("TipoCuenta", 
+                .orElseThrow(() -> new EntidadNoEncontradaExcepcion("TipoCuenta",
                     "No se encontró el tipo de cuenta con ID: " + id));
     }
+
+    public Map<String, Object> buscarPorIdMapeado(Integer id) {
+        TipoCuenta tipoCuenta = tipoCuentaRepositorio.findById(id)
+                .orElseThrow(() -> new EntidadNoEncontradaExcepcion("TipoCuenta",
+                        "No se encontró el tipo de cuenta con ID: " + id));
+        return mapTipoCuenta(tipoCuenta);
+    }
+
+
 
     @Transactional
     public TipoCuenta crear(TipoCuenta tipoCuenta) {
         try {
             validarTipoCuenta(tipoCuenta);
+            if (tipoCuenta.getMoneda() != null && tipoCuenta.getMoneda().getId() != null) {
+                Moneda moneda = monedaRepositorio.findById(tipoCuenta.getMoneda().getId())
+                        .orElseThrow(() -> new CrearEntidadExcepcion("TipoCuenta", "La moneda no existe"));
+                tipoCuenta.setMoneda(moneda);
+            } else {
+                throw new CrearEntidadExcepcion("TipoCuenta", "La moneda es obligatoria");
+            }
             return this.tipoCuentaRepositorio.save(tipoCuenta);
+
         } catch (RuntimeException e) {
             throw new CrearEntidadExcepcion("TipoCuenta", 
                 "Error al crear el tipo de cuenta: " + e.getMessage());
@@ -90,31 +113,33 @@ public class TipoCuentaServicio {
         }
     }
 
-    public List<TipoCuenta> buscarPorNombre(String nombre) {
+    public List<Map<String, Object>> buscarPorNombre(String nombre) {
         List<TipoCuenta> tipos = tipoCuentaRepositorio.findByNombreContainingIgnoreCase(nombre);
         if (tipos.isEmpty()) {
-            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
-                "No se encontraron tipos de cuenta con el nombre: " + nombre);
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta",
+                    "No se encontraron tipos de cuenta con el nombre: " + nombre);
         }
-        return tipos;
+        return tipos.stream().map(this::mapTipoCuenta).toList();
     }
 
-    public List<TipoCuenta> buscarPorMoneda(String idMoneda) {
+
+    public List<Map<String, Object>> buscarPorMoneda(String idMoneda) {
         List<TipoCuenta> tipos = tipoCuentaRepositorio.findByMonedaId(idMoneda);
         if (tipos.isEmpty()) {
-            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
-                "No se encontraron tipos de cuenta para la moneda: " + idMoneda);
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta",
+                    "No se encontraron tipos de cuenta para la moneda: " + idMoneda);
         }
-        return tipos;
+        return tipos.stream().map(this::mapTipoCuenta).toList();
     }
 
-    public List<TipoCuenta> buscarPorTipoCliente(String tipoCliente) {
+
+    public List<Map<String, Object>> buscarPorTipoCliente(String tipoCliente) {
         List<TipoCuenta> tipos = tipoCuentaRepositorio.findByTipoCliente(tipoCliente);
         if (tipos.isEmpty()) {
-            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
-                "No se encontraron tipos de cuenta para el tipo de cliente: " + tipoCliente);
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta",
+                    "No se encontraron tipos de cuenta para el tipo de cliente: " + tipoCliente);
         }
-        return tipos;
+        return tipos.stream().map(this::mapTipoCuenta).toList();
     }
 
     private void validarTipoCuenta(TipoCuenta tipoCuenta) {
@@ -133,5 +158,21 @@ public class TipoCuentaServicio {
         if (tipoCuenta.getTipoCliente() == null || tipoCuenta.getTipoCliente().trim().isEmpty()) {
             throw new CrearEntidadExcepcion("TipoCuenta", "El tipo de cliente es obligatorio");
         }
+    }
+
+    private Map<String, Object> mapTipoCuenta(TipoCuenta tipoCuenta) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("idTipoCuenta", tipoCuenta.getIdTipoCuenta());
+        map.put("nombre", tipoCuenta.getNombre());
+        map.put("descripcion", tipoCuenta.getDescripcion());
+        map.put("requisitosApertura", tipoCuenta.getRequisitosApertura());
+        map.put("tipoCliente", tipoCuenta.getTipoCliente());
+        map.put("cuentasContablesAsociadas", tipoCuenta.getCuentasContablesAsociadas());
+        map.put("estado", tipoCuenta.getEstado());
+        map.put("fechaCreacion", tipoCuenta.getFechaCreacion());
+        map.put("fechaModificacion", tipoCuenta.getFechaModificacion());
+        map.put("tasaInteresId", tipoCuenta.getTasaInteres() != null ? tipoCuenta.getTasaInteres().getIdTasaInteres() : null);
+        map.put("moneda", tipoCuenta.getMoneda() != null ? tipoCuenta.getMoneda().getNombre() : null);
+        return map;
     }
 }

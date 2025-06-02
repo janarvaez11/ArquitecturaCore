@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.controlador;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,9 +28,9 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<TipoCuenta>> listarTodos() {
+    public ResponseEntity<List<Map<String, Object>>> listarTodos() {
         try {
-            List<TipoCuenta> tipos = tipoCuentaServicio.listarTodos();
+            List<Map<String, Object>> tipos = tipoCuentaServicio.listarTodos();
             return ResponseEntity.ok(tipos);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
@@ -49,9 +50,9 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TipoCuenta> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> buscarPorId(@PathVariable Integer id) {
         try {
-            TipoCuenta tipo = tipoCuentaServicio.buscarPorId(id);
+            Map<String, Object> tipo = tipoCuentaServicio.buscarPorIdMapeado(id);
             return ResponseEntity.ok(tipo);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
@@ -95,9 +96,9 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<List<TipoCuenta>> buscarPorNombre(@PathVariable String nombre) {
+    public ResponseEntity<List<Map<String, Object>>> buscarPorNombre(@PathVariable String nombre) {
         try {
-            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorNombre(nombre);
+            List<Map<String, Object>> tipos = tipoCuentaServicio.buscarPorNombre(nombre);
             return ResponseEntity.ok(tipos);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
@@ -105,9 +106,9 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping("/moneda/{idMoneda}")
-    public ResponseEntity<List<TipoCuenta>> buscarPorMoneda(@PathVariable String idMoneda) {
+    public ResponseEntity<List<Map<String, Object>>> buscarPorMoneda(@PathVariable String idMoneda) {
         try {
-            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorMoneda(idMoneda);
+            List<Map<String, Object>> tipos = tipoCuentaServicio.buscarPorMoneda(idMoneda);
             return ResponseEntity.ok(tipos);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
@@ -115,9 +116,9 @@ public class TipoCuentaControlador {
     }
 
     @GetMapping("/tipo-cliente/{tipoCliente}")
-    public ResponseEntity<List<TipoCuenta>> buscarPorTipoCliente(@PathVariable String tipoCliente) {
+    public ResponseEntity<List<Map<String, Object>>> buscarPorTipoCliente(@PathVariable String tipoCliente) {
         try {
-            List<TipoCuenta> tipos = tipoCuentaServicio.buscarPorTipoCliente(tipoCliente);
+            List<Map<String, Object>> tipos = tipoCuentaServicio.buscarPorTipoCliente(tipoCliente);
             return ResponseEntity.ok(tipos);
         } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
