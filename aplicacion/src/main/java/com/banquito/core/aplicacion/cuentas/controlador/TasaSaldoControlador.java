@@ -1,19 +1,24 @@
 package com.banquito.core.aplicacion.cuentas.controlador;
-import java.util.List;
 
+import java.util.List;
+import java.math.BigDecimal;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.TasaSaldoNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.TasaSaldo;
 import com.banquito.core.aplicacion.cuentas.servicio.TasaSaldoServicio;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 
-@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api/tasasSaldo")
+@RequestMapping("/api/tasas-saldo")
+@CrossOrigin(maxAge = 3600)
 public class TasaSaldoControlador {
 
     private final TasaSaldoServicio tasaSaldoServicio;
@@ -23,36 +28,56 @@ public class TasaSaldoControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<TasaSaldo>> obtenerTodos() {
-        return ResponseEntity.ok(tasaSaldoServicio.findAll());
+    public ResponseEntity<List<TasaSaldo>> listarTodos() {
+        try {
+            List<TasaSaldo> tasas = tasaSaldoServicio.listarTodos();
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<TasaSaldo>> listarTodosPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanio) {
+        try {
+            Page<TasaSaldo> tasas = tasaSaldoServicio.listarTodosPaginado(PageRequest.of(pagina, tamanio));
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TasaSaldo> obtenerPorId(@PathVariable Integer id) {
+    public ResponseEntity<TasaSaldo> buscarPorId(@PathVariable Integer id) {
         try {
-            TasaSaldo tasaSaldo = tasaSaldoServicio.findById(id);
-            return ResponseEntity.ok(tasaSaldo);
-        } catch (TasaSaldoNoEncontradaExcepcion e) {
+            TasaSaldo tasa = tasaSaldoServicio.buscarPorId(id);
+            return ResponseEntity.ok(tasa);
+        } catch (EntidadNoEncontradaExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Void> crear(@RequestBody TasaSaldo tasaSaldo) {
+    public ResponseEntity<TasaSaldo> crear(@RequestBody TasaSaldo tasaSaldo) {
         try {
-            tasaSaldoServicio.create(tasaSaldo);
-            return ResponseEntity.ok().build();
+            TasaSaldo nuevaTasa = tasaSaldoServicio.crear(tasaSaldo);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaTasa);
         } catch (CrearEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> actualizar(@PathVariable Integer id, @RequestBody TasaSaldo tasaSaldo) {
+    public ResponseEntity<TasaSaldo> actualizar(
+            @PathVariable Integer id,
+            @RequestBody TasaSaldo tasaSaldo) {
         try {
-            tasaSaldo.setIdSaldo(id);
-            tasaSaldoServicio.update(tasaSaldo);
-            return ResponseEntity.ok().build();
+            TasaSaldo tasaActualizada = tasaSaldoServicio.actualizar(id, tasaSaldo);
+            return ResponseEntity.ok(tasaActualizada);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (ActualizarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
         }
@@ -61,10 +86,46 @@ public class TasaSaldoControlador {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
-            tasaSaldoServicio.delete(id);
-            return ResponseEntity.ok().build();
+            tasaSaldoServicio.eliminar(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         } catch (EliminarEntidadExcepcion e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/rango")
+    public ResponseEntity<List<TasaSaldo>> buscarPorRangoDeSaldo(
+            @RequestParam BigDecimal saldoMinimo,
+            @RequestParam BigDecimal saldoMaximo) {
+        try {
+            List<TasaSaldo> tasas = tasaSaldoServicio.buscarPorRangoDeSaldo(saldoMinimo, saldoMaximo);
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/tasa-minima/{tasaMinima}")
+    public ResponseEntity<List<TasaSaldo>> buscarPorTasaMayorQue(
+            @PathVariable BigDecimal tasaMinima) {
+        try {
+            List<TasaSaldo> tasas = tasaSaldoServicio.buscarPorTasaMayorQue(tasaMinima);
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/tasa-maxima/{tasaMaxima}")
+    public ResponseEntity<List<TasaSaldo>> buscarPorTasaMenorQue(
+            @PathVariable BigDecimal tasaMaxima) {
+        try {
+            List<TasaSaldo> tasas = tasaSaldoServicio.buscarPorTasaMenorQue(tasaMaxima);
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
