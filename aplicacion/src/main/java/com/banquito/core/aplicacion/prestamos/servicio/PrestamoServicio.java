@@ -1,7 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,33 +13,32 @@ import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
+import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class PrestamoServicio {
-    
+
     private final PrestamoRepositorio repositorio;
-    
+    private final TipoPrestamosServicio tipoPrestamosServicio;
+
     // Lista de bases de cálculo permitidas
     private static final List<String> BASES_CALCULO_PERMITIDAS = Arrays.asList(
-        "30/360",
-        "31/365",
-        "Actual/360",
-        "Actual/365"
-    );
+            "30/360",
+            "31/365",
+            "Actual/360",
+            "Actual/365");
 
+    // Esto es para prestamos clientes- lo modifico
     // Lista de estados permitidos
     private static final List<String> ESTADOS_PERMITIDOS = Arrays.asList(
-        "SOLICITADO",
-        "APROBADO",
-        "RECHAZADO",
-        "DESEMBOLSADO",
-        "CANCELADO"
-    );
+            "ACTIVO",
+            "INACTIVO");
 
-    public PrestamoServicio(PrestamoRepositorio repositorio) {
+    public PrestamoServicio(PrestamoRepositorio repositorio, TipoPrestamosServicio tipoPrestamosServicio) {
+        this.tipoPrestamosServicio = tipoPrestamosServicio;
         this.repositorio = repositorio;
     }
 
@@ -48,7 +47,7 @@ public class PrestamoServicio {
         if (prestamoOpcional.isPresent()) {
             return prestamoOpcional.get();
         } else {
-            throw new PrestamoNoEncontradoExcepcion("Prestamos","Tipo de préstamo no encontrado con ID: " + id);
+            throw new PrestamoNoEncontradoExcepcion("Prestamos", "Tipo de préstamo no encontrado con ID: " + id);
         }
     }
 
@@ -56,14 +55,22 @@ public class PrestamoServicio {
     public void create(Prestamo prestamo) {
         try {
             validarPrestamo(prestamo);
-            
+
+            // Verificar si el tipo de préstamo se puede encontrar por ID
+            TipoPrestamo tipoEncontrado = this.tipoPrestamosServicio.findById(
+                    prestamo.getTipoPrestamo().getIdTipoPrestamo());
+            if (tipoEncontrado == null) {
+                throw new CrearEntidadExcepcion("Prestamos", "El tipo de préstamo especificado no existe");
+            }
+
             // Establecer valores por defecto
-            prestamo.setEstado("SOLICITADO");
-            prestamo.setFechaModificacion(new Date());
-            
+            prestamo.setEstado(ESTADOS_PERMITIDOS.get(0));
+            prestamo.setFechaModificacion(null);
+
             this.repositorio.save(prestamo);
-        } catch (Exception rte) {
-            throw new CrearEntidadExcepcion("Prestamos", "Error al crear el prestamo. Texto del error: "+rte.getMessage());
+        } catch (RuntimeException rte) {
+            throw new CrearEntidadExcepcion("Prestamos",
+                    "Error al crear el prestamo. Texto del error: " + rte.getMessage());
         }
     }
 
@@ -71,29 +78,39 @@ public class PrestamoServicio {
     public void update(Prestamo prestamo) {
         try {
             validarPrestamo(prestamo);
+
             Optional<Prestamo> prestamoOpcional = this.repositorio.findById(prestamo.getId());
 
-            if (prestamoOpcional.isPresent()) {
-                Prestamo prestamoDb = prestamoOpcional.get();
-                
-                // Actualizar campos permitidos
-                prestamoDb.setTipoPrestamo(prestamo.getTipoPrestamo());
-                prestamoDb.setNombre(prestamo.getNombre());
-                prestamoDb.setDescripcion(prestamo.getDescripcion());
-                prestamoDb.setEstado(prestamo.getEstado());
-                prestamoDb.setBaseCalculo(prestamo.getBaseCalculo());
-                prestamoDb.setTasaMonetaria(prestamo.getTasaMonetaria());
-                
-                // Actualizar fecha de modificación
-                prestamoDb.setFechaModificacion(new Date());
-
-                this.repositorio.save(prestamoDb);
-            } else {
-                throw new PrestamoNoEncontradoExcepcion("Prestamo", 
-                    "Error al actualizar el prestamo. No se encontró el tipo de prestamo con ID: " + prestamo.getId());
+            if (!prestamoOpcional.isPresent()) {
+                throw new PrestamoNoEncontradoExcepcion("Prestamo",
+                        "Error al actualizar el préstamo. No se encontró el préstamo con ID: " + prestamo.getId());
             }
-        } catch (Exception rte) {
-            throw new ActualizarEntidadExcepcion("Prestamos", "Error al actualizar el prestamo. Texto del error: "+rte.getMessage());
+
+            // Validar tipo de préstamo
+            if (prestamo.getTipoPrestamo() == null ||
+                    prestamo.getTipoPrestamo().getIdTipoPrestamo() == null) {
+                throw new ActualizarEntidadExcepcion("Prestamos", "Debe especificarse un tipo de préstamo válido.");
+            }
+
+            TipoPrestamo tipoEncontrado = this.tipoPrestamosServicio.findById(
+                    prestamo.getTipoPrestamo().getIdTipoPrestamo());
+
+            if (tipoEncontrado == null) {
+                throw new ActualizarEntidadExcepcion("Prestamos", "El tipo de préstamo especificado no existe.");
+            }
+
+            Prestamo prestamoDb = prestamoOpcional.get();
+            prestamoDb.setTipoPrestamo(tipoEncontrado);
+            prestamoDb.setNombre(prestamo.getNombre());
+            prestamoDb.setDescripcion(prestamo.getDescripcion());
+            prestamoDb.setBaseCalculo(prestamo.getBaseCalculo());
+            prestamoDb.setTasaMonetaria(prestamo.getTasaMonetaria());
+            prestamoDb.setFechaModificacion(LocalDate.now());
+
+            this.repositorio.save(prestamoDb);
+        } catch (RuntimeException rte) {
+            throw new ActualizarEntidadExcepcion("Prestamos",
+                    "Error al actualizar el prestamo. Texto del error: " + rte.getMessage());
         }
     }
 
@@ -102,13 +119,17 @@ public class PrestamoServicio {
         try {
             Optional<Prestamo> prestamoOpcional = this.repositorio.findById(id);
             if (prestamoOpcional.isPresent()) {
-                this.repositorio.delete(prestamoOpcional.get());
+                Prestamo prestamo = prestamoOpcional.get();
+                prestamo.setEstado(ESTADOS_PERMITIDOS.get(1));
+                prestamo.setFechaModificacion(LocalDate.now());
+                this.repositorio.save(prestamo);
             } else {
-                throw new PrestamoNoEncontradoExcepcion("Prestamo", 
-                    "Error al eliminar el prestamo. No se encontró el tipo de prestamo con ID: " + id);
+                throw new PrestamoNoEncontradoExcepcion("Prestamo",
+                        "Error al eliminar el prestamo. No se encontró el tipo de prestamo con ID: " + id);
             }
         } catch (Exception rte) {
-            throw new EliminarEntidadExcepcion("Prestamos", "Error al eliminar el prestamo. Texto del error: "+rte.getMessage());
+            throw new EliminarEntidadExcepcion("Prestamos",
+                    "Error al eliminar el prestamo. Texto del error: " + rte.getMessage());
         }
     }
 
@@ -139,13 +160,14 @@ public class PrestamoServicio {
             throw new CrearEntidadExcepcion("Prestamo", "La base de cálculo es obligatoria");
         }
         if (!BASES_CALCULO_PERMITIDAS.contains(prestamo.getBaseCalculo())) {
-            throw new CrearEntidadExcepcion("Prestamo", 
-                "La base de cálculo debe ser uno de los valores permitidos: " + 
-                String.join(", ", BASES_CALCULO_PERMITIDAS));
+            throw new CrearEntidadExcepcion("Prestamo",
+                    "La base de cálculo debe ser uno de los valores permitidos: " +
+                            String.join(", ", BASES_CALCULO_PERMITIDAS));
         }
 
         // Validar tasa moratoria
-        if (prestamo.getTasaMonetaria() == null || prestamo.getTasaMonetaria().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+        if (prestamo.getTasaMonetaria() == null
+                || prestamo.getTasaMonetaria().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new CrearEntidadExcepcion("Prestamo", "La tasa moratoria debe ser mayor a cero");
         }
     }
@@ -157,15 +179,15 @@ public class PrestamoServicio {
             }
             if (!ESTADOS_PERMITIDOS.contains(estado)) {
                 throw new BusquedaExcepcion("Prestamo",
-                    "El estado debe ser uno de los valores permitidos: " +
-                    String.join(", ", ESTADOS_PERMITIDOS));
+                        "El estado debe ser uno de los valores permitidos: " +
+                                String.join(", ", ESTADOS_PERMITIDOS));
             }
             return this.repositorio.findByEstado(estado);
         } catch (BusquedaExcepcion e) {
             throw e;
         } catch (Exception e) {
             throw new BusquedaExcepcion("Prestamo",
-                "Error al buscar préstamos por estado: " + estado, e);
+                    "Error al buscar préstamos por estado: " + estado, e);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.banquito.core.aplicacion.prestamos.repositorio;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
@@ -11,5 +13,6 @@ public interface PrestamosClientesRepositorio extends JpaRepository<PrestamosCli
 
     List<PrestamosClientes> findByEstado(String estado);
 
-    List<PrestamosClientes> findByIdCliente_IdCliente(Integer idCliente);
+    /// Optional<PrestamosClientes> findFirstByCliente(Cliente cliente);
+    Optional<PrestamosClientes> findFirstByIdCliente_idCliente(Integer idCliente);
 }

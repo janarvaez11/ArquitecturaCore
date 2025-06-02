@@ -254,4 +254,12 @@ public class Cliente {
     public String toString() {
         return "Cliente{idCliente=" + idCliente + ", tipoEntidad='" + tipoEntidad + "'}";
     }
+
+    public ContactoTransaccionCliente getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(ContactoTransaccionCliente contacto) {
+        this.contacto = contacto;
+    }
 }
