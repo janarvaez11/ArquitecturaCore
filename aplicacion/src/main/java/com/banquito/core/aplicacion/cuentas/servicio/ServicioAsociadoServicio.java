@@ -1,7 +1,10 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.banquito.core.aplicacion.cuentas.modelo.ServicioTipoCuenta;
+import com.banquito.core.aplicacion.cuentas.repositorio.ServicioTipoCuentaRepositorio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,11 @@ public class ServicioAsociadoServicio {
     private static final String ESTADO_INACTIVO = "INACTIVO";
 
     private final ServicioAsociadoRepositorio servicioAsociadoRepositorio;
+    private final ServicioTipoCuentaRepositorio servicioTipoCuentaRepositorio;
 
-    public ServicioAsociadoServicio(ServicioAsociadoRepositorio servicioAsociadoRepositorio) {
+    public ServicioAsociadoServicio(ServicioAsociadoRepositorio servicioAsociadoRepositorio, ServicioTipoCuentaRepositorio servicioTipoCuentaRepositorio) {
         this.servicioAsociadoRepositorio = servicioAsociadoRepositorio;
+        this.servicioTipoCuentaRepositorio = servicioTipoCuentaRepositorio;
     }
 
     public List<ServicioAsociado> listarTodos() {
@@ -116,13 +121,13 @@ public class ServicioAsociadoServicio {
     }
 
     public List<ServicioAsociado> buscarPorCuenta(Integer idCuenta) {
-        List<ServicioAsociado> servicios = this.servicioAsociadoRepositorio
-            .findByServicioTipoCuentas_Cuenta_IdCuenta(idCuenta);
+        List<ServicioTipoCuenta> servicios = this.servicioTipoCuentaRepositorio
+                .findByCuenta_IdCuenta(idCuenta);
         if (servicios.isEmpty()) {
             throw new EntidadNoEncontradaExcepcion("ServicioAsociado", 
                 "No se encontraron servicios asociados para la cuenta: " + idCuenta);
         }
-        return servicios;
+        return servicios.stream().map(ServicioTipoCuenta::getServicioAsociado).collect(Collectors.toList());
     }
 
     private void validarServicioAsociado(ServicioAsociado servicioAsociado) {

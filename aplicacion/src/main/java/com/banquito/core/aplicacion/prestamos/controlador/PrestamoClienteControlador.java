@@ -42,7 +42,7 @@ public class PrestamoClienteControlador {
     // return ResponseEntity.ok(this.prestamosClientesServicio.buscarTodos());
     // }
 
-    @GetMapping("/cliente/{idCliente}")
+    @GetMapping("/clienteId/{idCliente}")
     public ResponseEntity<List<PrestamosClientes>> listarPorCliente(@PathVariable Integer idCliente) {
         return ResponseEntity.ok(this.prestamosClientesServicio.buscarPorCliente(idCliente));
     }

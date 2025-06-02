@@ -13,57 +13,58 @@ public class ServicioAsociado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
-    @Column(name = "IdServicio", nullable = false)
-    private Integer IdServicio;
+    @Column(name = "idServicio", nullable = false)
+    private Integer idServicio;
 
-    @Column(name = "Nombre", length = 30, nullable = false)
-    private String Nombre;
+    @Column(name = "nombre", length = 30, nullable = false)
+    private String nombre;
 
     @Column(name = "Descripcion", length = 150, nullable = false)
-    private String Descripcion;
+    private String descripcion;
 
     @Column(name = "Estado", length = 30, nullable = false)
-    private String Estado;
+    private String estado;
 
     // Constructores
     public ServicioAsociado() {
     }
 
     public ServicioAsociado(Integer idServicio) {
-        IdServicio = idServicio;
+        this.idServicio = idServicio;
     }
 
     // Getters y Setters
+
     public Integer getIdServicio() {
-        return IdServicio;
+        return idServicio;
     }
 
     public void setIdServicio(Integer idServicio) {
-        IdServicio = idServicio;
+        this.idServicio = idServicio;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     // Métodos hashCode y equals
@@ -71,7 +72,7 @@ public class ServicioAsociado {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdServicio == null) ? 0 : IdServicio.hashCode());
+        result = prime * result + ((idServicio == null) ? 0 : idServicio.hashCode());
         return result;
     }
 
@@ -84,10 +85,10 @@ public class ServicioAsociado {
         if (getClass() != obj.getClass())
             return false;
         ServicioAsociado other = (ServicioAsociado) obj;
-        if (IdServicio == null) {
-            if (other.IdServicio != null)
+        if (idServicio == null) {
+            if (other.idServicio != null)
                 return false;
-        } else if (!IdServicio.equals(other.IdServicio))
+        } else if (!idServicio.equals(other.idServicio))
             return false;
         return true;
     }
@@ -95,8 +96,8 @@ public class ServicioAsociado {
     // Método toString
     @Override
     public String toString() {
-        return "ServicioAsociado [IdServicio=" + IdServicio + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
-                + ", Estado=" + Estado + "]";
+        return "ServicioAsociado [idServicio=" + idServicio + ", nombre=" + nombre + ", Descripcion=" + descripcion
+                + ", Estado=" + estado + "]";
     }
 
 }

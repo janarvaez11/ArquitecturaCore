@@ -14,12 +14,12 @@ public class Representante {
 
     @ManyToOne
     @MapsId("empresa")
-    @JoinColumn(name = "empresa", referencedColumnName = "empresa")
+    @JoinColumn(name = "IdEmpresa", referencedColumnName = "IdEmpresa")
     private Empresa empresa;
 
     @ManyToOne
     @MapsId("cliente")
-    @JoinColumn(name = "cliente", referencedColumnName = "cliente")
+    @JoinColumn(name = "IdCliente", referencedColumnName = "IdCliente")
     private Cliente cliente;
 
     @Temporal(TemporalType.TIMESTAMP)

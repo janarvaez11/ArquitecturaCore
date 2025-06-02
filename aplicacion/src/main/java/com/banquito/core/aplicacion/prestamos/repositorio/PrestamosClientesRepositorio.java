@@ -15,4 +15,5 @@ public interface PrestamosClientesRepositorio extends JpaRepository<PrestamosCli
 
     /// Optional<PrestamosClientes> findFirstByCliente(Cliente cliente);
     Optional<PrestamosClientes> findFirstByIdCliente_idCliente(Integer idCliente);
+    List<PrestamosClientes> findByIdCliente_IdCliente(Integer idCliente);
 }
