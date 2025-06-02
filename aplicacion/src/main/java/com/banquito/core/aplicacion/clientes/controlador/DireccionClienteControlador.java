@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/direcciones")
+@RequestMapping("/api/direcciones")
 public class DireccionClienteControlador {
 
     private final DireccionClienteServicio servicio;
@@ -19,9 +19,9 @@ public class DireccionClienteControlador {
         this.servicio = servicio;
     }
 
-    @GetMapping
-    public ResponseEntity<List<DireccionCliente>> obtenerTodos() {
-        return ResponseEntity.ok(servicio.buscarTodos());
+    @PostMapping("/{idCliente}")
+    public ResponseEntity<DireccionCliente> crear(@PathVariable Integer idCliente, @RequestBody DireccionCliente direccion) {
+        return ResponseEntity.ok(servicio.crear(idCliente, direccion));
     }
 
     @GetMapping("/{id}")
@@ -33,14 +33,19 @@ public class DireccionClienteControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<DireccionCliente> crear(@RequestBody DireccionCliente direccion) {
-        return ResponseEntity.ok(servicio.crear(direccion));
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<List<DireccionCliente>> listarPorCliente(@PathVariable Integer idCliente) {
+        return ResponseEntity.ok(servicio.obtenerPorCliente(idCliente));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DireccionCliente> actualizar(@PathVariable Integer id, @RequestBody DireccionCliente direccion) {
-        direccion.setIdDireccion(id);
-        return ResponseEntity.ok(servicio.modificar(direccion));
+    @PatchMapping
+    public ResponseEntity<DireccionCliente> actualizar(@RequestBody DireccionCliente direccion) {
+        return ResponseEntity.ok(servicio.actualizar(direccion));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        servicio.eliminarLogica(id);
+        return ResponseEntity.ok().build();
     }
 }

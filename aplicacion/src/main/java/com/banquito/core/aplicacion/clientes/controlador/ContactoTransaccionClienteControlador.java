@@ -1,5 +1,6 @@
 package com.banquito.core.aplicacion.clientes.controlador;
 
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 import com.banquito.core.aplicacion.clientes.modelo.ContactoTransaccionCliente;
 import com.banquito.core.aplicacion.clientes.servicio.ContactoTransaccionClienteServicio;
 import com.banquito.core.aplicacion.clientes.excepcion.ContactoNoEncontradoExcepcion;
@@ -17,23 +18,32 @@ public class ContactoTransaccionClienteControlador {
         this.servicio = servicio;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ContactoTransaccionCliente> obtenerPorId(@PathVariable Integer id) {
+    @GetMapping("/{idCliente}")
+    public ResponseEntity<ContactoTransaccionCliente> obtenerPorCliente(@PathVariable Integer idCliente) {
         try {
-            return ResponseEntity.ok(servicio.buscarPorId(id));
+            return ResponseEntity.ok(servicio.obtenerPorCliente(idCliente));
         } catch (ContactoNoEncontradoExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping
-    public ResponseEntity<ContactoTransaccionCliente> crear(@RequestBody ContactoTransaccionCliente contacto) {
-        return ResponseEntity.ok(servicio.crear(contacto));
+    @PostMapping("/{idCliente}")
+    public ResponseEntity<ContactoTransaccionCliente> crear(
+            @PathVariable Integer idCliente,
+            @RequestBody ContactoTransaccionCliente contacto) {
+        return ResponseEntity.ok(servicio.crear(idCliente, contacto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ContactoTransaccionCliente> actualizar(@PathVariable Integer id, @RequestBody ContactoTransaccionCliente contacto) {
-        contacto.setIdCliente(id);
-        return ResponseEntity.ok(servicio.modificar(contacto));
+    public ResponseEntity<ContactoTransaccionCliente> actualizar(
+            @PathVariable Integer id,
+            @RequestBody ContactoTransaccionCliente contacto) {
+
+        Cliente cliente = new Cliente();
+        cliente.setId(id);
+        contacto.setCliente(cliente);
+
+        return ResponseEntity.ok(servicio.actualizar(contacto));
     }
+
 }

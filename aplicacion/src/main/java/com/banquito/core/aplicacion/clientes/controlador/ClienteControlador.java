@@ -3,14 +3,11 @@ package com.banquito.core.aplicacion.clientes.controlador;
 import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 import com.banquito.core.aplicacion.clientes.servicio.ClienteServicio;
 import com.banquito.core.aplicacion.clientes.excepcion.ClienteNoEncontradoExcepcion;
-import com.banquito.core.aplicacion.clientes.excepcion.CrearClienteExcepcion;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -22,13 +19,11 @@ public class ClienteControlador {
         this.servicio = servicio;
     }
 
-    // Obtener los primeros 10 clientes
-    @GetMapping("/primeros10")
-    public ResponseEntity<List<Cliente>> obtenerPrimeros10() {
-        return ResponseEntity.ok(servicio.buscarPrimeros10());
+    @PostMapping
+    public ResponseEntity<Cliente> crear(@RequestBody Cliente cliente) {
+        return ResponseEntity.ok(servicio.crearCliente(cliente));
     }
 
-    // Obtener un cliente por ID
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obtenerPorId(@PathVariable Integer id) {
         try {
@@ -38,46 +33,47 @@ public class ClienteControlador {
         }
     }
 
-    // Obtener un cliente completo (con direcciones y teléfonos activos)
+    @GetMapping("/resumen/{id}")
+    public ResponseEntity<Cliente> obtenerResumen(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(servicio.obtenerInformacionResumida(id));
+        } catch (ClienteNoEncontradoExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/completo/{id}")
-    public ResponseEntity<Cliente> obtenerClienteCompleto(@PathVariable Integer id) {
+    public ResponseEntity<Cliente> obtenerCompleto(@PathVariable Integer id) {
         try {
-            return ResponseEntity.ok(servicio.obtenerClienteCompletoPorId(id));
+            return ResponseEntity.ok(servicio.obtenerInformacionCompleta(id));
         } catch (ClienteNoEncontradoExcepcion e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Crear un nuevo cliente
-    @PostMapping
-    public ResponseEntity<?> crear(@RequestBody Cliente cliente) {
-        try {
-            Cliente nuevo = servicio.crear(cliente);
-            return ResponseEntity.ok(nuevo);
-        } catch (CrearClienteExcepcion e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Error interno del servidor: " + e.getMessage());
-            return ResponseEntity.internalServerError().body(response);
+    @PatchMapping("/{id}")
+    public ResponseEntity<Cliente> actualizar(@PathVariable Integer id, @RequestBody Cliente actualizado) {
+        actualizado.setId(id);
+        return ResponseEntity.ok(servicio.actualizarCliente(actualizado));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        servicio.eliminarClienteLogico(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Cliente>> listarTodos(@RequestParam(name = "estado", required = false) String estado) {
+        if (estado != null) {
+            return ResponseEntity.ok(servicio.obtenerPorEstado(estado));
+        } else {
+            return ResponseEntity.ok(servicio.obtenerTodos());
         }
     }
 
-    // Actualizar un cliente existente
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Integer id, @RequestBody Cliente cliente) {
-        try {
-            cliente.setIdCliente(id);
-            Cliente actualizado = servicio.modificar(cliente);
-            return ResponseEntity.ok(actualizado);
-        } catch (ClienteNoEncontradoExcepcion e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", "Error al actualizar el cliente: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    @ExceptionHandler({ClienteNoEncontradoExcepcion.class})
+    public ResponseEntity<String> manejarExcepcion(ClienteNoEncontradoExcepcion e) {
+        return ResponseEntity.status(404).body(e.getMessage());
     }
 }
