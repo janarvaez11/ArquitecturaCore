@@ -56,6 +56,17 @@ public class TipoPrestamoControlador {
         }
     }
 
+    @GetMapping("/moneda/{monedaId}")
+    public ResponseEntity<?> obtenerPorMoneda(@PathVariable Integer monedaId) {
+        try {
+            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByMonedaId(monedaId);
+            return ResponseEntity.ok(tiposPrestamo);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> crear(@RequestBody TipoPrestamo tipoPrestamo) {
         try {

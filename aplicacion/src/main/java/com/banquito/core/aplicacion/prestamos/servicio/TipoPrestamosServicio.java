@@ -91,6 +91,20 @@ public class TipoPrestamosServicio {
         }
     }
 
+    public List<TipoPrestamo> findByMonedaId(Integer monedaId) {
+        try {
+            if (monedaId == null) {
+                throw new BusquedaExcepcion("Tipo Prestamos", "El ID de la moneda no puede ser nulo");
+            }
+            return this.repositorio.findByMonedaId(monedaId);
+        } catch (BusquedaExcepcion e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BusquedaExcepcion("Tipo Prestamos",
+                    "Error al buscar tipos de préstamo por ID de moneda: " + monedaId, e);
+        }
+    }
+
     @Transactional
     public void create(TipoPrestamo tipoPrestamo) {
         try {
