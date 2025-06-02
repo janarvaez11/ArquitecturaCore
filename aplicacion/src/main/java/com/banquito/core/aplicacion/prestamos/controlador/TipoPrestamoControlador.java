@@ -45,21 +45,13 @@ public class TipoPrestamoControlador {
         }
     }
 
-    @GetMapping("/tipoCliente/{tipoCliente}")
-    public ResponseEntity<?> obtenerPorTipoCliente(@PathVariable String tipoCliente) {
+    @GetMapping("/findAll")
+    public ResponseEntity<?> buscarConFiltros(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String moneda,
+            @RequestParam(required = false) String tipoCliente) {
         try {
-            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByTipoCliente(tipoCliente);
-            return ResponseEntity.ok(tiposPrestamo);
-        } catch (BusquedaExcepcion e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/moneda/{monedaId}")
-    public ResponseEntity<?> obtenerPorMoneda(@PathVariable Integer monedaId) {
-        try {
-            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByMonedaId(monedaId);
+            List<TipoPrestamo> tiposPrestamo = tipoPrestamosServicio.findByFiltros(nombre, moneda, tipoCliente);
             return ResponseEntity.ok(tiposPrestamo);
         } catch (BusquedaExcepcion e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -90,14 +82,14 @@ public class TipoPrestamoControlador {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> actualizarEstado(@PathVariable Integer id, @RequestBody TipoPrestamosServicio.EstadoRequest estadoRequest) {
         try {
-            tipoPrestamosServicio.delete(id);
+            tipoPrestamosServicio.updateEstado(id, estadoRequest);
             return ResponseEntity.ok().build();
-        } catch (EliminarEntidadExcepcion e) {
+        } catch (ActualizarEntidadExcepcion e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error al eliminar: " + e.getMessage());
+                    .body("Error al actualizar estado: " + e.getMessage());
         }
     }
 } 

@@ -31,6 +31,9 @@ public class Garantia {
     @Column(name = "TipoGarantia", length = 50, nullable = false)
     private String tipoGarantia;
 
+    @Column(name = "estado", length = 30, nullable = false)
+    private String estado;
+
     public Garantia() {
     }
 
@@ -78,6 +81,8 @@ public class Garantia {
         this.tipoGarantia = tipoGarantia;
     }
 
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -106,7 +111,15 @@ public class Garantia {
     @Override
     public String toString() {
         return "Garantia [id=" + id + ", tipoPrestamo=" + tipoPrestamo + ", descripcion=" + descripcion + ", valor="
-                + valor + ", tipoGarantia=" + tipoGarantia + "]";
+                + valor + ", tipoGarantia=" + tipoGarantia + ", estado=" + estado + "]";
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
 }

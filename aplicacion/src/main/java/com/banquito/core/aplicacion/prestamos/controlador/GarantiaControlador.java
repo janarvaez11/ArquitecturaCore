@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.prestamos.controlador;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class GarantiaControlador {
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Integer id) {
         try {
-            Garantia garantia = garantiaServicio.findById(id);
+            Map<String, Object> garantia = garantiaServicio.findById(id);
             return ResponseEntity.ok(garantia);
         } catch (GarantiaNoEncontradoExcepcion e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -49,6 +50,17 @@ public class GarantiaControlador {
     public ResponseEntity<?> obtenerPorTipoGarantia(@PathVariable String tipoGarantia) {
         try {
             List<Garantia> garantias = garantiaServicio.findByTipoGarantia(tipoGarantia);
+            return ResponseEntity.ok(garantias);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<?> obtenerTodos() {
+        try {
+            List<Map<String, Object>> garantias = garantiaServicio.findAll();
             return ResponseEntity.ok(garantias);
         } catch (BusquedaExcepcion e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

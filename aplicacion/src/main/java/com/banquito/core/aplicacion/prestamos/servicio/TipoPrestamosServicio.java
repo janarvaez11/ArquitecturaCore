@@ -12,11 +12,12 @@ import com.banquito.core.aplicacion.general.repositorio.MonedaRepositorio;
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.TipoPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.TipoPrestamoRepositorio;
 import com.banquito.core.aplicacion.general.modelo.Moneda;
+import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
+import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -25,6 +26,7 @@ public class TipoPrestamosServicio {
 
     private final TipoPrestamoRepositorio repositorio;
     private final MonedaRepositorio monedaRepositorio;
+    private final PrestamoRepositorio prestamoRepositorio;
 
     // Lista de tipos de cliente permitidos
     private static final List<String> TIPOS_CLIENTE_PERMITIDOS = Arrays.asList(
@@ -32,9 +34,10 @@ public class TipoPrestamosServicio {
             "EMPRESA JURIDICA",
             "AMBOS");
 
-    public TipoPrestamosServicio(TipoPrestamoRepositorio repositorio, MonedaRepositorio monedaRepositorio) {
+    public TipoPrestamosServicio(TipoPrestamoRepositorio repositorio, MonedaRepositorio monedaRepositorio, PrestamoRepositorio prestamoRepositorio) {
         this.repositorio = repositorio;
         this.monedaRepositorio = monedaRepositorio;
+        this.prestamoRepositorio = prestamoRepositorio;
     }
 
     public TipoPrestamo findById(Integer id) {
@@ -46,8 +49,6 @@ public class TipoPrestamosServicio {
                 throw new BusquedaExcepcion("Tipo Prestamos",
                         "No se encontró el tipo de préstamo con ID: " + id);
             }
-        } catch (BusquedaExcepcion e) {
-            throw e;
         } catch (Exception e) {
             throw new BusquedaExcepcion("Tipo Prestamos",
                     "Error al buscar el tipo de préstamo por ID: " + id, e);
@@ -64,44 +65,26 @@ public class TipoPrestamosServicio {
                         "El estado debe ser 'ACTIVO' o 'INACTIVO'");
             }
             return this.repositorio.findByEstado(estado);
-        } catch (BusquedaExcepcion e) {
-            throw e;
         } catch (Exception e) {
             throw new BusquedaExcepcion("Tipo Prestamos",
                     "Error al buscar tipos de préstamo por estado: " + estado, e);
         }
     }
 
-    public List<TipoPrestamo> findByTipoCliente(String tipoCliente) {
+    public List<TipoPrestamo> findByFiltros(String nombre, String monedaId, String tipoCliente) {
         try {
-            if (tipoCliente == null || tipoCliente.trim().isEmpty()) {
-                throw new BusquedaExcepcion("Tipo Prestamos", "El tipo de cliente no puede estar vacío");
-            }
-            if (!TIPOS_CLIENTE_PERMITIDOS.contains(tipoCliente)) {
+            // Validar tipo de cliente si se proporciona
+            if (tipoCliente != null && !tipoCliente.trim().isEmpty() && 
+                !TIPOS_CLIENTE_PERMITIDOS.contains(tipoCliente)) {
                 throw new BusquedaExcepcion("Tipo Prestamos",
-                        "El tipo de cliente debe ser uno de los valores permitidos: " +
-                                String.join(", ", TIPOS_CLIENTE_PERMITIDOS));
+                    "El tipo de cliente debe ser uno de los valores permitidos: " +
+                    String.join(", ", TIPOS_CLIENTE_PERMITIDOS));
             }
-            return this.repositorio.findByTipoCliente(tipoCliente);
-        } catch (BusquedaExcepcion e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BusquedaExcepcion("Tipo Prestamos",
-                    "Error al buscar tipos de préstamo por tipo de cliente: " + tipoCliente, e);
-        }
-    }
 
-    public List<TipoPrestamo> findByMonedaId(Integer monedaId) {
-        try {
-            if (monedaId == null) {
-                throw new BusquedaExcepcion("Tipo Prestamos", "El ID de la moneda no puede ser nulo");
-            }
-            return this.repositorio.findByMonedaId(monedaId);
-        } catch (BusquedaExcepcion e) {
-            throw e;
+            return this.repositorio.findByFiltros(nombre, monedaId, tipoCliente);
         } catch (Exception e) {
             throw new BusquedaExcepcion("Tipo Prestamos",
-                    "Error al buscar tipos de préstamo por ID de moneda: " + monedaId, e);
+                "Error al buscar tipos de préstamo con los filtros especificados", e);
         }
     }
 
@@ -124,9 +107,9 @@ public class TipoPrestamosServicio {
             tipoPrestamo.setFechaModificacion(LocalDate.now());
             tipoPrestamo.setEstado("ACTIVO");
             this.repositorio.save(tipoPrestamo);
-        } catch (CrearEntidadExcepcion rte) {
+        } catch (Exception e) {
             throw new CrearEntidadExcepcion("Tipo Prestamos",
-                    "Error al crear el Tipo de préstamo. Texto del error: " + rte.getMessage());
+                    "Error al crear el Tipo de préstamo. Texto del error: " + e.getMessage());
         }
     }
 
@@ -168,30 +151,59 @@ public class TipoPrestamosServicio {
                         "Error al actualizar el Tipo de préstamo. No se encontró el tipo de préstamo con ID: "
                                 + tipoPrestamo.getIdTipoPrestamo());
             }
-        } catch (ActualizarEntidadExcepcion e) {
-            throw e;
-        } catch (Exception rte) {
+        } catch (Exception e) {
             throw new ActualizarEntidadExcepcion("Tipo Prestamos",
-                    "Error al actualizar el Tipo de préstamo. Texto del error: " + rte.getMessage());
+                    "Error al actualizar el Tipo de préstamo. Texto del error: " + e.getMessage());
+        }
+    }
+
+    public static class EstadoRequest {
+        private String estado;
+
+        public String getEstado() {
+            return estado;
+        }
+
+        public void setEstado(String estado) {
+            this.estado = estado;
         }
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void updateEstado(Integer id, EstadoRequest estadoRequest) {
         try {
+            String nuevoEstado = estadoRequest.getEstado();
+            if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
+                throw new ActualizarEntidadExcepcion("Tipo Prestamos", "El estado no puede estar vacío");
+            }
+            if (!nuevoEstado.equals("ACTIVO") && !nuevoEstado.equals("INACTIVO")) {
+                throw new ActualizarEntidadExcepcion("Tipo Prestamos", "El estado debe ser 'ACTIVO' o 'INACTIVO'");
+            }
+
             Optional<TipoPrestamo> tipoOptional = this.repositorio.findById(id);
             if (tipoOptional.isPresent()) {
                 TipoPrestamo tipoPrestamo = tipoOptional.get();
-                tipoPrestamo.setEstado("INACTIVO");
+                
+                // Si el estado actual es ACTIVO y queremos cambiar a INACTIVO
+                if (tipoPrestamo.getEstado().equals("ACTIVO") && nuevoEstado.equals("INACTIVO")) {
+                    // Verificar si existen préstamos asociados
+                    List<Prestamo> prestamosAsociados = prestamoRepositorio.findByTipoPrestamo_IdTipoPrestamo(id);
+                    if (!prestamosAsociados.isEmpty()) {
+                        throw new ActualizarEntidadExcepcion("Tipo Prestamos", 
+                            "No se puede desactivar el tipo de préstamo porque tiene préstamos asociados");
+                    }
+                }
+
+                tipoPrestamo.setEstado(nuevoEstado);
                 tipoPrestamo.setFechaModificacion(LocalDate.now());
                 this.repositorio.save(tipoPrestamo);
             } else {
                 throw new TipoPrestamoNoEncontradoExcepcion("Tipo prestamo",
-                        "Error al eliminar el Tipo de préstamo. No se encontró el tipo de préstamo con ID: " + id);
+                        "Error al actualizar el estado. No se encontró el tipo de préstamo con ID: " + id);
             }
-        } catch (Exception rte) {
-            throw new EliminarEntidadExcepcion("Tipo Prestamos",
-                    "Error al eliminar el Tipo de préstamo. Texto del error: " + rte.getMessage());
+        } catch (Exception e) {
+            throw new ActualizarEntidadExcepcion("Tipo Prestamos",
+                    "Error al actualizar el estado del tipo de préstamo. Texto del error: " + e.getMessage());
         }
     }
 
@@ -233,5 +245,4 @@ public class TipoPrestamosServicio {
                             + String.join(", ", TIPOS_CLIENTE_PERMITIDOS));
         }
     }
-
 }

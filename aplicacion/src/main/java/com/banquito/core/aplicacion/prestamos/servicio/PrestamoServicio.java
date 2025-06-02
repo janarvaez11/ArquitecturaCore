@@ -32,11 +32,11 @@ public class PrestamoServicio {
 
     // Lista de estados permitidos
     private static final List<String> ESTADOS_PERMITIDOS = Arrays.asList(
-        "SOLICITADO",
+        "ACTIVO",
+        "INACTIVO",
+        "EN VALIDACION",
         "APROBADO",
-        "RECHAZADO",
-        "DESEMBOLSADO",
-        "CANCELADO"
+        "ARCHIVDADO"
     );
 
     public PrestamoServicio(PrestamoRepositorio repositorio) {

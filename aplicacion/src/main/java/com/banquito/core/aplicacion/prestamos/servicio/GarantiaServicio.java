@@ -2,7 +2,10 @@ package com.banquito.core.aplicacion.prestamos.servicio;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.GarantiaNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.Garantia;
+import com.banquito.core.aplicacion.prestamos.modelo.TipoPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.GarantiaRepositorio;
 import com.banquito.core.aplicacion.prestamos.repositorio.TipoPrestamoRepositorio;
 
@@ -29,15 +33,34 @@ public class GarantiaServicio {
             "PRENDARIA",
             "PERSONAL");
 
+    // Lista de estados permitidos
+    private static final List<String> ESTADOS_PERMITIDOS = Arrays.asList(
+            "ACTIVA",
+            "LIBERADA",
+            "ANULADA");
+
     public GarantiaServicio(GarantiaRepositorio repositorio, TipoPrestamoRepositorio tipoPrestamoRepositorio) {
         this.repositorio = repositorio;
         this.tipoPrestamoRepositorio = tipoPrestamoRepositorio;
     }
 
-    public Garantia findById(Integer id) {
+    public Map<String, Object> findById(Integer id) {
         Optional<Garantia> garantiaOpcional = this.repositorio.findById(id);
         if (garantiaOpcional.isPresent()) {
-            return garantiaOpcional.get();
+            Garantia garantia = garantiaOpcional.get();
+            Map<String, Object> resultado = new HashMap<>();
+            
+            // Campos de la tabla Garantia
+            resultado.put("id", garantia.getId());
+            resultado.put("descripcion", garantia.getDescripcion());
+            resultado.put("tipoGarantia", garantia.getTipoGarantia());
+            resultado.put("valor", garantia.getValor());
+            resultado.put("estado", garantia.getEstado());
+            
+            // Campo nombre del TipoPrestamo
+            resultado.put("tipoPrestamo", garantia.getTipoPrestamo().getNombre());
+            
+            return resultado;
         } else {
             throw new GarantiaNoEncontradoExcepcion("Garantia","Garantia no encontrado con ID: " + id);
         }
@@ -66,6 +89,7 @@ public class GarantiaServicio {
     public void create(Garantia garantia) {
         try {
             validarGarantia(garantia);
+            garantia.setEstado("ACTIVA"); // Estado por defecto al crear
             this.repositorio.save(garantia);
         } catch (Exception rte) {
             throw new CrearEntidadExcepcion("Garantia", "Error al crear la Garantia. Texto del error: "+rte.getMessage());
@@ -97,6 +121,12 @@ public class GarantiaServicio {
                 if (!garantiaDb.getTipoPrestamo().getIdTipoPrestamo().equals(garantia.getTipoPrestamo().getIdTipoPrestamo())) {
                     throw new ActualizarEntidadExcepcion("Garantia", 
                         "No se puede modificar el tipo de préstamo de una garantía existente");
+                }
+
+                // No permitir cambiar el estado directamente
+                if (garantia.getEstado() != null && !garantiaDb.getEstado().equals(garantia.getEstado())) {
+                    throw new ActualizarEntidadExcepcion("Garantia", 
+                        "No se puede modificar el estado directamente. Los cambios de estado se manejan a través de la lógica de negocio");
                 }
 
                 garantiaDb.setDescripcion(garantia.getDescripcion());
@@ -140,9 +170,16 @@ public class GarantiaServicio {
             throw new CrearEntidadExcepcion("Garantia", "Debe especificar un tipo de préstamo válido");
         }
 
-        // Verificar que el tipo de préstamo exista
-        if (!tipoPrestamoRepositorio.existsById(garantia.getTipoPrestamo().getIdTipoPrestamo())) {
+        // Verificar que el tipo de préstamo exista y esté activo
+        Optional<TipoPrestamo> tipoPrestamoOpt = tipoPrestamoRepositorio.findById(garantia.getTipoPrestamo().getIdTipoPrestamo());
+        if (!tipoPrestamoOpt.isPresent()) {
             throw new CrearEntidadExcepcion("Garantia", "El tipo de préstamo especificado no existe");
+        }
+        
+        TipoPrestamo tipoPrestamo = tipoPrestamoOpt.get();
+        if (!"ACTIVO".equals(tipoPrestamo.getEstado())) {
+            throw new CrearEntidadExcepcion("Garantia", 
+                "No se puede crear/actualizar una garantía para un tipo de préstamo inactivo");
         }
 
         // Validar descripción
@@ -165,11 +202,35 @@ public class GarantiaServicio {
 
         // Validar valor según el tipo de garantía
         if ("PERSONAL".equals(garantia.getTipoGarantia())) {
+            if (garantia.getValor() != null && garantia.getValor() != 0) {
+                throw new CrearEntidadExcepcion("Garantia", 
+                    "Para garantías de tipo PERSONAL no es necesario definir un valor, debe ser 0");
+            }
             garantia.setValor(0);
         } else {
             if (garantia.getValor() == null || garantia.getValor() <= 0) {
                 throw new CrearEntidadExcepcion("Garantia", "El valor debe ser mayor a cero para garantías no personales");
             }
+        }
+    }
+
+    public List<Map<String, Object>> findAll() {
+        try {
+            List<Garantia> garantias = this.repositorio.findAll();
+            return garantias.stream()
+                .map(garantia -> {
+                    Map<String, Object> resultado = new HashMap<>();
+                    resultado.put("id", garantia.getId());
+                    resultado.put("descripcion", garantia.getDescripcion());
+                    resultado.put("tipoGarantia", garantia.getTipoGarantia());
+                    resultado.put("valor", garantia.getValor());
+                    resultado.put("estado", garantia.getEstado());
+                    resultado.put("tipoPrestamo", garantia.getTipoPrestamo().getNombre());
+                    return resultado;
+                })
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusquedaExcepcion("Garantia", "Error al obtener todas las garantías: " + e.getMessage());
         }
     }
 }
