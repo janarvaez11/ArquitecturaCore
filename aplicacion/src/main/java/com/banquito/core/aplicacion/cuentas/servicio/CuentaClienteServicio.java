@@ -29,6 +29,7 @@ public class CuentaClienteServicio {
     public CuentaCliente crear(CuentaCliente cuentaCliente) {
         try {
             validarCuentaCliente(cuentaCliente);
+            validarNumeroCuentaUnicoPorCliente(cuentaCliente);
             return this.cuentaClienteRepositorio.save(cuentaCliente);
         } catch (RuntimeException e) {
             throw new CrearEntidadExcepcion("CuentaCliente", 
@@ -47,6 +48,12 @@ public class CuentaClienteServicio {
         try {
             CuentaCliente existente = buscarPorId(id);
             validarCuentaCliente(cuentaCliente);
+            
+            // Solo validar número de cuenta único si ha cambiado
+            if (!existente.getNumeroCuenta().equals(cuentaCliente.getNumeroCuenta())) {
+                validarNumeroCuentaUnicoPorCliente(cuentaCliente);
+            }
+            
             cuentaCliente.setIdCuentaCliente(existente.getIdCuentaCliente());
             return this.cuentaClienteRepositorio.save(cuentaCliente);
         } catch (RuntimeException e) {
@@ -120,6 +127,23 @@ public class CuentaClienteServicio {
         return cuenta;
     }
 
+    private void validarNumeroCuentaUnicoPorCliente(CuentaCliente cuentaCliente) {
+        if (cuentaCliente.getNumeroCuenta() == null || cuentaCliente.getCliente() == null 
+            || cuentaCliente.getCliente().getIdCliente() == null) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "El número de cuenta y el cliente son obligatorios");
+        }
+
+        // Verificar si existe otra cuenta con el mismo número para el mismo cliente
+        if (this.cuentaClienteRepositorio.existsByNumeroCuentaAndClienteIdCliente(
+                cuentaCliente.getNumeroCuenta(), 
+                cuentaCliente.getCliente().getIdCliente())) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "Ya existe una cuenta con el número " + cuentaCliente.getNumeroCuenta() + 
+                " para el cliente con ID " + cuentaCliente.getCliente().getIdCliente());
+        }
+    }
+
     private void validarCuentaCliente(CuentaCliente cuentaCliente) {
         if (cuentaCliente.getNumeroCuenta() == null || cuentaCliente.getNumeroCuenta().trim().isEmpty()) {
             throw new CrearEntidadExcepcion("CuentaCliente", 
@@ -128,6 +152,10 @@ public class CuentaClienteServicio {
         if (cuentaCliente.getSaldoDisponible() != null && cuentaCliente.getSaldoDisponible().compareTo(BigDecimal.ZERO) < 0) {
             throw new CrearEntidadExcepcion("CuentaCliente", 
                 "El saldo disponible no puede ser negativo");
+        }
+        if (cuentaCliente.getCliente() == null || cuentaCliente.getCliente().getIdCliente() == null) {
+            throw new CrearEntidadExcepcion("CuentaCliente", 
+                "El cliente es obligatorio");
         }
     }
 }

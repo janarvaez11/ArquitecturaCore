@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.util.List;
+import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,9 @@ import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.TipoCuenta;
+import com.banquito.core.aplicacion.cuentas.modelo.TasaInteres;
 import com.banquito.core.aplicacion.cuentas.repositorio.TipoCuentaRepositorio;
+import com.banquito.core.aplicacion.cuentas.repositorio.TasaInteresRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -19,9 +22,12 @@ import jakarta.transaction.Transactional;
 public class TipoCuentaServicio {
     
     private final TipoCuentaRepositorio tipoCuentaRepositorio;
+    private final TasaInteresRepositorio tasaInteresRepositorio;
 
-    public TipoCuentaServicio(TipoCuentaRepositorio tipoCuentaRepositorio) {
+    public TipoCuentaServicio(TipoCuentaRepositorio tipoCuentaRepositorio,
+                             TasaInteresRepositorio tasaInteresRepositorio) {
         this.tipoCuentaRepositorio = tipoCuentaRepositorio;
+        this.tasaInteresRepositorio = tasaInteresRepositorio;
     }
 
     public List<TipoCuenta> listarTodos() {
@@ -50,6 +56,7 @@ public class TipoCuentaServicio {
     public TipoCuenta crear(TipoCuenta tipoCuenta) {
         try {
             validarTipoCuenta(tipoCuenta);
+            validarTasaInteresPorDefecto(tipoCuenta.getTasaInteresPorDefecto());
             return this.tipoCuentaRepositorio.save(tipoCuenta);
         } catch (RuntimeException e) {
             throw new CrearEntidadExcepcion("TipoCuenta", 
@@ -62,11 +69,13 @@ public class TipoCuentaServicio {
         try {
             TipoCuenta tipoCuentaDb = buscarPorId(id);
             validarTipoCuenta(tipoCuenta);
+            validarTasaInteresPorDefecto(tipoCuenta.getTasaInteresPorDefecto());
             
             tipoCuentaDb.setNombre(tipoCuenta.getNombre());
             tipoCuentaDb.setDescripcion(tipoCuenta.getDescripcion());
             tipoCuentaDb.setTipoCliente(tipoCuenta.getTipoCliente());
             tipoCuentaDb.setEstado(tipoCuenta.getEstado());
+            tipoCuentaDb.setTasaInteresPorDefecto(tipoCuenta.getTasaInteresPorDefecto());
             
             return this.tipoCuentaRepositorio.save(tipoCuentaDb);
         } catch (RuntimeException e) {
@@ -115,6 +124,33 @@ public class TipoCuentaServicio {
                 "No se encontraron tipos de cuenta para el tipo de cliente: " + tipoCliente);
         }
         return tipos;
+    }
+
+    private void validarTasaInteresPorDefecto(TasaInteres tasaInteres) {
+        if (tasaInteres == null || tasaInteres.getIdTasaInteres() == null) {
+            throw new CrearEntidadExcepcion("TipoCuenta", 
+                "La tasa de interés por defecto es obligatoria");
+        }
+
+        TasaInteres tasaExistente = this.tasaInteresRepositorio.findById(tasaInteres.getIdTasaInteres())
+            .orElseThrow(() -> new CrearEntidadExcepcion("TipoCuenta", 
+                "La tasa de interés por defecto con ID " + tasaInteres.getIdTasaInteres() + " no existe"));
+
+        // Verificar que la tasa esté activa
+        if (!"ACT".equals(tasaExistente.getEstado())) {
+            throw new CrearEntidadExcepcion("TipoCuenta", 
+                "La tasa de interés por defecto con ID " + tasaInteres.getIdTasaInteres() + " no está activa");
+        }
+
+        // Verificar que la tasa esté vigente
+        Date fechaActual = new Date();
+        if (fechaActual.before(tasaExistente.getFechaInicioVigencia()) || 
+            fechaActual.after(tasaExistente.getFechaFinVigencia())) {
+            throw new CrearEntidadExcepcion("TipoCuenta", 
+                "La tasa de interés por defecto con ID " + tasaInteres.getIdTasaInteres() + 
+                " no está vigente. Vigencia: " + tasaExistente.getFechaInicioVigencia() + 
+                " hasta " + tasaExistente.getFechaFinVigencia());
+        }
     }
 
     private void validarTipoCuenta(TipoCuenta tipoCuenta) {
