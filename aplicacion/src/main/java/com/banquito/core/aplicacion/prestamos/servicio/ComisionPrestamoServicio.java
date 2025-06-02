@@ -7,16 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.ComisionPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.ComisionPrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.ComisionPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.ComisionPrestamoRepositorio;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class ComisionPrestamoServicio {
@@ -31,6 +30,11 @@ public class ComisionPrestamoServicio {
 
     public ComisionPrestamoServicio(ComisionPrestamoRepositorio repositorio) {
         this.repositorio = repositorio;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ComisionPrestamo> findAll() {
+        return repositorio.findAll();
     }
 
     public ComisionPrestamo findById(Integer id) {
@@ -117,6 +121,4 @@ public class ComisionPrestamoServicio {
             throw new EliminarEntidadExcepcion("ComisionPrestamo", "Error al eliminar la ComisionPrestamo. Texto del error: "+rte.getMessage());
         }
     }
-
-    
 }

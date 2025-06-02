@@ -6,18 +6,19 @@ import java.util.Optional;
 import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
+import com.banquito.core.aplicacion.prestamos.excepcion.CondicionComisionNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.CondicionComisionNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.CondicionComision;
 import com.banquito.core.aplicacion.prestamos.modelo.ComisionPrestamo;
 import com.banquito.core.aplicacion.prestamos.repositorio.CondicionComisionRepositorio;
 import com.banquito.core.aplicacion.prestamos.repositorio.ComisionPrestamoRepositorio;
-
-import jakarta.transaction.Transactional;
+import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 
 @Service
 public class CondicionComisionServicio {
@@ -26,17 +27,31 @@ public class CondicionComisionServicio {
     private final ComisionPrestamoRepositorio comisionPrestamoRepositorio;
 
     private static final List<String> TIPOS_CONDICION_VALOR = Arrays.asList(
-            "MONTO MINIMO", "PLAZO MINIMO", "PUNTAJE CREDITO", "EDAD CLIENTE_MINIMA"
+            "DIAS_ATRASO", "PLAZO_MINIMO", "MONTO_MINIMO", "PUNTAJE_CREDITO", "EDAD_CLIENTE_MINIMA"
     );
 
     private static final List<String> TIPOS_CONDICION_TEXTO = Arrays.asList(
-            "TIPO CLIENTE", "SEGMENTO CLIENTE", "ESTADO PRESTAMO"
+            "TIPO_CLIENTE", "SEGMENTO_CLIENTE", "ESTADO_PRESTAMO"
     );
+
+    // Tipos de condiciones permitidas
+    public static final String DIAS_ATRASO = "DIAS_ATRASO";
+    public static final String PLAZO_MINIMO = "PLAZO_MINIMO";
+    public static final String PLAZO_MAXIMO = "PLAZO_MAXIMO";
+    public static final String MONTO_MINIMO = "MONTO_MINIMO";
+    public static final String MONTO_MAXIMO = "MONTO_MAXIMO";
+    public static final String TIPO_CLIENTE = "TIPO_CLIENTE";
+    public static final String SEGMENTO = "SEGMENTO";
 
     public CondicionComisionServicio(CondicionComisionRepositorio repositorio, 
                                    ComisionPrestamoRepositorio comisionPrestamoRepositorio) {
         this.repositorio = repositorio;
         this.comisionPrestamoRepositorio = comisionPrestamoRepositorio;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CondicionComision> findAll() {
+        return repositorio.findAll();
     }
 
     public List<CondicionComision> findByTipoCondicion(String tipoCondicion) {
@@ -150,6 +165,59 @@ public class CondicionComisionServicio {
             }
         } catch (Exception rte) {
             throw new EliminarEntidadExcepcion("Condicion Comision", "Error al eliminar la Condicion Comision. Texto del error: "+rte.getMessage());
+        }
+    }
+
+    public boolean validarCondicion(CondicionComision condicion, Prestamo prestamo, Cliente cliente) {
+        if (condicion == null || prestamo == null || cliente == null) {
+            return false;
+        }
+
+        switch (condicion.getTipoCondicion()) {
+            case DIAS_ATRASO:
+                // TODO: Implementar lógica para validar días de atraso
+                return false;
+
+            case PLAZO_MINIMO:
+                if (prestamo.getTipoPrestamo() != null && 
+                    prestamo.getTipoPrestamo().getPlazoMinimo() != null) {
+                    return prestamo.getTipoPrestamo().getPlazoMinimo() >= 
+                           condicion.getValor().intValue();
+                }
+                return false;
+
+            case PLAZO_MAXIMO:
+                if (prestamo.getTipoPrestamo() != null && 
+                    prestamo.getTipoPrestamo().getPlazoMaximo() != null) {
+                    return prestamo.getTipoPrestamo().getPlazoMaximo() <= 
+                           condicion.getValor().intValue();
+                }
+                return false;
+
+            case MONTO_MINIMO:
+                if (prestamo.getTipoPrestamo() != null && 
+                    prestamo.getTipoPrestamo().getMontoMinimo() != null) {
+                    return prestamo.getTipoPrestamo().getMontoMinimo().compareTo(condicion.getValor()) >= 0;
+                }
+                return false;
+
+            case MONTO_MAXIMO:
+                if (prestamo.getTipoPrestamo() != null && 
+                    prestamo.getTipoPrestamo().getMontoMaximo() != null) {
+                    return prestamo.getTipoPrestamo().getMontoMaximo().compareTo(condicion.getValor()) <= 0;
+                }
+                return false;
+
+            case TIPO_CLIENTE:
+                return cliente.getTipoCliente() != null && 
+                       cliente.getTipoCliente().equals(condicion.getValorTexto());
+
+            case SEGMENTO:
+                return cliente.getSegmento() != null && 
+                       cliente.getSegmento().equals(condicion.getValorTexto());
+
+            default:
+                return false;
         }
     }
 }

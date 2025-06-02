@@ -1,6 +1,10 @@
 package com.banquito.core.aplicacion.prestamos.servicio;
 
 import java.util.Optional;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,13 @@ import com.banquito.core.aplicacion.prestamos.modelo.PrestamoComisionCargoId;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoComisionCargoRepositorio;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
 import com.banquito.core.aplicacion.prestamos.repositorio.ComisionPrestamoRepositorio;
+import com.banquito.core.aplicacion.prestamos.excepcion.BusquedaExcepcion;
+import com.banquito.core.aplicacion.prestamos.modelo.CondicionComision;
+import com.banquito.core.aplicacion.prestamos.repositorio.CondicionComisionRepositorio;
+import com.banquito.core.aplicacion.prestamos.servicio.CondicionComisionServicio;
+import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
+import com.banquito.core.aplicacion.clientes.modelo.Cliente;
+import com.banquito.core.aplicacion.prestamos.repositorio.PrestamosClientesRepositorio;
 
 import jakarta.transaction.Transactional;
 
@@ -24,14 +35,23 @@ public class PrestamoComisionCargoServicio {
     private final PrestamoComisionCargoRepositorio repositorio;
     private final PrestamoRepositorio prestamoRepositorio;
     private final ComisionPrestamoRepositorio comisionPrestamoRepositorio;
+    private final CondicionComisionRepositorio condicionComisionRepositorio;
+    private final CondicionComisionServicio condicionComisionServicio;
+    private final PrestamosClientesRepositorio prestamosClientesRepositorio;
 
     public PrestamoComisionCargoServicio(
             PrestamoComisionCargoRepositorio repositorio,
             PrestamoRepositorio prestamoRepositorio,
-            ComisionPrestamoRepositorio comisionPrestamoRepositorio) {
+            ComisionPrestamoRepositorio comisionPrestamoRepositorio,
+            CondicionComisionRepositorio condicionComisionRepositorio,
+            CondicionComisionServicio condicionComisionServicio,
+            PrestamosClientesRepositorio prestamosClientesRepositorio) {
         this.repositorio = repositorio;
         this.prestamoRepositorio = prestamoRepositorio;
         this.comisionPrestamoRepositorio = comisionPrestamoRepositorio;
+        this.condicionComisionRepositorio = condicionComisionRepositorio;
+        this.condicionComisionServicio = condicionComisionServicio;
+        this.prestamosClientesRepositorio = prestamosClientesRepositorio;
     }
 
     public PrestamoComisionCargo findById(PrestamoComisionCargoId id) {
@@ -113,4 +133,75 @@ public class PrestamoComisionCargoServicio {
         }
     }
     */
+
+    public List<Map<String, Object>> findComisionesByPrestamo(Integer idPrestamo) {
+        try {
+            // Verificar que el préstamo existe
+            Optional<Prestamo> prestamoOpt = prestamoRepositorio.findById(idPrestamo);
+            if (!prestamoOpt.isPresent()) {
+                throw new BusquedaExcepcion("PrestamoComisionCargo", 
+                    "El préstamo con ID " + idPrestamo + " no existe");
+            }
+
+            Prestamo prestamo = prestamoOpt.get();
+            List<PrestamoComisionCargo> comisiones = repositorio.findById_IdPrestamo(idPrestamo);
+
+            // Obtener la relación prestamo-cliente
+            List<PrestamosClientes> prestamosClientes = prestamosClientesRepositorio.findByIdPrestamo(prestamo);
+            if (prestamosClientes.isEmpty()) {
+                throw new BusquedaExcepcion("PrestamoComisionCargo", 
+                    "No se encontró la relación prestamo-cliente para el préstamo con ID " + idPrestamo);
+            }
+
+            // Usar el primer cliente asociado al préstamo
+            Cliente cliente = prestamosClientes.get(0).getIdCliente();
+
+            return comisiones.stream()
+                .map(comision -> {
+                    Map<String, Object> resultado = new HashMap<>();
+                    ComisionPrestamo comisionPrestamo = comision.getComisionPrestamo();
+                    
+                    // Información básica de la comisión
+                    resultado.put("idComision", comisionPrestamo.getId());
+                    resultado.put("nombre", comisionPrestamo.getNombre());
+                    resultado.put("tipoComision", comisionPrestamo.getTipoComision());
+                    resultado.put("tipoCalculo", comisionPrestamo.getTipoCalculo());
+                    resultado.put("valor", comisionPrestamo.getValor());
+                    resultado.put("fechaAsignacion", comision.getFechaAsignacion());
+
+                    // Obtener y validar condiciones
+                    List<CondicionComision> condiciones = condicionComisionRepositorio
+                        .findByComisionPrestamo(comisionPrestamo);
+                    
+                    List<Map<String, Object>> condicionesValidadas = condiciones.stream()
+                        .map(condicion -> {
+                            Map<String, Object> condicionMap = new HashMap<>();
+                            condicionMap.put("tipoCondicion", condicion.getTipoCondicion());
+                            condicionMap.put("valor", condicion.getValor());
+                            condicionMap.put("valorTexto", condicion.getValorTexto());
+                            
+                            // Validar la condición
+                            boolean cumpleCondicion = condicionComisionServicio
+                                .validarCondicion(condicion, prestamo, cliente);
+                            condicionMap.put("cumpleCondicion", cumpleCondicion);
+                            
+                            return condicionMap;
+                        })
+                        .collect(Collectors.toList());
+                    
+                    resultado.put("condiciones", condicionesValidadas);
+                    
+                    // Verificar si cumple todas las condiciones
+                    boolean aplicaComision = condicionesValidadas.stream()
+                        .allMatch(condicion -> (boolean)condicion.get("cumpleCondicion"));
+                    resultado.put("aplicaComision", aplicaComision);
+
+                    return resultado;
+                })
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new BusquedaExcepcion("PrestamoComisionCargo", 
+                "Error al buscar comisiones del préstamo: " + e.getMessage());
+        }
+    }
 } 
