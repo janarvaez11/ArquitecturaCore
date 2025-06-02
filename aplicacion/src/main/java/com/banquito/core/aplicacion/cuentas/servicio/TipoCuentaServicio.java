@@ -1,5 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +66,9 @@ public class TipoCuentaServicio {
     @Transactional
     public TipoCuenta crear(TipoCuenta tipoCuenta) {
         try {
+            tipoCuenta.setEstado("ACTIVO");
+            tipoCuenta.setFechaCreacion(Date.from(Instant.now()));
+            tipoCuenta.setFechaModificacion(Date.from(Instant.now()));
             validarTipoCuenta(tipoCuenta);
             if (tipoCuenta.getMoneda() != null && tipoCuenta.getMoneda().getId() != null) {
                 Moneda moneda = monedaRepositorio.findById(tipoCuenta.getMoneda().getId())
@@ -72,7 +77,9 @@ public class TipoCuentaServicio {
             } else {
                 throw new CrearEntidadExcepcion("TipoCuenta", "La moneda es obligatoria");
             }
-            return this.tipoCuentaRepositorio.save(tipoCuenta);
+
+            this.tipoCuentaRepositorio.save(tipoCuenta);
+            return tipoCuenta;
 
         } catch (RuntimeException e) {
             throw new CrearEntidadExcepcion("TipoCuenta", 
@@ -90,7 +97,7 @@ public class TipoCuentaServicio {
             tipoCuentaDb.setDescripcion(tipoCuenta.getDescripcion());
             tipoCuentaDb.setTipoCliente(tipoCuenta.getTipoCliente());
             tipoCuentaDb.setEstado(tipoCuenta.getEstado());
-            
+            tipoCuentaDb.setFechaModificacion(Date.from(Instant.now()));
             return this.tipoCuentaRepositorio.save(tipoCuentaDb);
         } catch (RuntimeException e) {
             throw new ActualizarEntidadExcepcion("TipoCuenta", 

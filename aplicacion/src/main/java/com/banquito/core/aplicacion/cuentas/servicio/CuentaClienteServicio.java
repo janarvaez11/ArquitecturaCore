@@ -1,6 +1,8 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -28,6 +30,8 @@ public class CuentaClienteServicio {
     @Transactional
     public CuentaCliente crear(CuentaCliente cuentaCliente) {
         try {
+            cuentaCliente.setEstado("ACTIVA");
+            cuentaCliente.setFechaApertura(Date.from(Instant.now()));
             validarCuentaCliente(cuentaCliente);
             return this.cuentaClienteRepositorio.save(cuentaCliente);
         } catch (RuntimeException e) {

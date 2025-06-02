@@ -1,5 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -54,12 +56,15 @@ public class CuentaServicio {
     @Transactional
     public Cuenta crear(Cuenta cuenta) {
         try {
+            cuenta.setEstado(ESTADO_ACTIVA);
+            cuenta.setFechaCreacion(Date.from(Instant.now()));
+            cuenta.setFechaModificacion(Date.from(Instant.now()));
             validarCuenta(cuenta);
             if (existeCuentaConCodigo(cuenta.getCodigoCuenta())) {
                 throw new CrearEntidadExcepcion("Cuenta", 
                     "Ya existe una cuenta con el código: " + cuenta.getCodigoCuenta());
             }
-            cuenta.setEstado(ESTADO_ACTIVA);
+
             return this.cuentaRepositorio.save(cuenta);
         } catch (RuntimeException e) {
             throw new CrearEntidadExcepcion("Cuenta", "Error al crear la cuenta: " + e.getMessage());
