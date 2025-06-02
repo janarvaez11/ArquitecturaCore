@@ -6,7 +6,6 @@ import com.banquito.core.aplicacion.clientes.repositorio.ClienteRepositorio;
 import com.banquito.core.aplicacion.clientes.modelo.Cliente;
 import com.banquito.core.aplicacion.clientes.excepcion.DireccionNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.clientes.excepcion.CrearDireccionExcepcion;
-import com.banquito.core.aplicacion.clientes.excepcion.ActualizarDireccionExcepcion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,6 +50,6 @@ public class DireccionClienteServicio {
     }
 
     public List<DireccionCliente> obtenerPorCliente(Integer idCliente) {
-        return direccionRepo.findByCliente_Id(idCliente);
+        return direccionRepo.findByCliente_IdCliente(idCliente);
     }
 }

@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface DireccionClienteRepositorio extends JpaRepository<DireccionCliente, Integer> {
-    List<DireccionCliente> findByCliente_Id(Integer idCliente);
+    List<DireccionCliente> findByCliente_IdCliente(Integer idCliente);
+
 }

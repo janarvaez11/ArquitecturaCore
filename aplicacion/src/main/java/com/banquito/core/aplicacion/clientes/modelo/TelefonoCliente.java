@@ -10,7 +10,7 @@ public class TelefonoCliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdTelefonoCliente")
-    private Integer id;
+    private Integer idTelefonoCliente;
 
     @ManyToOne
     @JoinColumn(name = "IdCliente")
@@ -32,11 +32,11 @@ public class TelefonoCliente {
     private Timestamp fechaActualizacion;
 
     public Integer getId() {
-        return id;
+        return idTelefonoCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer idTelefonoCliente) {
+        this.idTelefonoCliente = idTelefonoCliente;
     }
 
     public Cliente getCliente() {
@@ -94,7 +94,7 @@ public class TelefonoCliente {
         if (o == null || getClass() != o.getClass())
             return false;
         TelefonoCliente that = (TelefonoCliente) o;
-        return id != null && id.equals(that.id);
+        return idTelefonoCliente != null && idTelefonoCliente.equals(that.idTelefonoCliente);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TelefonoCliente {
     @Override
     public String toString() {
         return "TelefonoCliente{" +
-                "id=" + id +
+                "idTelefonoCliente=" + idTelefonoCliente +
                 ", tipoTelefono='" + tipoTelefono + '\'' +
                 ", numeroTelefono='" + numeroTelefono + '\'' +
                 ", estado='" + estado + '\'' +

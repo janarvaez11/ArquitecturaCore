@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 public class ContactoTransaccionCliente {
 
     @Id
-    @Column(name = "IdCliente")
-    private Integer id;
+    @Column(name = "idContactoTransaccionCliente")
+    private Integer idContactoTransaccionCliente;
 
     @OneToOne
     @MapsId
@@ -29,11 +29,11 @@ public class ContactoTransaccionCliente {
     private Timestamp fechaActualizacion;
 
     public Integer getId() {
-        return id;
+        return idContactoTransaccionCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer idContactoTransaccionCliente) {
+        this.idContactoTransaccionCliente = idContactoTransaccionCliente;
     }
 
     public Cliente getCliente() {
@@ -83,7 +83,7 @@ public class ContactoTransaccionCliente {
         if (o == null || getClass() != o.getClass())
             return false;
         ContactoTransaccionCliente that = (ContactoTransaccionCliente) o;
-        return id != null && id.equals(that.id);
+        return idContactoTransaccionCliente != null && idContactoTransaccionCliente.equals(that.idContactoTransaccionCliente);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ContactoTransaccionCliente {
     @Override
     public String toString() {
         return "ContactoTransaccionCliente{" +
-                "id=" + id +
+                "idContactoTransaccionClientes=" + idContactoTransaccionCliente +
                 ", telefono='" + telefono + '\'' +
                 ", correoElectronico='" + correoElectronico + '\'' +
                 '}';

@@ -50,6 +50,6 @@ public class TelefonoClienteServicio {
     }
 
     public List<TelefonoCliente> obtenerPorCliente(Integer idCliente) {
-        return telefonoRepo.findByCliente_Id(idCliente);
+        return telefonoRepo.findByCliente_idCliente(idCliente);
     }
 }

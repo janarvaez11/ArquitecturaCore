@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.banquito.core.aplicacion.general.modelo.Pais;
 import com.banquito.core.aplicacion.general.modelo.Sucursal;
 
 @Entity
@@ -12,8 +13,8 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdCliente", nullable = false)
-    private Integer id;
+    @Column(name = "idCliente", nullable = false)
+    private Integer idCliente;
 
     @Column(name = "TipoEntidad", length = 10, nullable = false)
     private String tipoEntidad;
@@ -23,6 +24,9 @@ public class Cliente {
 
     @Column(name = "Nacionalidad", length = 2)
     private String nacionalidad;
+    @ManyToOne
+    @JoinColumn(name = "id_pais", nullable = false)
+    private Pais pais;
 
     @ManyToOne
     @JoinColumn(name = "IdSucursal", nullable = false)
@@ -74,11 +78,11 @@ public class Cliente {
     private List<DireccionCliente> direcciones;
 
     public Integer getId() {
-        return id;
+        return idCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getTipoEntidad() {
@@ -103,6 +107,14 @@ public class Cliente {
 
     public void setNacionalidad(String nacionalidad) {
         this.nacionalidad = nacionalidad;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
     }
 
     public Sucursal getSucursal() {
@@ -240,7 +252,7 @@ public class Cliente {
         if (o == null || getClass() != o.getClass())
             return false;
         Cliente cliente = (Cliente) o;
-        return id != null && id.equals(cliente.id);
+        return idCliente != null && idCliente.equals(cliente.idCliente);
     }
 
     @Override
@@ -252,10 +264,11 @@ public class Cliente {
     @Override
     public String toString() {
         return "Cliente{" +
-                "id=" + id +
+                "idCliente=" + idCliente +
                 ", tipoEntidad='" + tipoEntidad + '\'' +
                 ", idEntidad=" + idEntidad +
-                ", nacionalidad='" + nacionalidad + '\'' +
+                ", pais=" + pais +
+                // ", nacionalidad='" + nacionalidad + '\'' +
                 ", tipoIdentificacion='" + tipoIdentificacion + '\'' +
                 ", numeroIdentificacion='" + numeroIdentificacion + '\'' +
                 ", tipoCliente='" + tipoCliente + '\'' +

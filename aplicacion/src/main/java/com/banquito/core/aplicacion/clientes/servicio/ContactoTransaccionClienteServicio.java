@@ -29,7 +29,7 @@ public class ContactoTransaccionClienteServicio {
     }
 
     public ContactoTransaccionCliente obtenerPorCliente(Integer idCliente) {
-        return contactoRepo.findByCliente_Id(idCliente)
+        return contactoRepo.findByCliente_idCliente(idCliente)
                 .orElseThrow(() -> new ContactoNoEncontradoExcepcion(idCliente));
     }
 

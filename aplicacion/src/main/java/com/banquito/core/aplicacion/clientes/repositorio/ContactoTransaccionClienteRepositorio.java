@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ContactoTransaccionClienteRepositorio extends JpaRepository<ContactoTransaccionCliente, Integer> {
-    Optional<ContactoTransaccionCliente> findByCliente_Id(Integer idCliente);
+    Optional<ContactoTransaccionCliente> findByCliente_idCliente(Integer idCliente);
 }
 

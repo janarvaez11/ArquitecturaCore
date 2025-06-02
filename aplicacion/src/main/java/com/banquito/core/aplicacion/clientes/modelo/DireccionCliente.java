@@ -9,8 +9,8 @@ public class DireccionCliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdDireccion")
-    private Integer idDireccion;
+    @Column(name = "idDireccionCliente")
+    private Integer idDireccionCliente;
 
     @ManyToOne
     @JoinColumn(name = "IdCliente")
@@ -38,11 +38,11 @@ public class DireccionCliente {
     private Timestamp fechaActualizacion;
 
     public Integer getidDireccion() {
-        return idDireccion;
+        return idDireccionCliente;
     }
 
-    public void setidDireccion(Integer idDireccion) {
-        this.idDireccion = idDireccion;
+    public void setidDireccion(Integer idDireccionCliente) {
+        this.idDireccionCliente = idDireccionCliente;
     }
 
     public Cliente getCliente() {
@@ -116,7 +116,7 @@ public class DireccionCliente {
         if (o == null || getClass() != o.getClass())
             return false;
         DireccionCliente that = (DireccionCliente) o;
-        return idDireccion != null && idDireccion.equals(that.idDireccion);
+        return idDireccionCliente != null && idDireccionCliente.equals(that.idDireccionCliente);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class DireccionCliente {
     @Override
     public String toString() {
         return "DireccionCliente{" +
-                "idDireccion=" + idDireccion +
+                "idDireccion=" + idDireccionCliente +
                 ", tipo='" + tipo + '\'' +
                 ", estado='" + estado + '\'' +
                 ", linea1='" + linea1 + '\'' +
