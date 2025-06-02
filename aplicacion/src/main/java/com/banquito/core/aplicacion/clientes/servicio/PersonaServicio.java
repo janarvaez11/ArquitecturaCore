@@ -117,7 +117,7 @@ public class PersonaServicio {
     }
 
     private void validarCorreo(String correo) {
-        if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+        if (!correo.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             throw new CrearExcepcion("Correo electrónico inválido", "Persona");
         }
     }

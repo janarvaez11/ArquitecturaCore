@@ -39,6 +39,15 @@ public class AccionistaServicio {
     @Transactional
     public void crear(Accionista accionista) {
         validarCamposObligatorios(accionista);
+
+        BigDecimal sumaActual = accionistaRepositorio.sumaParticipacionPorEmpresa(
+                accionista.getEmpresa().getIdEmpresa(), null
+        );
+        BigDecimal nuevaSuma = sumaActual.add(accionista.getParticipacion());
+
+        if (nuevaSuma.compareTo(new BigDecimal("100.00")) > 0) {
+            throw new CrearExcepcion("La suma total de participaciones supera el 100%", "Accionista");
+        }
         try {
             accionistaRepositorio.save(accionista);
         } catch (RuntimeException rte) {
@@ -57,6 +66,15 @@ public class AccionistaServicio {
         try {
             Accionista accionistaDB = accionistaRepositorio.findById(accionista.getIdAccionista())
                     .orElseThrow(() -> new ActualizarExcepcion("Accionista no encontrado con ID: " + accionista.getIdAccionista(), "Accionista"));
+
+            BigDecimal sumaActual = accionistaRepositorio.sumaParticipacionPorEmpresa(
+                    accionista.getEmpresa().getIdEmpresa(), accionista.getIdAccionista()
+            );
+            BigDecimal nuevaSuma = sumaActual.add(accionista.getParticipacion());
+
+            if (nuevaSuma.compareTo(new BigDecimal("100.00")) > 0) {
+                throw new ActualizarExcepcion("La suma total de participaciones supera el 100%", "Accionista");
+            }
 
             if (accionista.getEmpresa() != null) {
                 accionistaDB.setEmpresa(accionista.getEmpresa());
