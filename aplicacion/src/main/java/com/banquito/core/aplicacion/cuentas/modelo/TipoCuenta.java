@@ -22,34 +22,34 @@ public class TipoCuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa IDENTITY para campos SERIAL en PostgreSQL
     @Column(name = "IdTipoCuenta", nullable = false)
-    private Integer IdTipoCuenta;
+    private Integer idTipoCuenta;
 
     @Column(name = "Nombre", length = 20, nullable = false)
-    private String Nombre;
+    private String nombre;
 
     @Column(name = "Descripcion", length = 50, nullable = false)
-    private String Descripcion;
+    private String descripcion;
 
     @Column(name = "RequisitosApertura", length = 300, nullable = false)
-    private String RequisitosApertura;
+    private String requisitosApertura;
 
     @Column(name = "TipoCliente", length = 30, nullable = false)
-    private String tipocliente;
+    private String tipoCliente;
 
     @Column(name = "CuentasContablesAsociadas", length = 50, nullable = false)
-    private String CuentasContablesAsociadas;
+    private String cuentasContablesAsociadas;
 
     @Column(name = "Estado", length = 20, nullable = false)
-    private String Estado;
+    private String estado;
 
     @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaCreacion", nullable = false)
-    private Date FechaCreacion;
+    private Date fechaCreacion;
 
 
     @Temporal (TemporalType.TIMESTAMP)
     @Column(name = "FechaModificacion")
-     private Date FechaModificacion;
+     private Date fechaModificacion;
 
     //relacion a la tabla TasaInteres
     @ManyToOne
@@ -68,82 +68,82 @@ public class TipoCuenta {
     }
 
     public TipoCuenta(Integer idTipoCuenta) {
-        IdTipoCuenta = idTipoCuenta;
+        this.idTipoCuenta = idTipoCuenta;
     }
 
 
     // Getters y Setters
 
     public Integer getIdTipoCuenta() {
-        return IdTipoCuenta;
+        return idTipoCuenta;
     }
 
     public void setIdTipoCuenta(Integer idTipoCuenta) {
-        IdTipoCuenta = idTipoCuenta;
+        this.idTipoCuenta = idTipoCuenta;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 
     public String getRequisitosApertura() {
-        return RequisitosApertura;
+        return requisitosApertura;
     }
 
     public void setRequisitosApertura(String requisitosApertura) {
-        RequisitosApertura = requisitosApertura;
+        this.requisitosApertura = requisitosApertura;
     }
 
-    public String getTipocliente() {
-        return tipocliente;
+    public String getTipoCliente() {
+        return tipoCliente;
     }
 
-    public void setTipocliente(String tipocliente) {
-        this.tipocliente = tipocliente;
+    public void setTipoCliente(String tipoCliente) {
+        this.tipoCliente = tipoCliente;
     }
 
     public String getCuentasContablesAsociadas() {
-        return CuentasContablesAsociadas;
+        return cuentasContablesAsociadas;
     }
 
     public void setCuentasContablesAsociadas(String cuentasContablesAsociadas) {
-        CuentasContablesAsociadas = cuentasContablesAsociadas;
+        this.cuentasContablesAsociadas = cuentasContablesAsociadas;
     }
 
     public String getEstado() {
-        return Estado;
+        return estado;
     }
 
     public void setEstado(String estado) {
-        Estado = estado;
+        this.estado = estado;
     }
 
     public Date getFechaCreacion() {
-        return FechaCreacion;
+        return fechaCreacion;
     }
 
     public void setFechaCreacion(Date fechaCreacion) {
-        FechaCreacion = fechaCreacion;
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Date getFechaModificacion() {
-        return FechaModificacion;
+        return fechaModificacion;
     }
 
     public void setFechaModificacion(Date fechaModificacion) {
-        FechaModificacion = fechaModificacion;
+        this.fechaModificacion = fechaModificacion;
     }
 
 
@@ -168,7 +168,7 @@ public class TipoCuenta {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdTipoCuenta == null) ? 0 : IdTipoCuenta.hashCode());
+        result = prime * result + ((idTipoCuenta == null) ? 0 : idTipoCuenta.hashCode());
         return result;
     }
 
@@ -181,20 +181,20 @@ public class TipoCuenta {
         if (getClass() != obj.getClass())
             return false;
         TipoCuenta other = (TipoCuenta) obj;
-        if (IdTipoCuenta == null) {
-            if (other.IdTipoCuenta != null)
+        if (idTipoCuenta == null) {
+            if (other.idTipoCuenta != null)
                 return false;
-        } else if (!IdTipoCuenta.equals(other.IdTipoCuenta))
+        } else if (!idTipoCuenta.equals(other.idTipoCuenta))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "TipoCuenta [IdTipoCuenta=" + IdTipoCuenta + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion
-                + ", RequisitosApertura=" + RequisitosApertura + ", tipocliente=" + tipocliente
-                + ", CuentasContablesAsociadas=" + CuentasContablesAsociadas + ", Estado=" + Estado + ", FechaCreacion="
-                + FechaCreacion + ", FechaModificacion=" + FechaModificacion + ", tasaInteres=" + tasaInteres 
+        return "TipoCuenta [idTipoCuenta=" + idTipoCuenta + ", nombre=" + nombre + ", descripcion=" + descripcion
+                + ", requisitosApertura=" + requisitosApertura + ", tipoCliente=" + tipoCliente
+                + ", cuentasContablesAsociadas=" + cuentasContablesAsociadas + ", estado=" + estado + ", fechaCreacion="
+                + fechaCreacion + ", fechaModificacion=" + fechaModificacion + ", tasaInteres=" + tasaInteres 
                 + ", moneda=" + moneda + "]";
     }
 

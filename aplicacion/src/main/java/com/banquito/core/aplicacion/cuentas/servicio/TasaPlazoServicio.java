@@ -100,7 +100,7 @@ public class TasaPlazoServicio {
     }
 
     public List<TasaPlazo> buscarPorTasaInteres(Integer idTasaInteres) {
-        List<TasaPlazo> tasas = this.tasaPlazoRepositorio.findByTasaInteres_Id(idTasaInteres);
+        List<TasaPlazo> tasas = this.tasaPlazoRepositorio.findByTasaInteres_IdTasaInteres(idTasaInteres);
         if (tasas.isEmpty()) {
             throw new EntidadNoEncontradaExcepcion("TasaPlazo", 
                 "No se encontraron tasas para la tasa de interés: " + idTasaInteres);

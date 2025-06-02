@@ -1,9 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.servicio;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.banquito.core.aplicacion.cuentas.excepcion.ActualizarEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.CrearEntidadExcepcion;
 import com.banquito.core.aplicacion.cuentas.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.cuentas.excepcion.TipoCuentaNoEncontradaExcepcion;
+import com.banquito.core.aplicacion.cuentas.excepcion.EntidadNoEncontradaExcepcion;
 import com.banquito.core.aplicacion.cuentas.modelo.TipoCuenta;
 import com.banquito.core.aplicacion.cuentas.repositorio.TipoCuentaRepositorio;
 
@@ -19,93 +17,121 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TipoCuentaServicio {
+    
+    private final TipoCuentaRepositorio tipoCuentaRepositorio;
 
-    @Autowired
-    private TipoCuentaRepositorio tipoCuentaRepositorio;
-
-    public List<TipoCuenta> findAll() {
-        return tipoCuentaRepositorio.findAll();
+    public TipoCuentaServicio(TipoCuentaRepositorio tipoCuentaRepositorio) {
+        this.tipoCuentaRepositorio = tipoCuentaRepositorio;
     }
 
-    public Page<TipoCuenta> listarTodos(Pageable pageable) {
-        return tipoCuentaRepositorio.findAll(pageable);
-    }
-
-    public TipoCuenta findById(Integer id) {
-        Optional<TipoCuenta> tipoCuentaOpt = tipoCuentaRepositorio.findById(id);
-        if (!tipoCuentaOpt.isPresent()) {
-            throw new TipoCuentaNoEncontradaExcepcion("Tipo Cuenta", "No se encontró el tipo de cuenta con ID: " + id);
+    public List<TipoCuenta> listarTodos() {
+        List<TipoCuenta> tipos = tipoCuentaRepositorio.findAll();
+        if (tipos.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta", "No existen tipos de cuenta registrados");
         }
-        return tipoCuentaOpt.get();
+        return tipos;
+    }
+
+    public Page<TipoCuenta> listarTodosPaginado(Pageable pageable) {
+        Page<TipoCuenta> page = tipoCuentaRepositorio.findAll(pageable);
+        if (page.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta", "No existen tipos de cuenta registrados");
+        }
+        return page;
+    }
+
+    public TipoCuenta buscarPorId(Integer id) {
+        return tipoCuentaRepositorio.findById(id)
+                .orElseThrow(() -> new EntidadNoEncontradaExcepcion("TipoCuenta", 
+                    "No se encontró el tipo de cuenta con ID: " + id));
     }
 
     @Transactional
-    public void create(TipoCuenta tipoCuenta) {
+    public TipoCuenta crear(TipoCuenta tipoCuenta) {
         try {
-            this.tipoCuentaRepositorio.save(tipoCuenta);
-        } catch (Exception e) {
-            throw new CrearEntidadExcepcion("Tipo Cuentas", "Error al crear el Tipo de Cuenta. Error: " + e.getMessage());
+            validarTipoCuenta(tipoCuenta);
+            return this.tipoCuentaRepositorio.save(tipoCuenta);
+        } catch (RuntimeException e) {
+            throw new CrearEntidadExcepcion("TipoCuenta", 
+                "Error al crear el tipo de cuenta: " + e.getMessage());
         }
     }
 
     @Transactional
-    public void update(TipoCuenta tipoCuenta) {
+    public TipoCuenta actualizar(Integer id, TipoCuenta tipoCuenta) {
         try {
-            Optional<TipoCuenta> tipoOptional = this.tipoCuentaRepositorio.findById(tipoCuenta.getIdTipoCuenta());
-            if (tipoOptional.isPresent()) {
-                TipoCuenta tipoCuentaDb = tipoOptional.get();
-                tipoCuentaDb.setNombre(tipoCuenta.getNombre());
-                tipoCuentaDb.setDescripcion(tipoCuenta.getDescripcion());
-                tipoCuentaDb.setRequisitosApertura(tipoCuenta.getRequisitosApertura());
-                tipoCuentaDb.setTipocliente(tipoCuenta.getTipocliente());
-                tipoCuentaDb.setCuentasContablesAsociadas(tipoCuenta.getCuentasContablesAsociadas());
-                tipoCuentaDb.setEstado(tipoCuenta.getEstado());
-                tipoCuentaDb.setFechaModificacion(tipoCuenta.getFechaModificacion());
-                this.tipoCuentaRepositorio.save(tipoCuentaDb);
-            } else {
-                throw new TipoCuentaNoEncontradaExcepcion("Tipo Cuenta", 
-                    "No se encontró el tipo de cuenta con ID: " + tipoCuenta.getIdTipoCuenta());
+            TipoCuenta tipoCuentaDb = buscarPorId(id);
+            validarTipoCuenta(tipoCuenta);
+            
+            tipoCuentaDb.setNombre(tipoCuenta.getNombre());
+            tipoCuentaDb.setDescripcion(tipoCuenta.getDescripcion());
+            tipoCuentaDb.setTipoCliente(tipoCuenta.getTipoCliente());
+            tipoCuentaDb.setEstado(tipoCuenta.getEstado());
+            
+            return this.tipoCuentaRepositorio.save(tipoCuentaDb);
+        } catch (RuntimeException e) {
+            throw new ActualizarEntidadExcepcion("TipoCuenta", 
+                "Error al actualizar el tipo de cuenta: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void eliminar(Integer id) {
+        try {
+            TipoCuenta tipoCuenta = buscarPorId(id);
+            if ("ACTIVO".equals(tipoCuenta.getEstado())) {
+                throw new EliminarEntidadExcepcion("TipoCuenta", 
+                    "No se puede eliminar un tipo de cuenta en estado ACTIVO");
             }
-        } catch (Exception e) {
-            throw new ActualizarEntidadExcepcion("Tipo Cuentas", 
-                "Error al actualizar el Tipo de Cuenta. Error: " + e.getMessage());
-        }
-    }
-
-    @Transactional
-    public void delete(Integer id) {
-        try {
-            Optional<TipoCuenta> tipoOptional = this.tipoCuentaRepositorio.findById(id);
-            if (tipoOptional.isPresent()) {
-                this.tipoCuentaRepositorio.delete(tipoOptional.get());
-            } else {
-                throw new TipoCuentaNoEncontradaExcepcion("Tipo Cuenta", 
-                    "No se encontró el tipo de cuenta con ID: " + id);
-            }
-        } catch (Exception e) {
-            throw new EliminarEntidadExcepcion("Tipo Cuentas", 
-                "Error al eliminar el Tipo de Cuenta. Error: " + e.getMessage());
+            this.tipoCuentaRepositorio.delete(tipoCuenta);
+        } catch (RuntimeException e) {
+            throw new EliminarEntidadExcepcion("TipoCuenta", 
+                "Error al eliminar el tipo de cuenta: " + e.getMessage());
         }
     }
 
     public List<TipoCuenta> buscarPorNombre(String nombre) {
-        return tipoCuentaRepositorio.findByNombreContainingIgnoreCase(nombre);
+        List<TipoCuenta> tipos = tipoCuentaRepositorio.findByNombreContainingIgnoreCase(nombre);
+        if (tipos.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
+                "No se encontraron tipos de cuenta con el nombre: " + nombre);
+        }
+        return tipos;
     }
 
     public List<TipoCuenta> buscarPorMoneda(String idMoneda) {
-        return tipoCuentaRepositorio.findByIdMoneda(idMoneda);
+        List<TipoCuenta> tipos = tipoCuentaRepositorio.findByMonedaId(idMoneda);
+        if (tipos.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
+                "No se encontraron tipos de cuenta para la moneda: " + idMoneda);
+        }
+        return tipos;
     }
 
     public List<TipoCuenta> buscarPorTipoCliente(String tipoCliente) {
-        return tipoCuentaRepositorio.findByTipoCliente(tipoCliente);
+        List<TipoCuenta> tipos = tipoCuentaRepositorio.findByTipoCliente(tipoCliente);
+        if (tipos.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TipoCuenta", 
+                "No se encontraron tipos de cuenta para el tipo de cliente: " + tipoCliente);
+        }
+        return tipos;
     }
 
-    public TipoCuenta findDefaultTipoCuenta() {
-        List<TipoCuenta> list = this.tipoCuentaRepositorio.findAll();
-        if (!list.isEmpty()) {
-            return list.getFirst();
-        } else {
-            throw new TipoCuentaNoEncontradaExcepcion("No existen registros de tipo de cuenta");
+    private void validarTipoCuenta(TipoCuenta tipoCuenta) {
+        if (tipoCuenta.getNombre() == null || tipoCuenta.getNombre().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TipoCuenta", "El nombre es obligatorio");
+        }
+        if (tipoCuenta.getDescripcion() == null || tipoCuenta.getDescripcion().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TipoCuenta", "La descripción es obligatoria");
+        }
+        if (tipoCuenta.getEstado() == null || tipoCuenta.getEstado().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TipoCuenta", "El estado es obligatorio");
+        }
+        if (!tipoCuenta.getEstado().equals("ACTIVO") && !tipoCuenta.getEstado().equals("INACTIVO")) {
+            throw new CrearEntidadExcepcion("TipoCuenta", "El estado debe ser ACTIVO o INACTIVO");
+        }
+        if (tipoCuenta.getTipoCliente() == null || tipoCuenta.getTipoCliente().trim().isEmpty()) {
+            throw new CrearEntidadExcepcion("TipoCuenta", "El tipo de cliente es obligatorio");
         }
     }
 }

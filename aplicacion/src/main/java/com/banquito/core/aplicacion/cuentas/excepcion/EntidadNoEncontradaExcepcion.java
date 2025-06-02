@@ -1,20 +1,14 @@
 package com.banquito.core.aplicacion.cuentas.excepcion;
 
-public class ComisionCargoNoEncontradaExcepcion extends RuntimeException {
+public class EntidadNoEncontradaExcepcion extends RuntimeException {
 
     private final Integer errorCode;
     private final String entidad;
 
-    public ComisionCargoNoEncontradaExcepcion(String entidad, String mensaje) {
-        super(String.format("La entidad %s no fue encontrada. %s", entidad, mensaje));
+    public EntidadNoEncontradaExcepcion(String entidad, String mensaje) {
+        super(mensaje);
         this.errorCode = 1;
         this.entidad = entidad;
-    }
-
-    public ComisionCargoNoEncontradaExcepcion(String message) {
-        super(message);
-        this.errorCode = 1;
-        this.entidad = "ComisionCargo";
     }
 
     @Override
@@ -29,4 +23,4 @@ public class ComisionCargoNoEncontradaExcepcion extends RuntimeException {
     public String getEntidad() {
         return entidad;
     }
-} 
+}
