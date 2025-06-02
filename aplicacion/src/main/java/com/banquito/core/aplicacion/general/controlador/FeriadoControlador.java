@@ -68,5 +68,14 @@ public class FeriadoControlador {
         }
     }
 
+    @GetMapping("/locacion/nombre/{nombre}")
+    public ResponseEntity<List<Map<String, Object>>> findByLocacionNombre(@PathVariable String nombre) {
+        try {
+            return ResponseEntity.ok(this.feriadoServicio.findByLocacionNombre(nombre));
+        } catch (FeriadoNoEncontradoException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

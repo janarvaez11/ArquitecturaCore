@@ -46,6 +46,17 @@ public class PrestamoControlador {
         }
     }
 
+    @GetMapping("/tipoPrestamo/{idTipoPrestamo}")
+    public ResponseEntity<?> obtenerPorTipoPrestamo(@PathVariable Integer idTipoPrestamo) {
+        try {
+            List<Prestamo> prestamos = prestamoServicio.findByTipoPrestamo(idTipoPrestamo);
+            return ResponseEntity.ok(prestamos);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> crear(@RequestBody Prestamo prestamo) {
         try {

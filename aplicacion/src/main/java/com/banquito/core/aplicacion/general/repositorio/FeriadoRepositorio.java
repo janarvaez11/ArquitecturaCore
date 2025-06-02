@@ -10,4 +10,5 @@ import java.util.List;
 public interface FeriadoRepositorio extends JpaRepository<Feriado, Integer> {
     List<Feriado> findByPaisId(String paisId);
     List<Feriado> findByLocacionId(Integer locacionId);
+    List<Feriado> findByLocacion_Nombre(String nombre);
 }

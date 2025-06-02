@@ -10,4 +10,6 @@ public interface PrestamosClientesRepositorio extends JpaRepository<PrestamosCli
     List<PrestamosClientes> findByIdPrestamo(Prestamo prestamo);
 
     List<PrestamosClientes> findByEstado(String estado);
+
+    List<PrestamosClientes> findByIdCliente_IdCliente(Integer idCliente);
 }

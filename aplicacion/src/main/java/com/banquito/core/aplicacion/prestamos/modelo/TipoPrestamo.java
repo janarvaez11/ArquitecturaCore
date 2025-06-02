@@ -24,7 +24,7 @@ public class TipoPrestamo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdTipoPrestamo", nullable = false)
-    private Integer IdTipoPrestamo;
+    private Integer idTipoPrestamo;
 
     @Column(name = "Nombre", length = 50, nullable = false)
     private String nombre;
@@ -71,15 +71,15 @@ public class TipoPrestamo {
     }
 
     public TipoPrestamo(Integer idTipoPrestamo) {
-        IdTipoPrestamo = idTipoPrestamo;
+        this.idTipoPrestamo = idTipoPrestamo;
     }
 
     public Integer getIdTipoPrestamo() {
-        return IdTipoPrestamo;
+        return idTipoPrestamo;
     }
 
     public void setIdTipoPrestamo(Integer idTipoPrestamo) {
-        IdTipoPrestamo = idTipoPrestamo;
+        this.idTipoPrestamo = idTipoPrestamo;
     }
 
     public String getNombre() {
@@ -182,7 +182,7 @@ public class TipoPrestamo {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((IdTipoPrestamo == null) ? 0 : IdTipoPrestamo.hashCode());
+        result = prime * result + ((idTipoPrestamo == null) ? 0 : idTipoPrestamo.hashCode());
         return result;
     }
 
@@ -195,17 +195,17 @@ public class TipoPrestamo {
         if (getClass() != obj.getClass())
             return false;
         TipoPrestamo other = (TipoPrestamo) obj;
-        if (IdTipoPrestamo == null) {
-            if (other.IdTipoPrestamo != null)
+        if (idTipoPrestamo == null) {
+            if (other.idTipoPrestamo != null)
                 return false;
-        } else if (!IdTipoPrestamo.equals(other.IdTipoPrestamo))
+        } else if (!idTipoPrestamo.equals(other.idTipoPrestamo))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "TipoPrestamo [IdTipoPrestamo=" + IdTipoPrestamo + ", nombre=" + nombre + ", descripcion=" + descripcion
+        return "TipoPrestamo [IdTipoPrestamo=" + idTipoPrestamo + ", nombre=" + nombre + ", descripcion=" + descripcion
                 + ", montoMinimo=" + montoMinimo + ", montoMaximo=" + montoMaximo + ", plazoMinimo=" + plazoMinimo
                 + ", plazoMaximo=" + plazoMaximo + ", requisitos=" + requisitos + ", tipoCliente=" + tipoCliente
                 + ", estado=" + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
