@@ -9,4 +9,5 @@ import com.banquito.core.aplicacion.prestamos.modelo.Garantia;
 @Repository
 public interface GarantiaRepositorio extends JpaRepository<Garantia, Integer> {
     List<Garantia> findByTipoGarantia(String tipoGarantia);
+    List<Garantia> findByTipoPrestamo_IdTipoPrestamo(Integer idTipoPrestamo);
 }

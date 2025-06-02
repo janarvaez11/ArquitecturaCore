@@ -32,6 +32,19 @@ public class MonedaServicio {
     @Transactional
     public void crearMonedaPorPais(Moneda moneda, Pais pais) {
         try {
+            if (moneda.getId() == null ) {
+                throw new CrearEntidadException("Moneda", "El id no puede ser nulo");
+            }
+            if (moneda.getNombre() == null || moneda.getNombre().length() > 50) {
+                throw new CrearEntidadException("Moneda", "El nombre es obligatorio y debe tener máximo 50 caracteres");
+            }
+            if (moneda.getSimbolo() == null || moneda.getSimbolo().length() > 5) {
+                throw new CrearEntidadException("Moneda", "El símbolo es obligatorio y debe tener máximo 5 caracteres");
+            }
+            if (moneda.getCodigo() == null ) {
+                throw new CrearEntidadException("Moneda", "El código no puede ser nulo");
+            }
+
             moneda.setPais(pais);
             this.monedarepositorio.save(moneda);
         } catch (RuntimeException rte) {

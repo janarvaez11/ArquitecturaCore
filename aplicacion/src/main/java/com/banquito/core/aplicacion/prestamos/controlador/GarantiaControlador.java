@@ -34,6 +34,17 @@ public class GarantiaControlador {
         }
     }
 
+    @GetMapping("/tipoPrestamo/{idTipoPrestamo}")
+    public ResponseEntity<?> obtenerPorTipoPrestamo(@PathVariable Integer idTipoPrestamo) {
+        try {
+            List<Garantia> garantias = garantiaServicio.findByTipoPrestamo(idTipoPrestamo);
+            return ResponseEntity.ok(garantias);
+        } catch (BusquedaExcepcion e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/tipo/{tipoGarantia}")
     public ResponseEntity<?> obtenerPorTipoGarantia(@PathVariable String tipoGarantia) {
         try {

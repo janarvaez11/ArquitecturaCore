@@ -4,12 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import com.banquito.core.aplicacion.prestamos.excepcion.*;
 import org.springframework.stereotype.Service;
 
-import com.banquito.core.aplicacion.prestamos.excepcion.ActualizarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.CrearEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.EliminarEntidadExcepcion;
-import com.banquito.core.aplicacion.prestamos.excepcion.PrestamoNoEncontradoExcepcion;
 import com.banquito.core.aplicacion.prestamos.modelo.Prestamo;
 import com.banquito.core.aplicacion.prestamos.modelo.PrestamosClientes;
 import com.banquito.core.aplicacion.prestamos.repositorio.PrestamoRepositorio;
@@ -54,6 +51,13 @@ public class PrestamosClientesServicio {
 
     public List<PrestamosClientes> buscarTodos() {
         return this.repositorio.findAll();
+    }
+
+    public List<PrestamosClientes> buscarPorCliente(Integer idCliente) {
+        if (idCliente == null) {
+            throw new BusquedaExcepcion("Prestamos Clientes", "El idCliente no puede ser nulo");
+        }
+        return this.repositorio.findByIdCliente_IdCliente(idCliente);
     }
 
     @Transactional

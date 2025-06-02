@@ -42,6 +42,24 @@ public class EntidadBancariaServicio {
     @Transactional
     public void crearEntidadBancaria(EntidadBancaria entidadBancaria) {
         try {
+            if (entidadBancaria.getCodigoLocal() == null || entidadBancaria.getCodigoLocal().isEmpty()) {
+                throw new CrearEntidadException("EntidadBancaria", "El código local es obligatorio");
+            }
+            if (entidadBancaria.getCodigoLocal().length() > 6) {
+                throw new CrearEntidadException("EntidadBancaria", "El código local no puede exceder 6 caracteres");
+            }
+            if (entidadBancaria.getNombre() == null || entidadBancaria.getNombre().isEmpty()) {
+                throw new CrearEntidadException("EntidadBancaria", "El nombre es obligatorio");
+            }
+            if (entidadBancaria.getNombre().length() > 100) {
+                throw new CrearEntidadException("EntidadBancaria", "El nombre no puede exceder 100 caracteres");
+            }
+            if (entidadBancaria.getCodigoInternacional() == null || entidadBancaria.getCodigoInternacional().isEmpty()) {
+                throw new CrearEntidadException("EntidadBancaria", "El código internacional es obligatorio");
+            }
+            if (entidadBancaria.getCodigoInternacional().length() > 20) {
+                throw new CrearEntidadException("EntidadBancaria", "El código internacional no puede exceder 20 caracteres");
+            }
             this.repositorio.save(entidadBancaria);
         } catch (RuntimeException rte) {
             throw new CrearEntidadException("EntidadBancaria", "Error al crear la entidad bancaria. Texto del error: " + rte.getMessage());
