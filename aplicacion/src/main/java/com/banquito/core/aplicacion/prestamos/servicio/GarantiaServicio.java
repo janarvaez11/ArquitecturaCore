@@ -72,6 +72,18 @@ public class GarantiaServicio {
         }
     }
 
+    public List<Garantia> findByTipoPrestamo(Integer idTipoPrestamo) {
+        try {
+            if (idTipoPrestamo == null) {
+                throw new BusquedaExcepcion("Garantia", "El idTipoPrestamo no puede ser nulo");
+            }
+            return this.repositorio.findByTipoPrestamo_IdTipoPrestamo(idTipoPrestamo);
+        } catch (RuntimeException rte) {
+            throw new BusquedaExcepcion("Garantia",
+                "Error al buscar garantías por tipo de préstamo. Texto del error: " + rte.getMessage());
+        }
+    }
+
     @Transactional
     public void update(Garantia garantia) {
         try {

@@ -168,4 +168,16 @@ public class PrestamoServicio {
                 "Error al buscar préstamos por estado: " + estado, e);
         }
     }
+
+    public List<Prestamo> findByTipoPrestamo(Integer idTipoPrestamo) {
+        try {
+            if (idTipoPrestamo == null) {
+                throw new BusquedaExcepcion("Prestamo", "El idTipoPrestamo no puede ser nulo");
+            }
+            return this.repositorio.findByTipoPrestamo_IdTipoPrestamo(idTipoPrestamo);
+        } catch (BusquedaExcepcion e) {
+            throw new BusquedaExcepcion("Prestamo",
+                "Error al buscar préstamos por tipo de préstamo con ID: " + idTipoPrestamo, e);
+        }
+    }
 }

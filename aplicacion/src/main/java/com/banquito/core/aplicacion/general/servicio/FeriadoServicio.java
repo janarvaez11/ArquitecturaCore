@@ -11,10 +11,9 @@ import com.banquito.core.aplicacion.general.modelo.Pais;
 import com.banquito.core.aplicacion.general.repositorio.LocacionGeograficaRepositorio;
 import com.banquito.core.aplicacion.general.repositorio.PaisRepositorio;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 public class FeriadoServicio {
@@ -32,6 +31,15 @@ public class FeriadoServicio {
     @Transactional
     public void crearFeriadoPorPais(Feriado feriado, String paisId) {
         try {
+            if (feriado.getFechaFeriado() == null) {
+                throw new CrearEntidadException("Feriado", "La fecha del feriado no puede ser nula");
+            }
+            Date fechaDate = feriado.getFechaFeriado();
+            LocalDate fecha = fechaDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int currentYear = LocalDate.now().getYear();
+            if (fecha.getYear() < currentYear) {
+                throw new CrearEntidadException("Feriado", "La fecha debe ser del año actual o posterior: " + currentYear);
+            }
             Pais pais = paisrepositorio.findById(paisId)
                     .orElseThrow(() -> new IllegalArgumentException("País no encontrado"));
             feriado.setPais(pais);
@@ -46,6 +54,15 @@ public class FeriadoServicio {
     @Transactional
     public void crearFeriadoPorLocacion(Feriado feriado, Integer locacionId) {
         try {
+            if (feriado.getFechaFeriado() == null) {
+                throw new CrearEntidadException("Feriado", "La fecha del feriado no puede ser nula");
+            }
+            Date fechaDate = feriado.getFechaFeriado();
+            LocalDate fecha = fechaDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int currentYear = LocalDate.now().getYear();
+            if (fecha.getYear() < currentYear) {
+                throw new CrearEntidadException("Feriado", "La fecha debe ser del año actual o posterior: " + currentYear);
+            }
             LocacionGeografica locacion = locaciongeograficarepositorio.findById(locacionId)
                     .orElseThrow(() -> new IllegalArgumentException("Locación no encontrada"));
             feriado.setLocacion(locacion);
@@ -90,6 +107,15 @@ public class FeriadoServicio {
             return feriados.stream().map(this::mapFeriado).toList();
         } else {
             throw new FeriadoNoEncontradoException("No existen feriados para el país: " + paisId);
+        }
+    }
+
+    public List<Map<String, Object>> findByLocacionNombre(String nombre) {
+        List<Feriado> feriados = feriadorepositorio.findByLocacion_Nombre(nombre);
+        if (!feriados.isEmpty()) {
+            return feriados.stream().map(this::mapFeriado).toList();
+        } else {
+            throw new FeriadoNoEncontradoException("No existen feriados para la locación con nombre: " + nombre);
         }
     }
 
