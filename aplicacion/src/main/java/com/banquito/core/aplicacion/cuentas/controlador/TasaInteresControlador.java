@@ -58,6 +58,16 @@ public class TasaInteresControlador {
         }
     }
 
+    @GetMapping("/tipo-cuenta/{idTipoCuenta}")
+    public ResponseEntity<List<TasaInteres>> buscarPorTipoCuenta(@PathVariable Integer idTipoCuenta) {
+        try {
+            List<TasaInteres> tasas = tasaInteresServicio.buscarPorTipoCuenta(idTipoCuenta);
+            return ResponseEntity.ok(tasas);
+        } catch (EntidadNoEncontradaExcepcion e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<TasaInteres> crear(@RequestBody TasaInteres tasaInteres) {
         try {

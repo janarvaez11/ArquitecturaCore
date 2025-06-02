@@ -1,6 +1,7 @@
 package com.banquito.core.aplicacion.cuentas.modelo;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -53,8 +55,12 @@ public class Cuenta {
     private TipoCuenta tipoCuenta;
 
     // Relación inversa con CuentasClientes
-    // @OneToMany(mappedBy = "cuenta")
-    // private List<CuentaCliente> cuentasClientes;
+    @OneToMany(mappedBy = "cuenta")
+    private List<CuentaCliente> cuentasClientes;
+
+    // Relación inversa con ServicioTipoCuenta
+    @OneToMany(mappedBy = "cuenta")
+    private List<ServicioTipoCuenta> servicioTipoCuentas;
 
     // Constructores
     public Cuenta() {
@@ -137,6 +143,22 @@ public class Cuenta {
         this.tipoCuenta = tipoCuenta;
     }
 
+    public List<CuentaCliente> getCuentasClientes() {
+        return cuentasClientes;
+    }
+
+    public void setCuentasClientes(List<CuentaCliente> cuentasClientes) {
+        this.cuentasClientes = cuentasClientes;
+    }
+
+    public List<ServicioTipoCuenta> getServicioTipoCuentas() {
+        return servicioTipoCuentas;
+    }
+
+    public void setServicioTipoCuentas(List<ServicioTipoCuenta> servicioTipoCuentas) {
+        this.servicioTipoCuentas = servicioTipoCuentas;
+    }
+
     // Metodo hashCode y equals
     @Override
     public int hashCode() {
@@ -169,8 +191,7 @@ public class Cuenta {
         return true;
     }
 
-    // Método toString
-
+    // Método toString
     @Override
     public String toString() {
         return "Cuenta [idCuenta=" + idCuenta + ", codigoCuenta=" + codigoCuenta + ", nombre=" + nombre
@@ -178,4 +199,5 @@ public class Cuenta {
                 + estado + ", fechaCreacion=" + fechaCreacion + ", fechaModificacion=" + fechaModificacion
                 + ", tasaInteres=" + tasaInteres + ", tipoCuenta=" + tipoCuenta + "]";
     }
+
 }

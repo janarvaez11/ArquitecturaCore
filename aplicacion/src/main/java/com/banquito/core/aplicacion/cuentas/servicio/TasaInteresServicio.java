@@ -51,6 +51,15 @@ public class TasaInteresServicio {
                 "No se encontró la tasa de interés con id: " + id));
     }
 
+    public List<TasaInteres> buscarPorTipoCuenta(Integer idTipoCuenta) {
+        List<TasaInteres> tasas = this.tasaInteresRepositorio.findByTipoCuentaId(idTipoCuenta);
+        if (tasas.isEmpty()) {
+            throw new EntidadNoEncontradaExcepcion("TasaInteres", 
+                "No se encontraron tasas de interés para el tipo de cuenta con id: " + idTipoCuenta);
+        }
+        return tasas;
+    }
+
     @Transactional
     public TasaInteres crear(TasaInteres tasaInteres) {
         try {
